@@ -9,13 +9,13 @@ export const CoverSchema = new mongoose.Schema(
     // 业主姓名
     ownerName: String,
     // 窑井编号
-    wellId: String,
+    wellId: ObjectId,
     // 井盖材料
     coverMaterial: String,
     // 井盖类型
     coverType: String,
-    // 井盖大小
-    coverSize: Number,
+    // 井盖口径
+    coverCaliber: Number,
     // 井盖开孔数量
     holeNumber: Number,
     // 开孔位置
@@ -23,5 +23,5 @@ export const CoverSchema = new mongoose.Schema(
     // 状态 0：正常， 2:漏气， 1:打开
     status: Number,
   },
-  { collection: 'Users', versionKey: false, timestamps: true },
+  { collection: 'Covers', versionKey: false, timestamps: true },
 );

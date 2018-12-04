@@ -12,7 +12,7 @@ export interface ICover extends Document {
   // 井盖类型
   readonly coverType: string;
   // 井盖大小
-  readonly coverSize: number;
+  readonly coverCaliber: number;
   // 井盖开孔数量
   readonly holeNumber: number;
   // 开孔位置

@@ -12,7 +12,7 @@ export class CreateCoverDTO {
   @ApiModelProperty({ description: '井盖类型' })
   readonly coverType: string;
   @ApiModelProperty({ description: '井盖大小' })
-  readonly coverSize: number;
+  readonly coverCaliber: number;
   @ApiModelProperty({ description: '井盖开孔数量' })
   readonly holeNumber: number;
   @ApiModelProperty({ description: '开孔位置' })
