@@ -5,7 +5,7 @@ import { CreateWellDTO } from './dto/creatWell.dto';
 // import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
 // import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
 import { WellService } from './well.service';
-import { PageFilter } from '../common/pageFilter.dto';
+import { Pagination } from '../common/pagination.dto';
 import {
   ApiUseTags,
   ApiBearerAuth,
@@ -34,8 +34,8 @@ export class WellController {
     isArray: true,
   })
   @Get('/')
-  wellList(@Query() page: PageFilter) {
-    return this.wellService.findAll(page);
+  wellList(@Query() pagination: Pagination) {
+    return this.wellService.findAll(pagination);
   }
 
   @Get('/:id')

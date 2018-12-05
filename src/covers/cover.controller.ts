@@ -1,11 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, ReflectMetadata, UnauthorizedException, UseGuards, UsePipes } from '@nestjs/common';
 
 // import { AuthGuard } from '@nestjs/passport';
-import { CreateCoverDTO } from './DTO/creatCover.dto';
+import { CreateCoverDTO } from './dto/creatCover.dto';
 // import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
 // import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
 import { CoverService } from './cover.service';
-import { PageFilter } from '../common/pageFilter.dto';
+import { Pagination } from '../common/pagination.dto';
 import {
   ApiUseTags,
   ApiBearerAuth,
@@ -14,11 +14,13 @@ import {
   ApiCreatedResponse,
   ApiBadRequestResponse,
   ApiInternalServerErrorResponse,
+  ApiOperation,
 } from '@nestjs/swagger';
 
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy
 @ApiUseTags('covers')
+
 // @ApiBearerAuth()
 @ApiForbiddenResponse({ description: 'Unauthorized' })
 // @UseGuards(AuthGuard())
@@ -34,8 +36,9 @@ export class CoverController {
     isArray: true,
   })
   @Get('/')
-  coverList(@Query() page: PageFilter) {
-    return this.coverService.findAll(page);
+  @ApiOperation({ title: '获取井盖列表', description: '获取井盖列表' })
+  coverList(@Query() pagination: Pagination) {
+    return this.coverService.findAll(pagination);
   }
 
   @Get('/:id')

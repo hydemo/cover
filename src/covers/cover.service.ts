@@ -2,8 +2,9 @@ import { Model } from 'mongoose';
 import { Inject, Injectable } from '@nestjs/common';
 import { ICover } from './interfaces/cover.interfaces';
 import { CreateCoverDTO } from './dto/creatCover.dto';
-import { PageFilter } from 'src/common/pageFilter.dto';
+import { Pagination } from 'src/common/pagination.dto';
 import { ICoverList } from './interfaces/coverList.interface';
+import { isNumber } from 'util';
 
 @Injectable()
 export class CoverService {
@@ -17,15 +18,21 @@ export class CoverService {
   }
 
   // 查询全部数据
-  async findAll(pageFilter: PageFilter): Promise<ICoverList> {
-    const page = Number(pageFilter.pageNumber);
-    const pageSize = Number(pageFilter.pageSize);
+  async findAll(pagination: Pagination): Promise<ICoverList> {
+    const reg = new RegExp(pagination.search, 'i');
+    const search = [
+      { ownerId: reg },
+      { ownerName: reg },
+      { coverMaterial: reg },
+      { coverType: reg },
+      { holeLocation: reg },
+    ];
     const list = await this.coverModel
-      .find()
-      .limit(pageSize)
-      .skip((page - 1) * pageSize)
+      .find({ $or: search })
+      .limit(pagination.limit)
+      .skip((pagination.offset - 1) * pagination.limit)
       .exec();
-    const total = await this.coverModel.countDocuments();
+    const total = await this.coverModel.countDocuments({ $or: search });
     return { list, total };
   }
 
@@ -34,7 +41,7 @@ export class CoverService {
     return await this.coverModel.findById(_id).exec();
   }
   // 根据id修改
-  async updateById(_id, cover: ICover) {
+  async updateById(_id, cover: CreateCoverDTO) {
     return await this.coverModel.findByIdAndUpdate(_id, cover).exec();
   }
   // 根据id删除

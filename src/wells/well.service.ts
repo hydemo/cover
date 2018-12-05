@@ -2,7 +2,7 @@ import { Model } from 'mongoose';
 import { Inject, Injectable } from '@nestjs/common';
 import { IWell } from './interfaces/well.interfaces';
 import { CreateWellDTO } from './dto/creatWell.dto';
-import { PageFilter } from 'src/common/pageFilter.dto';
+import { Pagination } from 'src/common/pagination.dto';
 import { IWellList } from './interfaces/wellList.interface';
 
 @Injectable()
@@ -17,13 +17,11 @@ export class WellService {
   }
 
   // 查询全部数据
-  async findAll(pageFilter: PageFilter): Promise<IWellList> {
-    const page = Number(pageFilter.pageNumber);
-    const pageSize = Number(pageFilter.pageSize);
-    const list = await this.wellModel
+  async findAll(pagination: Pagination): Promise<IWellList> {
+    const list: IWell[] = await this.wellModel
       .find()
-      .limit(pageSize)
-      .skip((page - 1) * pageSize)
+      .limit(pagination.limit)
+      .skip((pagination.offset - 1) * pagination.limit)
       .exec();
     const total = await this.wellModel.countDocuments();
     return { list, total };
@@ -34,7 +32,7 @@ export class WellService {
     return await this.wellModel.findById(_id).exec();
   }
   // 根据id修改
-  async updateById(_id, well: IWell) {
+  async updateById(_id, well: CreateWellDTO) {
     return await this.wellModel.findByIdAndUpdate(_id, well).exec();
   }
   // 根据id删除

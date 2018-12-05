@@ -1,13 +1,14 @@
 import { AppModule } from './app.module';
-import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { CoverModule } from './covers/cover.module';
 import { WellModule } from './wells/well.module';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
+  app.enableCors();
   const ApiOptions = new DocumentBuilder()
     .setTitle('井盖API文档')
     .setDescription('井盖API文档')
