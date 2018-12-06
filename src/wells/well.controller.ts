@@ -7,6 +7,7 @@ import { CreateWellDTO } from './dto/creatWell.dto';
 import { WellService } from './well.service';
 import { Pagination } from '../common/pagination.dto';
 import {
+  ApiOperation,
   ApiUseTags,
   ApiBearerAuth,
   ApiOkResponse,
@@ -29,10 +30,11 @@ export class WellController {
   ) { }
 
   @ApiOkResponse({
-    description: '井盖列表',
+    description: '窑井列表',
     type: CreateWellDTO,
     isArray: true,
   })
+  @ApiOperation({ title: '获取窑井列表', description: '获取窑井列表' })
   @Get('/')
   wellList(@Query() pagination: Pagination) {
     return this.wellService.findAll(pagination);
@@ -40,33 +42,37 @@ export class WellController {
 
   @Get('/:id')
   @ApiOkResponse({
-    description: '获取井盖成功',
+    description: '获取窑井成功',
   })
-  @ApiCreatedResponse({ description: '获取井盖' })
+  @ApiCreatedResponse({ description: '获取窑井' })
+  @ApiOperation({ title: '根据id获取窑井', description: '根据id获取窑井' })
   findById(@Param('id') id: string) {
     return this.wellService.findById(id);
   }
 
   @Post()
   @ApiOkResponse({
-    description: '添加井盖成功',
+    description: '添加窑井成功',
   })
+  @ApiOperation({ title: '添加窑井', description: '添加窑井' })
   create(@Body() creatWellDTO: CreateWellDTO) {
     return this.wellService.create(creatWellDTO);
   }
 
   @Put('/:id')
   @ApiOkResponse({
-    description: '修改井盖成功',
+    description: '修改窑井成功',
   })
+  @ApiOperation({ title: '修改窑井', description: '修改窑井' })
   update(@Param('id') id: string, @Body() creatWellDTO: CreateWellDTO) {
     return this.wellService.updateById(id, creatWellDTO);
   }
 
   @Delete('/:id')
   @ApiOkResponse({
-    description: '删除井盖成功',
+    description: '删除窑井成功',
   })
+  @ApiOperation({ title: '根据id删除窑井', description: '根据id删除窑井' })
   delete(@Param('id') id: string) {
     return this.wellService.deleteById(id);
   }

@@ -1,15 +1,13 @@
 import * as mongoose from 'mongoose';
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
-
 export const CoverSchema = new mongoose.Schema(
   {
+    // 编号
+    coverSN: { type: String, required: true, unique: true },
     // 业主id
     ownerId: String,
     // 业主姓名
     ownerName: String,
-    // 窑井编号
-    wellId: ObjectId,
     // 井盖材料
     coverMaterial: String,
     // 井盖类型
@@ -20,8 +18,6 @@ export const CoverSchema = new mongoose.Schema(
     holeNumber: Number,
     // 开孔位置
     holeLocation: String,
-    // 状态 0：正常， 2:漏气， 1:打开
-    status: Number,
   },
-  { collection: 'Covers', versionKey: false, timestamps: true },
+  { collection: 'Cover', versionKey: false, timestamps: true },
 );

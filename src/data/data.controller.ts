@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UnauthorizedException, UseGuards, UsePipes } from '@nestjs/common';
 
-import { CreateCoverDTO } from './dto/creatCover.dto';
+import { AlarmDTO } from './dto/alarm.dto';
 // import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
 // import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
-import { CoverService } from './cover.service';
+import { CoverService } from './data.service';
 import { Pagination } from '../common/pagination.dto';
 import {
   ApiUseTags,
@@ -24,7 +24,7 @@ import {
 @ApiForbiddenResponse({ description: 'Unauthorized' })
 // @UseGuards(AuthGuard())
 @Controller('covers')
-export class CoverController {
+export class DataController {
   constructor(
     private coverService: CoverService,
   ) { }
@@ -45,7 +45,6 @@ export class CoverController {
     description: '获取井盖成功',
   })
   @ApiCreatedResponse({ description: '获取井盖' })
-  @ApiOperation({ title: '根据id获取井盖信息', description: '根据id获取井盖信息' })
   findById(@Param('id') id: string) {
     return this.coverService.findById(id);
   }
@@ -54,7 +53,6 @@ export class CoverController {
   @ApiOkResponse({
     description: '添加井盖成功',
   })
-  @ApiOperation({ title: '添加井盖', description: '添加井盖' })
   create(@Body() creatCoverDTO: CreateCoverDTO) {
     return this.coverService.create(creatCoverDTO);
   }
@@ -63,7 +61,6 @@ export class CoverController {
   @ApiOkResponse({
     description: '修改井盖成功',
   })
-  @ApiOperation({ title: '修改井盖', description: '修改井盖' })
   update(@Param('id') id: string, @Body() creatCoverDTO: CreateCoverDTO) {
     return this.coverService.updateById(id, creatCoverDTO);
   }
@@ -72,7 +69,6 @@ export class CoverController {
   @ApiOkResponse({
     description: '删除井盖成功',
   })
-  @ApiOperation({ title: '删除井盖', description: '删除井盖' })
   delete(@Param('id') id: string) {
     return this.coverService.deleteById(id);
   }

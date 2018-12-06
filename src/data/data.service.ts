@@ -1,14 +1,18 @@
 import { Model } from 'mongoose';
 import { Inject, Injectable } from '@nestjs/common';
-import { ICover } from './interfaces/cover.interfaces';
-import { CreateCoverDTO } from './dto/creatCover.dto';
+import { ICover } from './interfaces/alarm.interfaces';
+import { CreateCoverDTO } from './dto/alarm.dto';
 import { Pagination } from 'src/common/pagination.dto';
-import { IList } from '../common/List.interface';
+import { ICoverList } from '../common/List.interface';
+import { isNumber } from 'util';
+import { IWell } from 'src/wells/interfaces/well.interfaces';
 
 @Injectable()
-export class CoverService {
+export class DataService {
   // 注入的CoverModelToken要与covers.providers.ts里面的key一致就可以
-  constructor(@Inject('CoverModelToken') private readonly coverModel: Model<ICover>) { }
+  constructor(
+    @Inject('CoverModelToken') private readonly coverModel: Model<ICover>,
+  ) { }
 
   // 创建数据
   async create(createCoverDTO: CreateCoverDTO) {
@@ -17,7 +21,7 @@ export class CoverService {
   }
 
   // 查询全部数据
-  async findAll(pagination: Pagination): Promise<IList<ICover>> {
+  async findAll(pagination: Pagination): Promise<ICoverList> {
     const reg = new RegExp(pagination.search, 'i');
     const search = [
       { ownerId: reg },

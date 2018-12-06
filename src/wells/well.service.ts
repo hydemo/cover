@@ -3,12 +3,18 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IWell } from './interfaces/well.interfaces';
 import { CreateWellDTO } from './dto/creatWell.dto';
 import { Pagination } from 'src/common/pagination.dto';
-import { IWellList } from './interfaces/wellList.interface';
+import { IList } from '../common/List.interface';
+import { DeviceService } from 'src/devices/device.service';
+import { CoverService } from 'src/covers/cover.service';
 
 @Injectable()
 export class WellService {
   // 注入的WellModelToken要与wells.providers.ts里面的key一致就可以
-  constructor(@Inject('WellModelToken') private readonly wellModel: Model<IWell>) { }
+  constructor(
+    @Inject('WellModelToken') private readonly wellModel: Model<IWell>,
+    private readonly deviceService: DeviceService,
+    private readonly coverService: CoverService,
+  ) { }
 
   // 创建数据
   async create(createWellDTO: CreateWellDTO) {
@@ -17,7 +23,7 @@ export class WellService {
   }
 
   // 查询全部数据
-  async findAll(pagination: Pagination): Promise<IWellList> {
+  async findAll(pagination: Pagination): Promise<IList<IWell>> {
     const list: IWell[] = await this.wellModel
       .find()
       .limit(pagination.limit)
