@@ -2,10 +2,10 @@ import { Model } from 'mongoose';
 import { Inject, Injectable } from '@nestjs/common';
 import { IWell } from './interfaces/well.interfaces';
 import { CreateWellDTO } from './dto/creatWell.dto';
-import { Pagination } from 'src/common/pagination.dto';
+import { Pagination } from '../common/pagination.dto';
 import { IList } from '../common/List.interface';
-import { DeviceService } from 'src/devices/device.service';
-import { CoverService } from 'src/covers/cover.service';
+import { DeviceService } from '../devices/device.service';
+import { CoverService } from '../covers/cover.service';
 
 @Injectable()
 export class WellService {

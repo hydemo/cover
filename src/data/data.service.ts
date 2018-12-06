@@ -1,13 +1,13 @@
 import { Model } from 'mongoose';
 import { Inject, Injectable } from '@nestjs/common';
-import { Pagination } from 'src/common/pagination.dto';
+import { Pagination } from '../common/pagination.dto';
 import { IBattery } from './interfaces/battery.interfaces';
 import { IAlarm } from './interfaces/alarm.interfaces';
 import { IAudioFre } from './interfaces/audioFre.interfaces';
 import { IDeviceInfo } from './interfaces/deviceInfo.interfaces';
 import { IConfigReport } from './interfaces/configReport.interfaces';
 import { IWellCover } from './interfaces/wellCover.interfaces';
-import { IList } from 'src/common/List.interface';
+import { IList } from '../common/List.interface';
 import { BatteryDTO } from './dto/battery.dto';
 import { AlarmDTO } from './dto/alarm.dto';
 import { AudioFreDTO } from './dto/audioFre.dto';

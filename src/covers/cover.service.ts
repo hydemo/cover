@@ -2,7 +2,7 @@ import { Model } from 'mongoose';
 import { Inject, Injectable } from '@nestjs/common';
 import { ICover } from './interfaces/cover.interfaces';
 import { CreateCoverDTO } from './dto/creatCover.dto';
-import { Pagination } from 'src/common/pagination.dto';
+import { Pagination } from '../common/pagination.dto';
 import { IList } from '../common/List.interface';
 
 @Injectable()
