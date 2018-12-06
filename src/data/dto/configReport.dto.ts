@@ -2,7 +2,7 @@ import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
 import { IsMongoId, IsOptional, IsString, IsNumber, Min, Max } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class CreateCoverDTO {
+export class ConfigReportDTO {
   @IsMongoId()
   @Type(() => String)
   @ApiModelProperty({ description: '窑井Id' })

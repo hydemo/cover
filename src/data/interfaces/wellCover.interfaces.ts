@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 
-export interface IAlarm extends Document {
+export interface IWellCover extends Document {
   // 窑井Id
   readonly wellId: string;
   // 井盖Id

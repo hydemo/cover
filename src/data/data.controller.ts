@@ -1,10 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UnauthorizedException, UseGuards, UsePipes } from '@nestjs/common';
-
-import { AlarmDTO } from './dto/alarm.dto';
-// import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
-// import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
-import { CoverService } from './data.service';
-import { Pagination } from '../common/pagination.dto';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UsePipes } from '@nestjs/common';
 import {
   ApiUseTags,
   ApiBearerAuth,
@@ -15,76 +9,89 @@ import {
   ApiInternalServerErrorResponse,
   ApiOperation,
 } from '@nestjs/swagger';
+import { BatteryDTO } from './dto/battery.dto';
+import { AlarmDTO } from './dto/alarm.dto';
+import { AudioFreDTO } from './dto/audioFre.dto';
+import { ConfigReportDTO } from './dto/configReport.dto';
+import { DeviceInfoDTO } from './dto/deviceInfo.dto';
+import { WellCoverDTO } from './dto/wellCover.dto';
+// import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
+// import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
+import { DataService } from './data.service';
+import { Pagination } from '../common/pagination.dto';
 
-// UseGuards()傳入@nest/passport下的AuthGuard
-// strategy
-@ApiUseTags('covers')
-
-// @ApiBearerAuth()
+@ApiUseTags('data')
 @ApiForbiddenResponse({ description: 'Unauthorized' })
-// @UseGuards(AuthGuard())
-@Controller('covers')
+@Controller('data')
 export class DataController {
   constructor(
-    private coverService: CoverService,
+    private dataService: DataService,
   ) { }
 
   @ApiOkResponse({
-    description: '井盖列表',
-    type: CreateCoverDTO,
+    description: '电量历史数据列表',
+    type: BatteryDTO,
     isArray: true,
   })
-  @Get('/')
-  @ApiOperation({ title: '获取井盖列表', description: '获取井盖列表' })
-  coverList(@Query() pagination: Pagination) {
-    return this.coverService.findAll(pagination);
+  @Get('/battery/well/:id')
+  @ApiOperation({ title: '获取电量历史数据列表', description: '获取电量历史数据列表' })
+  batteryList(@Param() id: string, @Query() pagination: Pagination) {
+    return this.dataService.findAllBattery(id, pagination);
   }
 
-  @Get('/:id')
   @ApiOkResponse({
-    description: '获取井盖成功',
+    description: '警报历史数据列表',
+    type: AlarmDTO,
+    isArray: true,
   })
-  @ApiCreatedResponse({ description: '获取井盖' })
-  findById(@Param('id') id: string) {
-    return this.coverService.findById(id);
+  @Get('/alarm/well/:id')
+  @ApiOperation({ title: '获取警报历史数据列表', description: '获取警报历史数据列表' })
+  alarmList(@Param() id: string, @Query() pagination: Pagination) {
+    return this.dataService.findAllAlarm(id, pagination);
   }
 
-  @Post()
   @ApiOkResponse({
-    description: '添加井盖成功',
+    description: '超声波历史数据列表',
+    type: AudioFreDTO,
+    isArray: true,
   })
-  create(@Body() creatCoverDTO: CreateCoverDTO) {
-    return this.coverService.create(creatCoverDTO);
+  @Get('/audioFre/well/:id')
+  @ApiOperation({ title: '获取超声波历史数据列表', description: '获取超声波历史数据列表' })
+  audioFreList(@Param() id: string, @Query() pagination: Pagination) {
+    return this.dataService.findAllAudioFre(id, pagination);
   }
 
-  @Put('/:id')
   @ApiOkResponse({
-    description: '修改井盖成功',
+    description: '配置报告历史数据列表',
+    type: ConfigReportDTO,
+    isArray: true,
   })
-  update(@Param('id') id: string, @Body() creatCoverDTO: CreateCoverDTO) {
-    return this.coverService.updateById(id, creatCoverDTO);
+  @Get('/configReport/well/:id')
+  @ApiOperation({ title: '获取配置报告历史数据列表', description: '获取配置报告历史数据列表' })
+  configReportList(@Param() id: string, @Query() pagination: Pagination) {
+    return this.dataService.findAllConfigReport(id, pagination);
   }
 
-  @Delete('/:id')
   @ApiOkResponse({
-    description: '删除井盖成功',
+    description: '设备信息历史数据列表',
+    type: DeviceInfoDTO,
+    isArray: true,
   })
-  delete(@Param('id') id: string) {
-    return this.coverService.deleteById(id);
+  @Get('/deviceInfo/well/:id')
+  @ApiOperation({ title: '获取设备信息历史数据列表', description: '获取设备信息历史数据列表' })
+  deviceInfoList(@Param() id: string, @Query() pagination: Pagination) {
+    return this.dataService.findAllDeviceInfo(id, pagination);
   }
-  // // @Put(':userId/:depId')
-  // // updateUserDepById(@Param('userId') userId, @Param('depId') depId){
-  // //   return this.usersService.updateUserDepById(userId, depId);
-  // // }
 
-  // @Put(':userId')
-  // updateUserById(@Param('userId') id, @Body() userDTO: UserDTO) {
-  //   return this.usersService.updateUserById(id, userDTO);
-  //   // return this.usersService.updateUserRolesByIds(id, userDTO);
-  // }
+  @ApiOkResponse({
+    description: '窑井信息历史数据列表',
+    type: WellCoverDTO,
+    isArray: true,
+  })
+  @Get('/wellCover/well/:id')
+  @ApiOperation({ title: '获取窑井信息历史数据列表', description: '获取窑井信息历史数据列表' })
+  wellCoverList(@Param() id: string, @Query() pagination: Pagination) {
+    return this.dataService.findAllWellCover(id, pagination);
+  }
 
-  // @Delete(':userId')
-  // delete(@Param('userId') id) {
-  //   return this.usersService.deleteUser(id);
-  // }
 }

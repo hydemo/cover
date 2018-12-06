@@ -5,6 +5,7 @@ import { CoverModule } from './covers/cover.module';
 import { WellModule } from './wells/well.module';
 import { DeviceModule } from './devices/device.module';
 import { ValidationPipe } from '@nestjs/common';
+import { DataModule } from './data/data.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,7 +19,14 @@ async function bootstrap() {
     .setSchemes('http', 'https')
     .build();
 
-  const ApiDocument = SwaggerModule.createDocument(app, ApiOptions, { include: [CoverModule, WellModule, DeviceModule] });
+  const ApiDocument = SwaggerModule.createDocument(app, ApiOptions, {
+    include: [
+      CoverModule,
+      WellModule,
+      DeviceModule,
+      DataModule,
+    ],
+  });
   SwaggerModule.setup('v1/api', app, ApiDocument);
 
   await app.listen(8000);

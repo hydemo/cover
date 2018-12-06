@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 
-export interface IAudioFre extends Document {
+export interface IBattery extends Document {
   // 窑井Id
   readonly wellId: string;
   // 井盖Id
