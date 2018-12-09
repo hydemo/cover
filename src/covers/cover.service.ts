@@ -11,15 +11,17 @@ export class CoverService {
   constructor(@Inject('CoverModelToken') private readonly coverModel: Model<ICover>) { }
 
   // 创建数据
-  async create(createCoverDTO: CreateCoverDTO) {
+  async create(createCoverDTO: CreateCoverDTO): Promise<ICover> {
     const creatCover = new this.coverModel(createCoverDTO);
-    return await creatCover.save();
+    await creatCover.save();
+    return creatCover;
   }
 
   // 查询全部数据
   async findAll(pagination: Pagination): Promise<IList<ICover>> {
     const reg = new RegExp(pagination.search, 'i');
     const search = [
+      { coverSN: reg },
       { ownerId: reg },
       { ownerName: reg },
       { coverMaterial: reg },

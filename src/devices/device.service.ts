@@ -11,20 +11,17 @@ export class DeviceService {
   constructor(@Inject('DeviceModelToken') private readonly deviceModel: Model<IDevice>) { }
 
   // 创建数据
-  async create(createDeviceDTO: CreateDeviceDTO) {
+  async create(createDeviceDTO: CreateDeviceDTO): Promise<IDevice> {
     const creatDevice = new this.deviceModel(createDeviceDTO);
-    return await creatDevice.save();
+    await creatDevice.save();
+    return creatDevice;
   }
 
   // 查询全部数据
   async findAll(pagination: Pagination): Promise<IList<IDevice>> {
     const reg = new RegExp(pagination.search, 'i');
     const search = [
-      { ownerId: reg },
-      { ownerName: reg },
-      { deviceMaterial: reg },
-      { deviceType: reg },
-      { holeLocation: reg },
+      { deviceName: reg },
     ];
     const list = await this.deviceModel
       .find({ $or: search })

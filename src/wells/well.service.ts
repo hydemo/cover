@@ -6,6 +6,10 @@ import { Pagination } from '../common/pagination.dto';
 import { IList } from '../common/List.interface';
 import { DeviceService } from '../devices/device.service';
 import { CoverService } from '../covers/cover.service';
+import { CreateDeviceDTO } from 'src/devices/dto/creatDevice.dto';
+import { CreateCoverDTO } from 'src/covers/dto/creatCover.dto';
+import { IDevice } from 'src/devices/interfaces/device.interfaces';
+import { ICover } from 'src/covers/interfaces/cover.interfaces';
 
 @Injectable()
 export class WellService {
@@ -24,25 +28,53 @@ export class WellService {
 
   // 查询全部数据
   async findAll(pagination: Pagination): Promise<IList<IWell>> {
+    const reg = new RegExp(pagination.search, 'i');
+    const search = [
+      { ownerId: reg },
+      { ownerName: reg },
+      { wellType: reg },
+      { wellSN: reg },
+      { longitude: reg },
+      { latitude: reg },
+      { location: reg },
+    ];
     const list: IWell[] = await this.wellModel
-      .find()
+      .find({ $or: search })
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .exec();
-    const total = await this.wellModel.countDocuments();
+    const total = await this.wellModel.countDocuments({ $or: search });
     return { list, total };
   }
 
   // 根据id查询
-  async findById(_id): Promise<IWell> {
+  async findById(_id: string): Promise<IWell> {
     return await this.wellModel.findById(_id).exec();
   }
   // 根据id修改
-  async updateById(_id, well: CreateWellDTO) {
+  async updateById(_id: string, well: CreateWellDTO) {
     return await this.wellModel.findByIdAndUpdate(_id, well).exec();
   }
   // 根据id删除
-  async deleteById(_id) {
+  async deleteById(_id: string) {
     return await this.wellModel.findByIdAndDelete(_id).exec();
+  }
+  // 绑定已有设备
+  async bindOldDevice(_id: string, devideId: string) {
+    return await this.wellModel.findByIdAndUpdate(_id, { devideId });
+  }
+  // 绑定新设备
+  async bindNewDevice(_id: string, device: CreateDeviceDTO) {
+    const creatDevice: IDevice = await this.deviceService.create(device);
+    return await this.wellModel.findByIdAndUpdate(_id, { deviceId: creatDevice._id });
+  }
+  // 绑定旧井盖
+  async bindOldCover(_id: string, coverId: string) {
+    return await this.wellModel.findByIdAndUpdate(_id, { coverId });
+  }
+  // 绑定新井盖
+  async bindNewCover(_id: string, cover: CreateCoverDTO) {
+    const creatCover: ICover = await this.coverService.create(cover);
+    return await this.wellModel.findByIdAndUpdate(_id, { coverId: creatCover._id });
   }
 }

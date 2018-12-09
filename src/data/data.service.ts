@@ -39,6 +39,7 @@ export class DataService {
    * @param pagination 分页
    */
   async findAllAlarm(wellId: string, pagination: Pagination): Promise<IList<IAlarm>> {
+
     const condition = { wellId };
     const list = await this.alarmModel
       .find(condition)

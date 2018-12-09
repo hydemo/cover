@@ -16,6 +16,8 @@ import {
   ApiBadRequestResponse,
   ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
+import { CreateDeviceDTO } from 'src/devices/dto/creatDevice.dto';
+import { CreateCoverDTO } from 'src/covers/dto/creatCover.dto';
 
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy
@@ -50,7 +52,7 @@ export class WellController {
     return this.wellService.findById(id);
   }
 
-  @Post()
+  @Post('/')
   @ApiOkResponse({
     description: '添加窑井成功',
   })
@@ -75,6 +77,42 @@ export class WellController {
   @ApiOperation({ title: '根据id删除窑井', description: '根据id删除窑井' })
   delete(@Param('id') id: string) {
     return this.wellService.deleteById(id);
+  }
+
+  @Put('/:id/device/:deviceId')
+  @ApiOkResponse({
+    description: '绑定旧设备成功',
+  })
+  @ApiOperation({ title: '绑定旧设备', description: '绑定旧设备' })
+  bindOldDevice(@Param('id') _id: string, @Param('deviceId') deviceId: string) {
+    return this.wellService.bindOldDevice(_id, deviceId);
+  }
+
+  @Post('/:id/device')
+  @ApiOkResponse({
+    description: '绑定新设备成功',
+  })
+  @ApiOperation({ title: '绑定新设备', description: '绑定新设备' })
+  bindNewDevice(@Param('id') _id: string, @Body() device: CreateDeviceDTO) {
+    return this.wellService.bindNewDevice(_id, device);
+  }
+
+  @Put('/:id/cover/:coverId')
+  @ApiOkResponse({
+    description: '绑定旧井盖成功',
+  })
+  @ApiOperation({ title: '绑定旧井盖', description: '绑定旧井盖' })
+  bindOldCover(@Param('id') _id: string, @Param('coverId') coverId: string) {
+    return this.wellService.bindOldCover(_id, coverId);
+  }
+
+  @Post('/:id/cover')
+  @ApiOkResponse({
+    description: '绑定新井盖成功',
+  })
+  @ApiOperation({ title: '绑定新井盖', description: '绑定新井盖' })
+  bindNewCover(@Param('id') _id: string, @Body() cover: CreateCoverDTO) {
+    return this.wellService.bindNewCover(_id, cover);
   }
   // // @Put(':userId/:depId')
   // // updateUserDepById(@Param('userId') userId, @Param('depId') depId){
