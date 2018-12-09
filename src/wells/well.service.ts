@@ -6,10 +6,10 @@ import { Pagination } from '../common/pagination.dto';
 import { IList } from '../common/List.interface';
 import { DeviceService } from '../devices/device.service';
 import { CoverService } from '../covers/cover.service';
-import { CreateDeviceDTO } from 'src/devices/dto/creatDevice.dto';
-import { CreateCoverDTO } from 'src/covers/dto/creatCover.dto';
-import { IDevice } from 'src/devices/interfaces/device.interfaces';
-import { ICover } from 'src/covers/interfaces/cover.interfaces';
+import { CreateDeviceDTO } from '../devices/dto/creatDevice.dto';
+import { CreateCoverDTO } from '../covers/dto/creatCover.dto';
+import { IDevice } from '../devices/interfaces/device.interfaces';
+import { ICover } from '../covers/interfaces/cover.interfaces';
 
 @Injectable()
 export class WellService {

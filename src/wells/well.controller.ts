@@ -6,6 +6,8 @@ import { CreateWellDTO } from './dto/creatWell.dto';
 // import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
 import { WellService } from './well.service';
 import { Pagination } from '../common/pagination.dto';
+import { CreateDeviceDTO } from '../devices/dto/creatDevice.dto';
+import { CreateCoverDTO } from '../covers/dto/creatCover.dto';
 import {
   ApiOperation,
   ApiUseTags,
@@ -16,8 +18,7 @@ import {
   ApiBadRequestResponse,
   ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
-import { CreateDeviceDTO } from 'src/devices/dto/creatDevice.dto';
-import { CreateCoverDTO } from 'src/covers/dto/creatCover.dto';
+
 
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy
