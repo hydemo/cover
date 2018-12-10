@@ -35,7 +35,7 @@ export class DataController {
   })
   @Get('/battery/well/:id')
   @ApiOperation({ title: '获取电量历史数据列表', description: '获取电量历史数据列表' })
-  batteryList(@Param() id: string, @Query() pagination: Pagination) {
+  batteryList(@Param('id') id: string, @Query() pagination: Pagination) {
     return this.dataService.findAllBattery(id, pagination);
   }
 
@@ -46,7 +46,7 @@ export class DataController {
   })
   @Get('/alarm/well/:id')
   @ApiOperation({ title: '获取警报历史数据列表', description: '获取警报历史数据列表' })
-  alarmList(@Param() id: string, @Query() pagination: Pagination) {
+  alarmList(@Param('id') id: string, @Query() pagination: Pagination) {
     return this.dataService.findAllAlarm(id, pagination);
   }
 
@@ -57,7 +57,7 @@ export class DataController {
   })
   @Get('/audioFre/well/:id')
   @ApiOperation({ title: '获取超声波历史数据列表', description: '获取超声波历史数据列表' })
-  audioFreList(@Param() id: string, @Query() pagination: Pagination) {
+  audioFreList(@Param('id') id: string, @Query() pagination: Pagination) {
     return this.dataService.findAllAudioFre(id, pagination);
   }
 
@@ -68,7 +68,7 @@ export class DataController {
   })
   @Get('/configReport/well/:id')
   @ApiOperation({ title: '获取配置报告历史数据列表', description: '获取配置报告历史数据列表' })
-  configReportList(@Param() id: string, @Query() pagination: Pagination) {
+  configReportList(@Param('id') id: string, @Query() pagination: Pagination) {
     return this.dataService.findAllConfigReport(id, pagination);
   }
 
@@ -79,7 +79,7 @@ export class DataController {
   })
   @Get('/deviceInfo/well/:id')
   @ApiOperation({ title: '获取设备信息历史数据列表', description: '获取设备信息历史数据列表' })
-  deviceInfoList(@Param() id: string, @Query() pagination: Pagination) {
+  deviceInfoList(@Param('id') id: string, @Query() pagination: Pagination) {
     return this.dataService.findAllDeviceInfo(id, pagination);
   }
 
@@ -90,7 +90,7 @@ export class DataController {
   })
   @Get('/wellCover/well/:id')
   @ApiOperation({ title: '获取窑井信息历史数据列表', description: '获取窑井信息历史数据列表' })
-  wellCoverList(@Param() id: string, @Query() pagination: Pagination) {
+  wellCoverList(@Param('id') id: string, @Query() pagination: Pagination) {
     return this.dataService.findAllWellCover(id, pagination);
   }
 

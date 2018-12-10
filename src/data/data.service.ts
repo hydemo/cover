@@ -39,14 +39,13 @@ export class DataService {
    * @param pagination 分页
    */
   async findAllAlarm(wellId: string, pagination: Pagination): Promise<IList<IAlarm>> {
-
     const condition = { wellId };
     const list = await this.alarmModel
       .find(condition)
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .exec();
-    const total = await this.alarmModel.countDocuments();
+    const total = await this.alarmModel.countDocuments(condition);
     return { list, total };
   }
   /**

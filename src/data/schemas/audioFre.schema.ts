@@ -8,10 +8,8 @@ export const AudioFreSchema = new mongoose.Schema(
     wellId: ObjectId,
     // 井盖Id
     coverId: ObjectId,
-    // 设备序号
-    deviceSn: String,
-    // 设备名称
-    deviceName: String,
+    // 设备id
+    deviceId: ObjectId,
     // 超声波频率
     frequency: { type: Number, min: 0, max: 100 },
     // 超声波振幅

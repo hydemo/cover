@@ -27,7 +27,7 @@ export class WellService {
   }
 
   // 查询全部数据
-  async findAll(pagination: Pagination): Promise<IList<IWell>> {
+  async findPage(pagination: Pagination): Promise<IList<IWell>> {
     const reg = new RegExp(pagination.search, 'i');
     const search = [
       { ownerId: reg },
@@ -46,10 +46,32 @@ export class WellService {
     const total = await this.wellModel.countDocuments({ $or: search });
     return { list, total };
   }
-
+  // 获取窑井完整列表
+  async findAll(): Promise<IWell[]> {
+    return await this.wellModel
+      .find()
+      .exec();
+  }
+  // 获取井盖打开列表
+  async findOpen(): Promise<IWell[]> {
+    return await this.wellModel
+      .find({ 'status.coverIsOpen': true })
+      .exec();
+  }
+  // 获取漏气列表
+  async findLeak(): Promise<IWell[]> {
+    return await this.wellModel
+      .find({ 'status.gasLeak': true })
+      .exec();
+  }
   // 根据id查询
   async findById(_id: string): Promise<IWell> {
     return await this.wellModel.findById(_id).exec();
+  }
+  // 根据deviceId查询
+  async findByDeviceSn(deviceSn: string): Promise<IWell> {
+    const device: IDevice = await this.deviceService.findByDeviceSn(deviceSn);
+    return await this.wellModel.findOne({ deviceId: device._id }).exec();
   }
   // 根据id修改
   async updateById(_id: string, well: CreateWellDTO) {

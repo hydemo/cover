@@ -1,8 +1,23 @@
-import { ApiModelPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsNumber, Min, Max, IsBoolean, IsPositive } from 'class-validator';
+import { ApiModelPropertyOptional, ApiModelProperty } from '@nestjs/swagger';
+import { IsOptional, IsNumber, Min, Max, IsBoolean, IsPositive, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class StatusDTO {
+export class EventsDTO {
+  @IsString()
+  @Type(() => String)
+  @ApiModelProperty({ description: '设备编号' })
+  readonly deviceSn: string;
+
+  @IsString()
+  @Type(() => String)
+  @ApiModelProperty({ description: '设备名称' })
+  readonly deviceName: string;
+
+  @IsString()
+  @Type(() => String)
+  @ApiModelProperty({ description: '服务类型', enum: ['DeviceInfo', 'Alarm', 'WellCover', 'AudioFre', 'Battery'] })
+  readonly serviceType: string;
+
   @IsNumber()
   @Min(0)
   @Max(100)

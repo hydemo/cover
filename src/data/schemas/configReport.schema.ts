@@ -8,10 +8,8 @@ export const ConfigReportSchema = new mongoose.Schema(
     wellId: ObjectId,
     // 井盖Id
     coverId: ObjectId,
-    // 设备序号
-    deviceSn: String,
-    // 设备名称
-    deviceName: String,
+    // 设备id
+    deviceId: ObjectId,
     // 光敏检测周期
     photoCheckPeriod: { type: Number, min: 0, max: 330 },
     // 超声波频率检测周期

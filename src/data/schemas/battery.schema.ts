@@ -8,10 +8,8 @@ export const BatterySchema = new mongoose.Schema(
     wellId: ObjectId,
     // 井盖Id
     coverId: ObjectId,
-    // 设备序号
-    deviceSn: String,
-    // 设备名称
-    deviceName: String,
+    // 设备id
+    deviceId: ObjectId,
     // 电量水平
     batteryLevel: { type: Number, min: 0, max: 100 },
   },

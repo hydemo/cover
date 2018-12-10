@@ -6,6 +6,7 @@ import { WellModule } from './wells/well.module';
 import { DeviceModule } from './devices/device.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DataModule } from './data/data.module';
+import { EventModule } from './event/event.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,9 +23,10 @@ async function bootstrap() {
   const ApiDocument = SwaggerModule.createDocument(app, ApiOptions, {
     include: [
       CoverModule,
-      WellModule,
       DeviceModule,
       DataModule,
+      WellModule,
+      EventModule,
     ],
   });
   SwaggerModule.setup('v1/api', app, ApiDocument);

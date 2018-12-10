@@ -33,15 +33,20 @@ export class DeviceService {
   }
 
   // 根据id查询
-  async findById(_id): Promise<IDevice> {
+  async findById(_id: string): Promise<IDevice> {
     return await this.deviceModel.findById(_id).exec();
   }
+
+  // 根据sn查询
+  async findByDeviceSn(deviceSn: string): Promise<IDevice> {
+    return await this.deviceModel.findOne({ deviceSn }).exec();
+  }
   // 根据id修改
-  async updateById(_id, device: CreateDeviceDTO) {
+  async updateById(_id: string, device: CreateDeviceDTO) {
     return await this.deviceModel.findByIdAndUpdate(_id, device).exec();
   }
   // 根据id删除
-  async deleteById(_id) {
+  async deleteById(_id: string) {
     return await this.deviceModel.findByIdAndDelete(_id).exec();
   }
 }

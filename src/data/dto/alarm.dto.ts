@@ -15,14 +15,8 @@ export class AlarmDTO {
 
   @IsString()
   @Type(() => String)
-  @ApiModelProperty({ description: '设备序号' })
-  readonly deviceSn: string;
-
-  @IsString()
-  @IsOptional()
-  @Type(() => String)
-  @ApiModelPropertyOptional({ description: '设备名称' })
-  readonly deviceName?: string;
+  @ApiModelProperty({ description: '设备Id' })
+  readonly deviceId: string;
 
   @IsBoolean()
   @Type(() => Boolean)

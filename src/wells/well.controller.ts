@@ -19,7 +19,6 @@ import {
   ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
 
-
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy
 @ApiUseTags('wells')
@@ -40,7 +39,40 @@ export class WellController {
   @ApiOperation({ title: '获取窑井列表', description: '获取窑井列表' })
   @Get('/')
   wellList(@Query() pagination: Pagination) {
-    return this.wellService.findAll(pagination);
+    return this.wellService.findPage(pagination);
+  }
+
+  @ApiOkResponse({
+    description: '完整列表',
+    type: CreateWellDTO,
+    isArray: true,
+  })
+  @ApiOperation({ title: '获取窑井完整列表', description: '获取窑井完整列表' })
+  @Get('/all')
+  wellListAll() {
+    return this.wellService.findAll();
+  }
+
+  @ApiOkResponse({
+    description: '井盖打开列表',
+    type: CreateWellDTO,
+    isArray: true,
+  })
+  @ApiOperation({ title: '获取井盖打开列表', description: '获取井盖打开列表' })
+  @Get('/open')
+  wellListOpen() {
+    return this.wellService.findOpen();
+  }
+
+  @ApiOkResponse({
+    description: '漏气列表',
+    type: CreateWellDTO,
+    isArray: true,
+  })
+  @ApiOperation({ title: '获取漏气列表', description: '获取漏气列表' })
+  @Get('/leak')
+  wellListLeak() {
+    return this.wellService.findLeak();
   }
 
   @Get('/:id')

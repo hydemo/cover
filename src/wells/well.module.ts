@@ -8,8 +8,8 @@ import { DeviceModule } from '../devices/device.module';
 
 @Module({
   providers: [WellService, ...wellsProviders],
-  exports: [WellService],
   controllers: [WellController],
+  exports: [WellService],
   imports: [DatabaseModule, CoverModule, DeviceModule],
 })
 

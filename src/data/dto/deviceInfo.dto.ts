@@ -15,7 +15,7 @@ export class DeviceInfoDTO {
 
   @IsString()
   @Type(() => String)
-  @ApiModelProperty({ description: '设备序号' })
+  @ApiModelProperty({ description: '设备id' })
   readonly deviceSn: string;
 
   @IsString()

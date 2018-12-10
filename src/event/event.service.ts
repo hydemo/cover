@@ -1,156 +1,183 @@
-// import { Model } from 'mongoose';
-// import { Inject, Injectable } from '@nestjs/common';
-// import { Pagination } from '../common/pagination.dto';
+import { Model } from 'mongoose';
+import { Inject, Injectable } from '@nestjs/common';
+import { EventsDTO } from './dto/event.dto';
+import { DataService } from '../data/data.service';
+import { WellService } from '../wells/well.service';
+import { IWarning } from './interfaces/warning.interfaces';
+import { IWell } from '../wells/interfaces/well.interfaces';
+import { BatteryDTO } from '../data/dto/battery.dto';
+import { WarningsDTO } from './dto/creatWarning.dto';
+import { AlarmDTO } from '../data/dto/alarm.dto';
+import { DeviceInfoDTO } from '../data/dto/deviceInfo.dto';
+import { AudioFreDTO } from '../data/dto/audioFre.dto';
+import { WellCoverDTO } from '../data/dto/wellCover.dto';
+import { Pagination } from '../common/pagination.dto';
+import { IList } from '../common/List.interface';
 
-// @Injectable()
-// export class DataService {
-//   constructor(
-//     @Inject('AlarmModelToken') private readonly alarmModel: Model<IAlarm>,
-//     @Inject('AudioFreModelToken') private readonly audioFreModel: Model<IAudioFre>,
-//     @Inject('BatteryModelToken') private readonly batteryModel: Model<IBattery>,
-//     @Inject('DeviceInfoModelToken') private readonly deviceInfoModel: Model<IDeviceInfo>,
-//     @Inject('ConfigReportModelToken') private readonly configReportModel: Model<IConfigReport>,
-//     @Inject('WellCoverModelToken') private readonly wellCoverModel: Model<IWellCover>,
-//   ) { }
+@Injectable()
+export class EventService {
+  constructor(
+    @Inject('WarningModelToken') private readonly warningModel: Model<IWarning>,
+    private readonly dataService: DataService,
+    private readonly wellService: WellService,
+  ) { }
 
-//   /**
-//    * 新增警报历史记录
-//    * @param AlarmDTO Alarm实体
-//    */
-//   async createAlarm(alarmDTO: AlarmDTO) {
-//     const alarm = new this.alarmModel(alarmDTO);
-//     return await alarm.save();
-//   }
-//   /**
-//    * 获取警报历史数据
-//    * @param pagination 分页
-//    */
-//   async findAllAlarm(wellId: string, pagination: Pagination): Promise<IList<IAlarm>> {
-//     const condition = { wellId };
-//     const list = await this.alarmModel
-//       .find(condition)
-//       .limit(pagination.limit)
-//       .skip((pagination.offset - 1) * pagination.limit)
-//       .exec();
-//     const total = await this.alarmModel.countDocuments();
-//     return { list, total };
-//   }
-//   /**
-//    * 新增超声波历史记录
-//    * @param AudioFreDTO AudioFre实体
-//    */
-//   async createAudioFre(audioFreDTO: AudioFreDTO) {
-//     const audioFre = new this.audioFreModel(audioFreDTO);
-//     return await audioFre.save();
-//   }
-//   /**
-//    * 获取超声波历史数据
-//    * @param pagination 分页
-//    */
-//   async findAllAudioFre(wellId: string, pagination: Pagination): Promise<IList<IAudioFre>> {
-//     const condition = { wellId };
-//     const list = await this.audioFreModel
-//       .find(condition)
-//       .limit(pagination.limit)
-//       .skip((pagination.offset - 1) * pagination.limit)
-//       .exec();
-//     const total = await this.audioFreModel.countDocuments();
-//     return { list, total };
-//   }
-//   /**
-//    * 新增电量历史记录
-//    * @param BatteryDTO Battery实体
-//    */
-//   async createBattery(batteryDTO: BatteryDTO) {
-//     const battery = new this.batteryModel(batteryDTO);
-//     return await battery.save();
-//   }
-//   /**
-//    * 获取电量历史数据
-//    * @param pagination 分页
-//    */
-//   async findAllBattery(wellId: string, pagination: Pagination): Promise<IList<IBattery>> {
-//     const condition = { wellId };
-//     const list = await this.batteryModel
-//       .find(condition)
-//       .limit(pagination.limit)
-//       .skip((pagination.offset - 1) * pagination.limit)
-//       .exec();
-//     const total = await this.batteryModel.countDocuments();
-//     return { list, total };
-//   }
-//   /**
-//    * 新增配置报告历史记录
-//    * @param ConfigReportDTO ConfigReport实体
-//    */
-//   async createConfigReport(configReportDTO: ConfigReportDTO) {
-//     const configReport = new this.configReportModel(configReportDTO);
-//     return await configReport.save();
-//   }
-//   /**
-//    * 获取配置报告历史数据
-//    * @param pagination 分页
-//    */
-//   async findAllConfigReport(wellId: string, pagination: Pagination): Promise<IList<IConfigReport>> {
-//     const condition = { wellId };
-//     const list = await this.configReportModel
-//       .find(condition)
-//       .limit(pagination.limit)
-//       .skip((pagination.offset - 1) * pagination.limit)
-//       .exec();
-//     const total = await this.configReportModel.countDocuments();
-//     return { list, total };
-//   }
-//   /**
-//    * 新增设备信息历史记录
-//    * @param DeviceInfoDTO DeviceInfo实体
-//    */
-//   async createDeviceInfo(deviceInfoDTO: DeviceInfoDTO) {
-//     const deviceInfo = new this.deviceInfoModel(deviceInfoDTO);
-//     return await deviceInfo.save();
-//   }
-//   /**
-//    * 获取设备信息历史数据
-//    * @param pagination 分页
-//    */
-//   async findAllDeviceInfo(wellId: string, pagination: Pagination): Promise<IList<IDeviceInfo>> {
-//     const condition = { wellId };
-//     const list = await this.deviceInfoModel
-//       .find(condition)
-//       .limit(pagination.limit)
-//       .skip((pagination.offset - 1) * pagination.limit)
-//       .exec();
-//     const total = await this.deviceInfoModel.countDocuments();
-//     return { list, total };
-//   }
-//   /**
-//    * 新增窑井信息历史记录
-//    * @param WellCoverDTO WellCover实体
-//    */
-//   async createWellCover(wellCoverDTO: WellCoverDTO) {
-//     const wellCover = new this.wellCoverModel(wellCoverDTO);
-//     return await wellCover.save();
-//   }
-//   /**
-//    * 获取窑井信息历史数据
-//    * @param pagination 分页
-//    */
-//   async findAllWellCover(wellId: string, pagination: Pagination): Promise<IList<IWellCover>> {
-//     const condition = { wellId };
-//     const list = await this.wellCoverModel
-//       .find(condition)
-//       .limit(pagination.limit)
-//       .skip((pagination.offset - 1) * pagination.limit)
-//       .exec();
-//     const total = await this.wellCoverModel.countDocuments();
-//     return { list, total };
-//   }
-//   // // 根据id修改
-//   // async updateBatteryById(_id, battery: BatteryDTO) {
-//   //   return await this.batteryMode.findByIdAndUpdate(_id, battery).exec();
-//   // }
-//   // // 根据id删除
-//   // async deleteBatteryById(_id) {
-//   //   return await this.batteryMode.findByIdAndDelete(_id).exec();
-//   // }
-// }
+  /**
+   * 接收数据
+   * @param EventsDTO event实体
+   */
+  async receiveData(event: EventsDTO) {
+    const well: IWell = await this.wellService.findByDeviceSn(event.deviceSn);
+    switch (event.serviceType) {
+      case 'Battery':
+        {
+          const battery: BatteryDTO = {
+            // 窑井Id
+            wellId: well._id,
+            // 井盖Id
+            coverId: well.coverId,
+            // 设备id
+            deviceId: well.deviceId,
+            // 电量水平
+            batteryLevel: event.batteryLevel,
+          };
+          await this.receiveBattery(battery);
+        }
+        break;
+      case 'Alarm':
+        {
+          const alarm: AlarmDTO = {
+            // 窑井Id
+            wellId: well._id,
+            // 井盖Id
+            coverId: well.coverId,
+            // 设备id
+            deviceId: well.deviceId,
+            // 是否打开
+            coverIsOpen: event.coverIsOpen,
+            // 是否泄漏
+            gasLeak: event.gasLeak,
+          };
+          await this.receiveAlarm(alarm);
+        }
+        break;
+      case 'AudioFre':
+        {
+          const audioFre: AudioFreDTO = {
+            // 窑井Id
+            wellId: well._id,
+            // 井盖Id
+            coverId: well.coverId,
+            // 设备id
+            deviceId: well.deviceId,
+            // 超声波频率
+            frequency: event.frequency,
+            // 超声波振幅
+            amplitude: event.amplitude,
+          };
+          await this.receiveAudioFre(audioFre);
+        }
+        break;
+      case 'WellCover':
+        {
+          const wellCover: WellCoverDTO = {
+            // 窑井Id
+            wellId: well._id,
+            // 井盖Id
+            coverId: well.coverId,
+            // 设备id
+            deviceId: well.deviceId,
+            // 测距传感器数值
+            distance: event.distance,
+            // 光敏器件电压值
+            photoresistor: event.photoresistor,
+          };
+          await this.receiveWellCover(wellCover);
+        }
+        break;
+      case 'DeviceInfo':
+        {
+          const deviceInfo: DeviceInfoDTO = {
+            // 窑井Id
+            wellId: well._id,
+            // 井盖Id
+            coverId: well.coverId,
+            // 设备序号
+            deviceSn: event.deviceSn,
+            // 设备名称
+            deviceName: event.deviceName,
+          };
+          await this.receiveDeviceInfo(deviceInfo);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+  async getWarningList(pagination: Pagination): Promise<IList<IWarning>> {
+    const condition = { isHandle: false };
+    const list = await this.warningModel
+      .find(condition)
+      .limit(pagination.limit)
+      .skip((pagination.offset - 1) * pagination.limit)
+      .sort({ createdAt: -1 })
+      .exec();
+    const total = await this.warningModel.countDocuments(condition);
+    return { list, total };
+  }
+
+  async receiveBattery(battery: BatteryDTO) {
+    await this.dataService.createBattery(battery);
+    if (battery.batteryLevel < 20) {
+      const warning: WarningsDTO = {
+        wellId: battery.wellId,
+        coverId: battery.coverId,
+        deviceId: battery.deviceId,
+        warningType: 'Battery',
+        batteryLevel: battery.batteryLevel,
+        isHandle: false,
+      };
+      await this.create(warning);
+    }
+  }
+  async receiveAlarm(alarm: AlarmDTO) {
+    await this.dataService.createAlarm(alarm);
+    if (alarm.coverIsOpen) {
+      const warning: WarningsDTO = {
+        wellId: alarm.wellId,
+        coverId: alarm.coverId,
+        deviceId: alarm.deviceId,
+        warningType: 'Open',
+        coverIsOpen: alarm.coverIsOpen,
+        isHandle: false,
+      };
+      await this.create(warning);
+    }
+    if (alarm.gasLeak) {
+      const warning: WarningsDTO = {
+        wellId: alarm.wellId,
+        coverId: alarm.coverId,
+        deviceId: alarm.deviceId,
+        warningType: 'Leak',
+        gasLeak: alarm.gasLeak,
+        isHandle: false,
+      };
+      await this.create(warning);
+    }
+  }
+  async receiveDeviceInfo(deviceInfo: DeviceInfoDTO) {
+    await this.dataService.createDeviceInfo(deviceInfo);
+  }
+  async receiveWellCover(wellCover: WellCoverDTO) {
+    await this.dataService.createWellCover(wellCover);
+  }
+  async receiveAudioFre(audioFre: AudioFreDTO) {
+    await this.dataService.createAudioFre(audioFre);
+  }
+  // 创建数据
+  async create(warning: WarningsDTO) {
+    const creatWarning = new this.warningModel(warning);
+    await creatWarning.save();
+  }
+
+}

@@ -1,14 +1,15 @@
-// import { Module } from '@nestjs/common';
-// import { EventService } from './event.service';
-// import { EventController } from './event.controller';
-// import { dataProviders } from './event.providers';
-// import { EventbaseModule } from '../database/database.module';
+import { Module } from '@nestjs/common';
+import { EventService } from './event.service';
+import { EventController } from './event.controller';
+import { eventProviders } from './event.providers';
+import { DatabaseModule } from '../database/database.module';
+import { DataModule } from '../data/data.module';
+import { WellModule } from '../wells/well.module';
 
-// @Module({
-//   providers: [EventService, ...dataProviders],
-//   exports: [EventService],
-//   controllers: [EventController],
-//   imports: [EventbaseModule],
-// })
+@Module({
+  providers: [EventService, ...eventProviders],
+  controllers: [EventController],
+  imports: [DatabaseModule, DataModule, WellModule],
+})
 
-// export class EventModule { }
+export class EventModule { }
