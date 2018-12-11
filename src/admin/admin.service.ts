@@ -32,6 +32,7 @@ export class AdminService {
       .find({ $or: search })
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
+      .select({ password: 0 })
       .exec();
     const total = await this.adminModel.countDocuments({ $or: search });
     return { list, total };

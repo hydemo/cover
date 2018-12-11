@@ -82,7 +82,7 @@ export class AdminController {
     description: '修改管理员密码成功',
   })
   @ApiOperation({ title: '修改密码', description: '修改密码' })
-  resetPassWord(@Param('id') id: string, @Query('password') password: string) {
+  resetPassWord(@Param('id') id: string, @Body('password') password: string) {
     return this.adminService.resetPassword(id, password);
   }
 }
