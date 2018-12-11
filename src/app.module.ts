@@ -3,9 +3,21 @@ import { CoverModule } from './covers/cover.module';
 import { WellModule } from './wells/well.module';
 import { DeviceModule } from './devices/device.module';
 import { DataModule } from './data/data.module';
-import { EventModule } from './event/event.module';
+import { EventModule } from './events/event.module';
+import { UserModule } from './users/user.module';
+import { AdminModule } from './admin/admin.module';
+import { MaintenanceModule } from './maintenance/maintenance.module';
 
 @Module({
-  imports: [CoverModule, WellModule, DeviceModule, DataModule, EventModule],
+  imports: [
+    CoverModule,
+    WellModule,
+    DeviceModule,
+    DataModule,
+    EventModule,
+    UserModule,
+    AdminModule,
+    MaintenanceModule,
+  ],
 })
 export class AppModule { }

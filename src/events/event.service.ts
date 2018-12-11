@@ -13,6 +13,9 @@ import { AudioFreDTO } from '../data/dto/audioFre.dto';
 import { WellCoverDTO } from '../data/dto/wellCover.dto';
 import { Pagination } from '../common/pagination.dto';
 import { IList } from '../common/List.interface';
+import { CreateWellDTO } from '../wells/dto/creatWell.dto';
+import { MaintenanceService } from 'src/maintenance/maintenance.service';
+import { CreateMaintenanceDTO } from 'src/maintenance/dto/creatMaintenance.dto';
 
 @Injectable()
 export class EventService {
@@ -20,6 +23,7 @@ export class EventService {
     @Inject('WarningModelToken') private readonly warningModel: Model<IWarning>,
     private readonly dataService: DataService,
     private readonly wellService: WellService,
+    private readonly maintenanceService: MaintenanceService,
   ) { }
 
   /**
@@ -126,7 +130,26 @@ export class EventService {
     return { list, total };
   }
 
+  async bindPrincipal(id: string, name: string) {
+    const warning: IWarning = await this.warningModel
+      .findById(id)
+      .exec();
+    const well: CreateWellDTO = await this.wellService.findById(warning.wellId);
+    const maintenance: CreateMaintenanceDTO = {
+      principal: name,
+      warningId: warning._id,
+      location: well.location,
+      maintenanceType: warning.warningType,
+      occurTime: warning.createdAt,
+      status: 0,
+    };
+    return await this.maintenanceService.create(maintenance);
+  }
+
   async receiveBattery(battery: BatteryDTO) {
+    const well: CreateWellDTO = await this.wellService.findById(battery.wellId);
+    well.status.batteryLevel = battery.batteryLevel;
+    await this.wellService.updateById(battery.wellId, well);
     await this.dataService.createBattery(battery);
     if (battery.batteryLevel < 20) {
       const warning: WarningsDTO = {
@@ -142,6 +165,10 @@ export class EventService {
   }
   async receiveAlarm(alarm: AlarmDTO) {
     await this.dataService.createAlarm(alarm);
+    const well: CreateWellDTO = await this.wellService.findById(alarm.wellId);
+    well.status.coverIsOpen = alarm.coverIsOpen;
+    well.status.gasLeak = alarm.gasLeak;
+    await this.wellService.updateById(alarm.wellId, well);
     if (alarm.coverIsOpen) {
       const warning: WarningsDTO = {
         wellId: alarm.wellId,
@@ -169,9 +196,17 @@ export class EventService {
     await this.dataService.createDeviceInfo(deviceInfo);
   }
   async receiveWellCover(wellCover: WellCoverDTO) {
+    const well: CreateWellDTO = await this.wellService.findById(wellCover.wellId);
+    well.status.distance = wellCover.distance;
+    well.status.photoresistor = wellCover.photoresistor;
+    await this.wellService.updateById(wellCover.wellId, well);
     await this.dataService.createWellCover(wellCover);
   }
   async receiveAudioFre(audioFre: AudioFreDTO) {
+    const well: CreateWellDTO = await this.wellService.findById(audioFre.wellId);
+    well.status.amplitude = audioFre.amplitude;
+    well.status.frequency = audioFre.frequency;
+    await this.wellService.updateById(audioFre.wellId, well);
     await this.dataService.createAudioFre(audioFre);
   }
   // 创建数据

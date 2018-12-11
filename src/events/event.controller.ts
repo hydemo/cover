@@ -24,7 +24,7 @@ import { Pagination } from '../common/pagination.dto';
 // @ApiBearerAuth()
 // @ApiForbiddenResponse({ description: 'Unauthorized' })
 // @UseGuards(AuthGuard())
-@Controller('events')
+@Controller('')
 export class EventController {
   constructor(
     private eventService: EventService,
@@ -49,5 +49,14 @@ export class EventController {
   @ApiOperation({ title: '获取异常列表', description: '接获取异常列表收数据' })
   warningList(@Query() pagination: Pagination) {
     return this.eventService.getWarningList(pagination);
+  }
+
+  @ApiOkResponse({
+    description: '分配负责人',
+  })
+  @Get('/warning/:id/principal')
+  @ApiOperation({ title: '分配负责人', description: '分配负责人' })
+  bindPrincipal(@Param('id') id: string, @Body('name') name: string) {
+    return this.eventService.bindPrincipal(id, name);
   }
 }

@@ -6,7 +6,10 @@ import { WellModule } from './wells/well.module';
 import { DeviceModule } from './devices/device.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DataModule } from './data/data.module';
-import { EventModule } from './event/event.module';
+import { EventModule } from './events/event.module';
+import { UserModule } from './users/user.module';
+import { AdminModule } from './admin/admin.module';
+import { MaintenanceModule } from './maintenance/maintenance.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,11 +30,14 @@ async function bootstrap() {
       DataModule,
       WellModule,
       EventModule,
+      UserModule,
+      AdminModule,
+      MaintenanceModule,
     ],
   });
   SwaggerModule.setup('v1/api', app, ApiDocument);
 
-  await app.listen(8000);
+  await app.listen(8080);
 
 }
 bootstrap();

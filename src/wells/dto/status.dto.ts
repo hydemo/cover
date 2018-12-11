@@ -9,19 +9,19 @@ export class StatusDTO {
   @IsOptional()
   @Type(() => Number)
   @ApiModelPropertyOptional({ description: '电量水平' })
-  readonly batteryLevel: number;
+  batteryLevel: number;
 
   @IsBoolean()
   @IsOptional()
   @Type(() => Boolean)
   @ApiModelPropertyOptional({ description: '井盖是否打开' })
-  readonly coverIsOpen?: boolean = false;
+  coverIsOpen?: boolean = false;
 
   @IsBoolean()
   @IsOptional()
   @Type(() => Boolean)
   @ApiModelPropertyOptional({ description: '燃气燃气是否泄漏' })
-  readonly gasLeak?: boolean = false;
+  gasLeak?: boolean = false;
 
   @IsNumber()
   @Min(0)
@@ -29,7 +29,7 @@ export class StatusDTO {
   @IsOptional()
   @Type(() => Number)
   @ApiModelPropertyOptional({ description: '光敏检测周期' })
-  readonly photoCheckPeriod: number;
+  photoCheckPeriod: number;
 
   @IsNumber()
   @Min(0)
@@ -37,7 +37,7 @@ export class StatusDTO {
   @IsOptional()
   @Type(() => Number)
   @ApiModelPropertyOptional({ description: '超声波频率检测周期' })
-  readonly freqCheckPeriod: number;
+  freqCheckPeriod: number;
 
   @IsNumber()
   @Min(0)
@@ -45,33 +45,33 @@ export class StatusDTO {
   @IsOptional()
   @Type(() => Number)
   @ApiModelPropertyOptional({ description: '位置检测周期' })
-  readonly distCheckPeriod: number;
+  distCheckPeriod: number;
 
   @IsNumber()
   @IsPositive()
   @IsOptional()
   @Type(() => Number)
   @ApiModelPropertyOptional({ description: '超声波频率' })
-  readonly frequency: number;
+  frequency: number;
 
   @IsNumber()
   @IsPositive()
   @IsOptional()
   @Type(() => Number)
   @ApiModelPropertyOptional({ description: '超声波振幅' })
-  readonly amplitude: number;
+  amplitude: number;
 
   @IsNumber()
   @IsPositive()
   @IsOptional()
   @Type(() => Number)
   @ApiModelPropertyOptional({ description: '测距传感器数值' })
-  readonly distance: number;
+  distance: number;
 
   @IsNumber()
   @IsPositive()
   @IsOptional()
   @Type(() => Number)
   @ApiModelPropertyOptional({ description: '光敏器件电压值' })
-  readonly photoresistor: number;
+  photoresistor: number;
 }

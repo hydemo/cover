@@ -8,7 +8,7 @@ export interface IWarning extends Document {
   // 设备id
   readonly deviceId: string;
   // 警告类型
-  readonly warningType: { type: string, enum: ['Battery', 'Open', 'Leak'], required: true };
+  readonly warningType: string;
   // 电量水平
   readonly batteryLevel: number;
   // 井盖是否打开
@@ -17,4 +17,6 @@ export interface IWarning extends Document {
   readonly gasLeak: boolean;
   // 警告状态
   readonly isHandle: boolean;
+  // 创建时间
+  readonly createdAt: Date;
 }

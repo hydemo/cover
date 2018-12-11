@@ -66,7 +66,7 @@ export class WellService {
   }
   // 根据id查询
   async findById(_id: string): Promise<IWell> {
-    return await this.wellModel.findById(_id).exec();
+    return await this.wellModel.findById(_id).lean().exec();
   }
   // 根据deviceId查询
   async findByDeviceSn(deviceSn: string): Promise<IWell> {
