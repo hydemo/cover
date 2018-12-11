@@ -5,7 +5,7 @@ import { eventProviders } from './event.providers';
 import { DatabaseModule } from '../database/database.module';
 import { DataModule } from '../data/data.module';
 import { WellModule } from '../wells/well.module';
-import { MaintenanceModule } from 'src/maintenance/maintenance.module';
+import { MaintenanceModule } from '../maintenance/maintenance.module';
 
 @Module({
   providers: [EventService, ...eventProviders],

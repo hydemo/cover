@@ -14,8 +14,8 @@ import { WellCoverDTO } from '../data/dto/wellCover.dto';
 import { Pagination } from '../common/pagination.dto';
 import { IList } from '../common/List.interface';
 import { CreateWellDTO } from '../wells/dto/creatWell.dto';
-import { MaintenanceService } from 'src/maintenance/maintenance.service';
-import { CreateMaintenanceDTO } from 'src/maintenance/dto/creatMaintenance.dto';
+import { MaintenanceService } from '../maintenance/maintenance.service';
+import { CreateMaintenanceDTO } from '../maintenance/dto/creatMaintenance.dto';
 
 @Injectable()
 export class EventService {
