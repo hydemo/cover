@@ -8,6 +8,8 @@ export const UserSchema = new mongoose.Schema(
     email: String,
     // 密码
     password: String,
+    // 角色
+    role: { type: Number, enum: [0, 1, 2] },
   },
   { collection: 'User', versionKey: false, timestamps: true },
 );

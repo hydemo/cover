@@ -4,7 +4,7 @@ import { CreateMaintenanceDTO } from './dto/creatMaintenance.dto';
 // import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
 // import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
 import { MaintenanceService } from './maintenance.service';
-import { Pagination } from '../common/pagination.dto';
+import { Pagination } from '../common/dto/pagination.dto';
 import {
   ApiUseTags,
   ApiBearerAuth,
@@ -15,6 +15,7 @@ import {
   ApiInternalServerErrorResponse,
   ApiOperation,
 } from '@nestjs/swagger';
+import { MongodIdPipe } from '../common/pipe/mongodId.pipe';
 
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy
@@ -45,7 +46,7 @@ export class MaintenanceController {
     description: '响应成功',
   })
   @ApiOperation({ title: '响应维修记录', description: '响应维修记录' })
-  responseMaintenance(@Param('id') id: string) {
+  responseMaintenance(@Param('id', new MongodIdPipe()) id: string) {
     return this.maintenanceService.responseMaintenance(id);
   }
 
@@ -54,7 +55,7 @@ export class MaintenanceController {
     description: '反馈成功',
   })
   @ApiOperation({ title: '反馈维修记录', description: '反馈维修记录' })
-  feedbackMaintenance(@Param('id') id: string, @Body('feedback') feedback: string) {
+  feedbackMaintenance(@Param('id', new MongodIdPipe()) id: string, @Body('feedback') feedback: string) {
     return this.maintenanceService.feedbackMaintenance(id, feedback);
   }
 }

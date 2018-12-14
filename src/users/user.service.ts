@@ -1,10 +1,11 @@
 import { Model } from 'mongoose';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, HttpException } from '@nestjs/common';
 import { IUser } from './interfaces/user.interfaces';
-import { CreateUserDTO } from './dto/creatUser.dto';
-import { Pagination } from '../common/pagination.dto';
-import { IList } from '../common/List.interface';
+import { CreateUserDTO } from './dto/creatUsers.dto';
+import { Pagination } from '../common/dto/pagination.dto';
+import { IList } from '../common/interface/list.interface';
 import { CryptoUtil } from '../utils/crypto.util';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
@@ -12,10 +13,17 @@ export class UserService {
   constructor(
     @Inject('UserModelToken') private readonly userModel: Model<IUser>,
     @Inject(CryptoUtil) private readonly cryptoUtil: CryptoUtil,
+    @Inject(JwtService) private readonly jwtService: JwtService,
+
   ) { }
 
   // 创建数据
   async create(createUserDTO: CreateUserDTO): Promise<IUser> {
+    const existing = await this.userModel.findOne({ email: createUserDTO.email });
+    if (existing) {
+      throw new HttpException(`删除失败,邮箱已存在`, 404);
+    }
+    createUserDTO.password = this.cryptoUtil.encryptPassword(createUserDTO.password);
     const creatUser = new this.userModel(createUserDTO);
     await creatUser.save();
     return creatUser;
@@ -32,6 +40,7 @@ export class UserService {
       .find({ $or: search })
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
+      .select({ password: 0 })
       .exec();
     const total = await this.userModel.countDocuments({ $or: search });
     return { list, total };
@@ -43,8 +52,8 @@ export class UserService {
   }
 
   // 根据sn查询
-  async findByUserSn(userSn: string): Promise<IUser> {
-    return await this.userModel.findOne({ userSn }).exec();
+  async findOneByEmail(email: string): Promise<IUser> {
+    return await this.userModel.findOne({ email }).lean().exec();
   }
   // 根据id修改
   async updateById(_id: string, user: CreateUserDTO) {

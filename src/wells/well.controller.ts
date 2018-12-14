@@ -5,7 +5,7 @@ import { CreateWellDTO } from './dto/creatWell.dto';
 // import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
 // import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
 import { WellService } from './well.service';
-import { Pagination } from '../common/pagination.dto';
+import { Pagination } from '../common/dto/pagination.dto';
 import { CreateDeviceDTO } from '../devices/dto/creatDevice.dto';
 import { CreateCoverDTO } from '../covers/dto/creatCover.dto';
 import {
@@ -18,6 +18,7 @@ import {
   ApiBadRequestResponse,
   ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
+import { MongodIdPipe } from '../common/pipe/mongodId.pipe';
 
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy
@@ -81,7 +82,7 @@ export class WellController {
   })
   @ApiCreatedResponse({ description: '获取窑井' })
   @ApiOperation({ title: '根据id获取窑井', description: '根据id获取窑井' })
-  findById(@Param('id') id: string) {
+  findById(@Param('id', new MongodIdPipe()) id: string) {
     return this.wellService.findById(id);
   }
 
@@ -99,7 +100,7 @@ export class WellController {
     description: '修改窑井成功',
   })
   @ApiOperation({ title: '修改窑井', description: '修改窑井' })
-  update(@Param('id') id: string, @Body() creatWellDTO: CreateWellDTO) {
+  update(@Param('id', new MongodIdPipe()) id: string, @Body() creatWellDTO: CreateWellDTO) {
     return this.wellService.updateById(id, creatWellDTO);
   }
 
@@ -108,7 +109,7 @@ export class WellController {
     description: '删除窑井成功',
   })
   @ApiOperation({ title: '根据id删除窑井', description: '根据id删除窑井' })
-  delete(@Param('id') id: string) {
+  delete(@Param('id', new MongodIdPipe()) id: string) {
     return this.wellService.deleteById(id);
   }
 
@@ -117,7 +118,7 @@ export class WellController {
     description: '绑定旧设备成功',
   })
   @ApiOperation({ title: '绑定旧设备', description: '绑定旧设备' })
-  bindOldDevice(@Param('id') _id: string, @Param('deviceId') deviceId: string) {
+  bindOldDevice(@Param('id', new MongodIdPipe()) _id: string, @Param('deviceId', new MongodIdPipe()) deviceId: string) {
     return this.wellService.bindOldDevice(_id, deviceId);
   }
 
@@ -126,7 +127,7 @@ export class WellController {
     description: '绑定新设备成功',
   })
   @ApiOperation({ title: '绑定新设备', description: '绑定新设备' })
-  bindNewDevice(@Param('id') _id: string, @Body() device: CreateDeviceDTO) {
+  bindNewDevice(@Param('id', new MongodIdPipe()) _id: string, @Body() device: CreateDeviceDTO) {
     return this.wellService.bindNewDevice(_id, device);
   }
 
@@ -135,7 +136,7 @@ export class WellController {
     description: '绑定旧井盖成功',
   })
   @ApiOperation({ title: '绑定旧井盖', description: '绑定旧井盖' })
-  bindOldCover(@Param('id') _id: string, @Param('coverId') coverId: string) {
+  bindOldCover(@Param('id', new MongodIdPipe()) _id: string, @Param('coverId', new MongodIdPipe()) coverId: string) {
     return this.wellService.bindOldCover(_id, coverId);
   }
 
@@ -144,7 +145,7 @@ export class WellController {
     description: '绑定新井盖成功',
   })
   @ApiOperation({ title: '绑定新井盖', description: '绑定新井盖' })
-  bindNewCover(@Param('id') _id: string, @Body() cover: CreateCoverDTO) {
+  bindNewCover(@Param('id', new MongodIdPipe()) _id: string, @Body() cover: CreateCoverDTO) {
     return this.wellService.bindNewCover(_id, cover);
   }
   // // @Put(':userId/:depId')

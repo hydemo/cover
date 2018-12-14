@@ -4,7 +4,7 @@ import { CreateCoverDTO } from './dto/creatCover.dto';
 // import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
 // import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
 import { CoverService } from './cover.service';
-import { Pagination } from '../common/pagination.dto';
+import { Pagination } from '../common/dto/pagination.dto';
 import {
   ApiUseTags,
   ApiBearerAuth,
@@ -15,6 +15,7 @@ import {
   ApiInternalServerErrorResponse,
   ApiOperation,
 } from '@nestjs/swagger';
+import { MongodIdPipe } from '../common/pipe/mongodId.pipe';
 
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy
@@ -46,7 +47,7 @@ export class CoverController {
   })
   @ApiCreatedResponse({ description: '获取井盖' })
   @ApiOperation({ title: '根据id获取井盖信息', description: '根据id获取井盖信息' })
-  findById(@Param('id') id: string) {
+  findById(@Param('id', new MongodIdPipe()) id: string) {
     return this.coverService.findById(id);
   }
 
@@ -64,7 +65,7 @@ export class CoverController {
     description: '修改井盖成功',
   })
   @ApiOperation({ title: '修改井盖', description: '修改井盖' })
-  update(@Param('id') id: string, @Body() creatCoverDTO: CreateCoverDTO) {
+  update(@Param('id', new MongodIdPipe()) id: string, @Body() creatCoverDTO: CreateCoverDTO) {
     return this.coverService.updateById(id, creatCoverDTO);
   }
 
@@ -73,7 +74,7 @@ export class CoverController {
     description: '删除井盖成功',
   })
   @ApiOperation({ title: '删除井盖', description: '删除井盖' })
-  delete(@Param('id') id: string) {
+  delete(@Param('id', new MongodIdPipe()) id: string) {
     return this.coverService.deleteById(id);
   }
   // // @Put(':userId/:depId')

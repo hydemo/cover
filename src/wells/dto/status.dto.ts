@@ -9,7 +9,7 @@ export class StatusDTO {
   @IsOptional()
   @Type(() => Number)
   @ApiModelPropertyOptional({ description: '电量水平' })
-  batteryLevel: number;
+  batteryLevel?: number;
 
   @IsBoolean()
   @IsOptional()
@@ -29,7 +29,7 @@ export class StatusDTO {
   @IsOptional()
   @Type(() => Number)
   @ApiModelPropertyOptional({ description: '光敏检测周期' })
-  photoCheckPeriod: number;
+  photoCheckPeriod?: number;
 
   @IsNumber()
   @Min(0)
@@ -37,7 +37,7 @@ export class StatusDTO {
   @IsOptional()
   @Type(() => Number)
   @ApiModelPropertyOptional({ description: '超声波频率检测周期' })
-  freqCheckPeriod: number;
+  freqCheckPeriod?: number;
 
   @IsNumber()
   @Min(0)
@@ -45,33 +45,33 @@ export class StatusDTO {
   @IsOptional()
   @Type(() => Number)
   @ApiModelPropertyOptional({ description: '位置检测周期' })
-  distCheckPeriod: number;
+  distCheckPeriod?: number;
 
   @IsNumber()
   @IsPositive()
   @IsOptional()
   @Type(() => Number)
   @ApiModelPropertyOptional({ description: '超声波频率' })
-  frequency: number;
+  frequency?: number;
 
   @IsNumber()
   @IsPositive()
   @IsOptional()
   @Type(() => Number)
   @ApiModelPropertyOptional({ description: '超声波振幅' })
-  amplitude: number;
+  amplitude?: number;
 
   @IsNumber()
   @IsPositive()
   @IsOptional()
   @Type(() => Number)
   @ApiModelPropertyOptional({ description: '测距传感器数值' })
-  distance: number;
+  distance?: number;
 
   @IsNumber()
   @IsPositive()
   @IsOptional()
   @Type(() => Number)
   @ApiModelPropertyOptional({ description: '光敏器件电压值' })
-  photoresistor: number;
+  photoresistor?: number;
 }

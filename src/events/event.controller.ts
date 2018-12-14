@@ -15,7 +15,8 @@ import {
 } from '@nestjs/swagger';
 import { EventsDTO } from './dto/event.dto';
 import { WarningsDTO } from './dto/creatWarning.dto';
-import { Pagination } from '../common/pagination.dto';
+import { Pagination } from '../common/dto/pagination.dto';
+import { MongodIdPipe } from '../common/pipe/mongodId.pipe';
 
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy
@@ -36,8 +37,9 @@ export class EventController {
   })
   @Post('/')
   @ApiOperation({ title: '接收数据', description: '接收数据' })
-  receiveData(@Body() event: EventsDTO) {
-    return this.eventService.receiveData(event);
+  async receiveData(@Body() event: EventsDTO) {
+    await this.eventService.receiveData(event);
+    return { statusCode: 200, msg: '数据接收成功' };
   }
 
   @ApiOkResponse({
@@ -56,7 +58,7 @@ export class EventController {
   })
   @Get('/warning/:id/principal')
   @ApiOperation({ title: '分配负责人', description: '分配负责人' })
-  bindPrincipal(@Param('id') id: string, @Body('name') name: string) {
+  bindPrincipal(@Param('id', new MongodIdPipe()) id: string, @Body('name') name: string) {
     return this.eventService.bindPrincipal(id, name);
   }
 }

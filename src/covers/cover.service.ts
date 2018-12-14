@@ -2,8 +2,8 @@ import { Model } from 'mongoose';
 import { Inject, Injectable } from '@nestjs/common';
 import { ICover } from './interfaces/cover.interfaces';
 import { CreateCoverDTO } from './dto/creatCover.dto';
-import { Pagination } from '../common/pagination.dto';
-import { IList } from '../common/List.interface';
+import { Pagination } from '../common/dto/pagination.dto';
+import { IList } from '../common/interface/list.interface';
 
 @Injectable()
 export class CoverService {

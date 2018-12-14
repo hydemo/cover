@@ -5,7 +5,7 @@
   "author": "oy",
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
+    "build": "rimraf dist && tsc",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
     "start:dev": "nodemon",
@@ -16,18 +16,23 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "pm2": "pm2 start pm2.yml"
   },
   "dependencies": {
     "@nestjs/common": "^5.4.0",
     "@nestjs/core": "^5.4.0",
+    "@nestjs/jwt": "^0.2.1",
     "@nestjs/mongoose": "^5.2.2",
+    "@nestjs/passport": "^5.1.0",
     "@nestjs/swagger": "^2.5.1",
     "@pardjs/common": "^0.0.4",
     "@types/mongoose": "^5.3.3",
     "class-transformer": "^0.2.0",
     "class-validator": "^0.9.1",
     "mongoose": "^5.3.14",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
     "rxjs": "^6.2.2",

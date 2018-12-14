@@ -2,8 +2,8 @@ import { Model } from 'mongoose';
 import { Inject, Injectable } from '@nestjs/common';
 import { IMaintenance } from './interfaces/maintenance.interfaces';
 import { CreateMaintenanceDTO } from './dto/creatMaintenance.dto';
-import { Pagination } from '../common/pagination.dto';
-import { IList } from '../common/List.interface';
+import { Pagination } from '../common/dto/pagination.dto';
+import { IList } from '../common/interface/list.interface';
 
 @Injectable()
 export class MaintenanceService {

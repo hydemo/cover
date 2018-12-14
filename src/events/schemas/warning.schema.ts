@@ -21,5 +21,5 @@ export const WarningSchema = new mongoose.Schema(
     // 警告状态
     isHandle: { type: Boolean, default: false },
   },
-  { collection: 'DeviceInfo', versionKey: false, timestamps: true },
+  { collection: 'Warning', versionKey: false, timestamps: true },
 );

@@ -2,8 +2,8 @@ import { Model } from 'mongoose';
 import { Inject, Injectable } from '@nestjs/common';
 import { IDevice } from './interfaces/device.interfaces';
 import { CreateDeviceDTO } from './dto/creatDevice.dto';
-import { Pagination } from '../common/pagination.dto';
-import { IList } from '../common/List.interface';
+import { Pagination } from '../common/dto/pagination.dto';
+import { IList } from '../common/interface/list.interface';
 
 @Injectable()
 export class DeviceService {

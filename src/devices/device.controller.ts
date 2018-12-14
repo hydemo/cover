@@ -4,7 +4,7 @@ import { CreateDeviceDTO } from './dto/creatDevice.dto';
 // import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
 // import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
 import { DeviceService } from './device.service';
-import { Pagination } from '../common/pagination.dto';
+import { Pagination } from '../common/dto/pagination.dto';
 import {
   ApiUseTags,
   ApiBearerAuth,
@@ -15,6 +15,7 @@ import {
   ApiInternalServerErrorResponse,
   ApiOperation,
 } from '@nestjs/swagger';
+import { MongodIdPipe } from '../common/pipe/mongodId.pipe';
 
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy
@@ -46,7 +47,7 @@ export class DeviceController {
   })
   @ApiCreatedResponse({ description: '获取设备' })
   @ApiOperation({ title: '根据id获取设备信息', description: '根据id获取设备信息' })
-  findById(@Param('id') id: string) {
+  findById(@Param('id', new MongodIdPipe()) id: string) {
     return this.deviceService.findById(id);
   }
 
@@ -64,7 +65,7 @@ export class DeviceController {
     description: '修改设备成功',
   })
   @ApiOperation({ title: '修改设备', description: '修改设备' })
-  update(@Param('id') id: string, @Body() creatDeviceDTO: CreateDeviceDTO) {
+  update(@Param('id', new MongodIdPipe()) id: string, @Body() creatDeviceDTO: CreateDeviceDTO) {
     return this.deviceService.updateById(id, creatDeviceDTO);
   }
 
@@ -73,7 +74,7 @@ export class DeviceController {
     description: '删除设备成功',
   })
   @ApiOperation({ title: '删除设备', description: '删除设备' })
-  delete(@Param('id') id: string) {
+  delete(@Param('id', new MongodIdPipe()) id: string) {
     return this.deviceService.deleteById(id);
   }
 }

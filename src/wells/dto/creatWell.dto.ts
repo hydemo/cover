@@ -58,7 +58,7 @@ export class CreateWellDTO {
   @ValidateNested()
   @Type(() => StatusDTO)
   @ApiModelPropertyOptional({ description: '井盖状态' })
-  readonly status?: StatusDTO;
+  readonly status?: StatusDTO = {};
 
   @IsMongoId()
   @IsOptional()

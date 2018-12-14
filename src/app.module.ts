@@ -5,8 +5,8 @@ import { DeviceModule } from './devices/device.module';
 import { DataModule } from './data/data.module';
 import { EventModule } from './events/event.module';
 import { UserModule } from './users/user.module';
-import { AdminModule } from './admin/admin.module';
 import { MaintenanceModule } from './maintenance/maintenance.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,8 +16,8 @@ import { MaintenanceModule } from './maintenance/maintenance.module';
     DataModule,
     EventModule,
     UserModule,
-    AdminModule,
     MaintenanceModule,
+    AuthModule,
   ],
 })
 export class AppModule { }

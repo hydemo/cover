@@ -2,8 +2,8 @@ import { Model } from 'mongoose';
 import { Inject, Injectable } from '@nestjs/common';
 import { IWell } from './interfaces/well.interfaces';
 import { CreateWellDTO } from './dto/creatWell.dto';
-import { Pagination } from '../common/pagination.dto';
-import { IList } from '../common/List.interface';
+import { Pagination } from '../common/dto/pagination.dto';
+import { IList } from '../common/interface/list.interface';
 import { DeviceService } from '../devices/device.service';
 import { CoverService } from '../covers/cover.service';
 import { CreateDeviceDTO } from '../devices/dto/creatDevice.dto';
@@ -82,8 +82,8 @@ export class WellService {
     return await this.wellModel.findByIdAndDelete(_id).exec();
   }
   // 绑定已有设备
-  async bindOldDevice(_id: string, devideId: string) {
-    return await this.wellModel.findByIdAndUpdate(_id, { devideId });
+  async bindOldDevice(_id: string, deviceId: string) {
+    return await this.wellModel.findByIdAndUpdate(_id, { deviceId });
   }
   // 绑定新设备
   async bindNewDevice(_id: string, device: CreateDeviceDTO) {
