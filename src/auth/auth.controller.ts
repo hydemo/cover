@@ -14,7 +14,7 @@ import { CreateUserDTO } from '../users/dto/creatUsers.dto';
 import { UserService } from '../users/user.service';
 import { AuthService } from './auth.service';
 
-@ApiUseTags('')
+@ApiUseTags('auth')
 
 @ApiBearerAuth()
 @ApiForbiddenResponse({ description: 'Unauthorized' })
@@ -30,7 +30,7 @@ export class AuthController {
    * 在调用有 @UseGuards(AuthGuard()) 注解的路由时，会检查当前请求头中是否包含 Authorization: Bearer xxx 授权令牌，
    * 其中 Authorization 是用于告诉服务端本次请求有令牌，并且令牌前缀是 Bearer，而令牌的具体内容是登录之后返回的 data(accessToken)。
    */
-  @Post('login')
+  @Post('/login')
   @ApiOkResponse({
     description: '登录成功',
   })
