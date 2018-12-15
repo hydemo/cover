@@ -41,6 +41,17 @@ export class MaintenanceController {
     return await this.maintenanceService.findAll(pagination);
   }
 
+  @ApiOkResponse({
+    description: '维修记录列表Cms',
+    type: CreateMaintenanceDTO,
+    isArray: true,
+  })
+  @Get('/')
+  @ApiOperation({ title: '获取维修记录列表cms', description: '获取维修记录列表cms' })
+  async maintenanceAllList(@Query() pagination: Pagination) {
+    return await this.maintenanceService.findAllCms(pagination);
+  }
+
   @Put('/:id/undefence')
   @ApiOkResponse({
     description: '撤防',

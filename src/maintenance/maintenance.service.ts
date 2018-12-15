@@ -26,7 +26,22 @@ export class MaintenanceService {
     const list = await this.maintenanceModel
       .find({ status: { $lt: 3 } })
       .limit(pagination.limit)
-      .sort({ status: 1 })
+      .sort({ status: -1, creadedAt: -1 })
+      .skip((pagination.offset - 1) * pagination.limit)
+      .populate({ path: 'wellId', model: 'Well' })
+      .populate({ path: 'coverId', model: 'Cover' })
+      .populate({ path: 'deviceId', model: 'Device' })
+      .exec();
+    const total = await this.maintenanceModel.countDocuments({ status: { $lt: 3 } });
+    return { list, total };
+  }
+
+  // 查询全部数据
+  async findAllCms(pagination: Pagination): Promise<IList<IMaintenance>> {
+    const list = await this.maintenanceModel
+      .find()
+      .limit(pagination.limit)
+      .sort({ status: -1, creadedAt: -1 })
       .skip((pagination.offset - 1) * pagination.limit)
       .populate({ path: 'wellId', model: 'Well' })
       .populate({ path: 'coverId', model: 'Cover' })
