@@ -66,7 +66,7 @@ export class MaintenanceController {
     description: '反馈成功',
   })
   @ApiOperation({ title: '反馈维修记录', description: '反馈维修记录' })
-  async feedbackMaintenance(@Param('id', new MongodIdPipe()) id: string, @Body() feedback: string) {
+  async feedbackMaintenance(@Param('id', new MongodIdPipe()) id: string, @Body('feedback') feedback: string) {
     await this.maintenanceService.feedbackMaintenance(id, feedback);
     return { statusCode: 200, msg: '反馈成功' };
   }

@@ -58,7 +58,7 @@ export class EventController {
   })
   @Post('/warning/:id/principal')
   @ApiOperation({ title: '分配负责人', description: '分配负责人' })
-  async bindPrincipal(@Param('id', new MongodIdPipe()) id: string, @Body() name: string) {
+  async bindPrincipal(@Param('id', new MongodIdPipe()) id: string, @Body('name') name: string) {
     await this.eventService.bindPrincipal(id, name);
     return { statusCode: 200, msg: '分配负责人成功' };
   }

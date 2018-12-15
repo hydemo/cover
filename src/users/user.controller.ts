@@ -80,7 +80,7 @@ export class UserController {
     description: '修改用户密码成功',
   })
   @ApiOperation({ title: '修改密码', description: '修改密码' })
-  async resetPassWord(@Param('id', new MongodIdPipe()) id: string, @Body() password: string) {
+  async resetPassWord(@Param('id', new MongodIdPipe()) id: string, @Body('password') password: string) {
     await this.userService.resetPassword(id, password);
     return { statusCode: 200, msg: '修改用户密码成功 ' };
   }
