@@ -29,6 +29,8 @@ export const WellSchema = new mongoose.Schema(
     coverId: ObjectId,
     // 设备Id
     deviceId: ObjectId,
+    // 布防/撤防
+    isDefence: Boolean,
   },
   { collection: 'Well', versionKey: false, timestamps: true },
 );

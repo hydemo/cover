@@ -47,8 +47,9 @@ export class CoverController {
   })
   @ApiCreatedResponse({ description: '获取井盖' })
   @ApiOperation({ title: '根据id获取井盖信息', description: '根据id获取井盖信息' })
-  findById(@Param('id', new MongodIdPipe()) id: string) {
-    return this.coverService.findById(id);
+  async findById(@Param('id', new MongodIdPipe()) id: string) {
+    const data: CreateCoverDTO = await this.coverService.findById(id);
+    return { statusCode: 200, msg: '获取井盖成功', data };
   }
 
   @Post()
@@ -56,8 +57,9 @@ export class CoverController {
     description: '添加井盖成功',
   })
   @ApiOperation({ title: '添加井盖', description: '添加井盖' })
-  create(@Body() creatCoverDTO: CreateCoverDTO) {
-    return this.coverService.create(creatCoverDTO);
+  async create(@Body() creatCoverDTO: CreateCoverDTO) {
+    await this.coverService.create(creatCoverDTO);
+    return { statusCode: 200, msg: '添加井盖成功' };
   }
 
   @Put('/:id')
@@ -65,8 +67,9 @@ export class CoverController {
     description: '修改井盖成功',
   })
   @ApiOperation({ title: '修改井盖', description: '修改井盖' })
-  update(@Param('id', new MongodIdPipe()) id: string, @Body() creatCoverDTO: CreateCoverDTO) {
-    return this.coverService.updateById(id, creatCoverDTO);
+  async update(@Param('id', new MongodIdPipe()) id: string, @Body() creatCoverDTO: CreateCoverDTO) {
+    await this.coverService.updateById(id, creatCoverDTO);
+    return { statusCode: 200, msg: '修改井盖成功' };
   }
 
   @Delete('/:id')
@@ -74,8 +77,9 @@ export class CoverController {
     description: '删除井盖成功',
   })
   @ApiOperation({ title: '删除井盖', description: '删除井盖' })
-  delete(@Param('id', new MongodIdPipe()) id: string) {
-    return this.coverService.deleteById(id);
+  async delete(@Param('id', new MongodIdPipe()) id: string) {
+    await this.coverService.deleteById(id);
+    return { statusCode: 200, msg: '删除井盖成功' };
   }
   // // @Put(':userId/:depId')
   // // updateUserDepById(@Param('userId') userId, @Param('depId') depId){

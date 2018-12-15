@@ -71,4 +71,6 @@ export class CreateWellDTO {
   @Type(() => String)
   @ApiModelPropertyOptional({ description: '设备id' })
   readonly deviceId?: string;
+
+  readonly isDefence?: boolean = true;
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Inject } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 
 import {
   ApiUseTags,
@@ -11,8 +11,8 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { CreateUserDTO } from '../users/dto/creatUsers.dto';
-import { UserService } from '../users/user.service';
 import { AuthService } from './auth.service';
+import { LoginDTO } from './login.dto';
 
 @ApiUseTags('auth')
 
@@ -35,8 +35,8 @@ export class AuthController {
     description: '登录成功',
   })
   @ApiOperation({ title: '登录', description: '登录' })
-  async login(@Body() createUserDTO: CreateUserDTO): Promise<any> {
-    const user: CreateUserDTO = await this.authService.login(createUserDTO.email, createUserDTO.password);
-    return { code: 200, message: '登录成功', data: user };
+  async login(@Body() userLogin: LoginDTO): Promise<any> {
+    const user: CreateUserDTO = await this.authService.login(userLogin.email, userLogin.password);
+    return { statusCode: 200, msg: '登录成功', data: user };
   }
 }

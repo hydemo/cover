@@ -7,4 +7,5 @@ export const DeviceSchema = new mongoose.Schema(
     // 设备名称
     deviceName: String,
   },
+  { collection: 'Device', versionKey: false, timestamps: true },
 );

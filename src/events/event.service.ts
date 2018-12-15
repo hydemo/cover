@@ -21,9 +21,9 @@ import { CreateMaintenanceDTO } from '../maintenance/dto/creatMaintenance.dto';
 export class EventService {
   constructor(
     @Inject('WarningModelToken') private readonly warningModel: Model<IWarning>,
-    private readonly dataService: DataService,
-    private readonly wellService: WellService,
-    private readonly maintenanceService: MaintenanceService,
+    @Inject(DataService) private readonly dataService: DataService,
+    @Inject(WellService) private readonly wellService: WellService,
+    @Inject(MaintenanceService) private readonly maintenanceService: MaintenanceService,
   ) { }
 
   /**
@@ -119,14 +119,16 @@ export class EventService {
     }
   }
   async getWarningList(pagination: Pagination): Promise<IList<IWarning>> {
-    const condition = { isHandle: false };
     const list = await this.warningModel
-      .find(condition)
+      .find()
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
-      .sort({ createdAt: -1 })
+      .sort({ isHandle: 1, createdAt: -1 })
+      .populate({ path: 'wellId', model: 'Well' })
+      .populate({ path: 'coverId', model: 'Cover' })
+      .populate({ path: 'deviceId', model: 'Device' })
       .exec();
-    const total = await this.warningModel.countDocuments(condition);
+    const total = await this.warningModel.countDocuments();
     return { list, total };
   }
 
@@ -136,6 +138,9 @@ export class EventService {
       .exec();
     const well: CreateWellDTO = await this.wellService.findById(warning.wellId);
     const maintenance: CreateMaintenanceDTO = {
+      wellId: warning.wellId,
+      coverId: warning.coverId,
+      deviceId: warning.deviceId,
       principal: name,
       warningId: warning._id,
       location: well.location,
@@ -143,7 +148,16 @@ export class EventService {
       occurTime: warning.createdAt,
       status: 0,
     };
-    return await this.maintenanceService.create(maintenance);
+    await this.maintenanceService.create(maintenance);
+    await this.warningModel.findByIdAndUpdate(id, { isHandle: true });
+  }
+
+  async cancelWarning(id: string) {
+    await this.warningModel.findByIdAndUpdate(id, { isHandle: true });
+  }
+
+  async countUnhandleWarning(): Promise<number> {
+    return await this.warningModel.countDocuments({ isHandle: false });
   }
 
   async receiveBattery(battery: BatteryDTO) {

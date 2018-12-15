@@ -39,8 +39,8 @@ export class WellController {
   })
   @ApiOperation({ title: '获取窑井列表', description: '获取窑井列表' })
   @Get('/')
-  wellList(@Query() pagination: Pagination) {
-    return this.wellService.findPage(pagination);
+  async wellList(@Query() pagination: Pagination) {
+    return await this.wellService.findPage(pagination);
   }
 
   @ApiOkResponse({
@@ -50,8 +50,8 @@ export class WellController {
   })
   @ApiOperation({ title: '获取窑井完整列表', description: '获取窑井完整列表' })
   @Get('/all')
-  wellListAll() {
-    return this.wellService.findAll();
+  async wellListAll() {
+    return await this.wellService.findAll();
   }
 
   @ApiOkResponse({
@@ -61,8 +61,8 @@ export class WellController {
   })
   @ApiOperation({ title: '获取井盖打开列表', description: '获取井盖打开列表' })
   @Get('/open')
-  wellListOpen() {
-    return this.wellService.findOpen();
+  async wellListOpen() {
+    return await this.wellService.findOpen();
   }
 
   @ApiOkResponse({
@@ -72,8 +72,8 @@ export class WellController {
   })
   @ApiOperation({ title: '获取漏气列表', description: '获取漏气列表' })
   @Get('/leak')
-  wellListLeak() {
-    return this.wellService.findLeak();
+  async wellListLeak() {
+    return await this.wellService.findLeak();
   }
 
   @Get('/:id')
@@ -91,8 +91,9 @@ export class WellController {
     description: '添加窑井成功',
   })
   @ApiOperation({ title: '添加窑井', description: '添加窑井' })
-  create(@Body() creatWellDTO: CreateWellDTO) {
-    return this.wellService.create(creatWellDTO);
+  async create(@Body() creatWellDTO: CreateWellDTO) {
+    await this.wellService.create(creatWellDTO);
+    return { statusCode: 200, msg: '添加窑井成功' };
   }
 
   @Put('/:id')
@@ -100,8 +101,9 @@ export class WellController {
     description: '修改窑井成功',
   })
   @ApiOperation({ title: '修改窑井', description: '修改窑井' })
-  update(@Param('id', new MongodIdPipe()) id: string, @Body() creatWellDTO: CreateWellDTO) {
-    return this.wellService.updateById(id, creatWellDTO);
+  async update(@Param('id', new MongodIdPipe()) id: string, @Body() creatWellDTO: CreateWellDTO) {
+    await this.wellService.updateById(id, creatWellDTO);
+    return { statusCode: 200, msg: '修改窑井成功' };
   }
 
   @Delete('/:id')
@@ -109,8 +111,9 @@ export class WellController {
     description: '删除窑井成功',
   })
   @ApiOperation({ title: '根据id删除窑井', description: '根据id删除窑井' })
-  delete(@Param('id', new MongodIdPipe()) id: string) {
-    return this.wellService.deleteById(id);
+  async delete(@Param('id', new MongodIdPipe()) id: string) {
+    await this.wellService.deleteById(id);
+    return { statusCode: 200, msg: '删除窑井成功' };
   }
 
   @Put('/:id/device/:deviceId')
@@ -118,8 +121,9 @@ export class WellController {
     description: '绑定旧设备成功',
   })
   @ApiOperation({ title: '绑定旧设备', description: '绑定旧设备' })
-  bindOldDevice(@Param('id', new MongodIdPipe()) _id: string, @Param('deviceId', new MongodIdPipe()) deviceId: string) {
-    return this.wellService.bindOldDevice(_id, deviceId);
+  async bindOldDevice(@Param('id', new MongodIdPipe()) _id: string, @Param('deviceId', new MongodIdPipe()) deviceId: string) {
+    this.wellService.bindOldDevice(_id, deviceId);
+    return { statusCode: 200, msg: '绑定旧设备成功' };
   }
 
   @Post('/:id/device')
@@ -127,8 +131,9 @@ export class WellController {
     description: '绑定新设备成功',
   })
   @ApiOperation({ title: '绑定新设备', description: '绑定新设备' })
-  bindNewDevice(@Param('id', new MongodIdPipe()) _id: string, @Body() device: CreateDeviceDTO) {
-    return this.wellService.bindNewDevice(_id, device);
+  async bindNewDevice(@Param('id', new MongodIdPipe()) _id: string, @Body() device: CreateDeviceDTO) {
+    await this.wellService.bindNewDevice(_id, device);
+    return { statusCode: 200, msg: '绑定新设备成功' };
   }
 
   @Put('/:id/cover/:coverId')
@@ -136,8 +141,9 @@ export class WellController {
     description: '绑定旧井盖成功',
   })
   @ApiOperation({ title: '绑定旧井盖', description: '绑定旧井盖' })
-  bindOldCover(@Param('id', new MongodIdPipe()) _id: string, @Param('coverId', new MongodIdPipe()) coverId: string) {
-    return this.wellService.bindOldCover(_id, coverId);
+  async bindOldCover(@Param('id', new MongodIdPipe()) _id: string, @Param('coverId', new MongodIdPipe()) coverId: string) {
+    await this.wellService.bindOldCover(_id, coverId);
+    return { statusCode: 200, msg: '绑定旧井盖成功' };
   }
 
   @Post('/:id/cover')
@@ -145,8 +151,30 @@ export class WellController {
     description: '绑定新井盖成功',
   })
   @ApiOperation({ title: '绑定新井盖', description: '绑定新井盖' })
-  bindNewCover(@Param('id', new MongodIdPipe()) _id: string, @Body() cover: CreateCoverDTO) {
-    return this.wellService.bindNewCover(_id, cover);
+  async bindNewCover(@Param('id', new MongodIdPipe()) _id: string, @Body() cover: CreateCoverDTO) {
+    await this.wellService.bindNewCover(_id, cover);
+    return { statusCode: 200, msg: '绑定新井盖成功' };
+
+  }
+
+  @Put('/:id/defence')
+  @ApiOkResponse({
+    description: '布防',
+  })
+  @ApiOperation({ title: '布防', description: '布防' })
+  async defenceWell(@Param('id', new MongodIdPipe()) _id: string) {
+    await this.wellService.defenceById(_id);
+    return { statusCode: 200, msg: '布防成功' };
+  }
+
+  @Put('/:id/undefence')
+  @ApiOkResponse({
+    description: '布防',
+  })
+  @ApiOperation({ title: '布防', description: '布防' })
+  async undefenceWell(@Param('id', new MongodIdPipe()) _id: string) {
+    await this.wellService.unDefenceById(_id);
+    return { statusCode: 200, msg: '撤防成功' };
   }
   // // @Put(':userId/:depId')
   // // updateUserDepById(@Param('userId') userId, @Param('depId') depId){

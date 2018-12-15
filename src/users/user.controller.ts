@@ -50,8 +50,9 @@ export class UserController {
     description: '添加用户成功',
   })
   @ApiOperation({ title: '添加用户', description: '添加用户' })
-  create(@Body() creatUserDTO: CreateUserDTO) {
-    return this.userService.create(creatUserDTO);
+  async create(@Body() creatUserDTO: CreateUserDTO) {
+    await this.userService.create(creatUserDTO);
+    return { statusCode: 200, msg: '添加用户成功 ' };
   }
 
   @Put('/:id')
@@ -59,8 +60,9 @@ export class UserController {
     description: '修改用户成功',
   })
   @ApiOperation({ title: '修改用户', description: '修改用户' })
-  update(@Param('id', new MongodIdPipe()) id: string, @Body() creatUserDTO: CreateUserDTO) {
-    return this.userService.updateById(id, creatUserDTO);
+  async update(@Param('id', new MongodIdPipe()) id: string, @Body() creatUserDTO: CreateUserDTO) {
+    await this.userService.updateById(id, creatUserDTO);
+    return { statusCode: 200, msg: '修改用户成功 ' };
   }
 
   @Delete('/:id')
@@ -68,8 +70,9 @@ export class UserController {
     description: '删除用户成功',
   })
   @ApiOperation({ title: '删除用户', description: '删除用户' })
-  delete(@Param('id', new MongodIdPipe()) id: string) {
-    return this.userService.deleteById(id);
+  async delete(@Param('id', new MongodIdPipe()) id: string) {
+    await this.userService.deleteById(id);
+    return { statusCode: 200, msg: '删除用户成功 ' };
   }
 
   @Put('/:id/password')
@@ -77,7 +80,8 @@ export class UserController {
     description: '修改用户密码成功',
   })
   @ApiOperation({ title: '修改密码', description: '修改密码' })
-  resetPassWord(@Param('id', new MongodIdPipe()) id: string, @Body('password') password: string) {
-    return this.userService.resetPassword(id, password);
+  async resetPassWord(@Param('id', new MongodIdPipe()) id: string, @Body() password: string) {
+    await this.userService.resetPassword(id, password);
+    return { statusCode: 200, msg: '修改用户密码成功 ' };
   }
 }

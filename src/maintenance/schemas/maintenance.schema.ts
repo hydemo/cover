@@ -12,6 +12,12 @@ export const MaintenanceSchema = new mongoose.Schema(
     occurTime: Date,
     // 警告id
     warningId: ObjectId,
+    // 窑井Id
+    wellId: ObjectId,
+    // 井盖Id
+    coverId: ObjectId,
+    // 设备id
+    deviceId: ObjectId,
     // 地点
     location: String,
     // 反馈报告

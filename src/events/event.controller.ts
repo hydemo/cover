@@ -48,7 +48,7 @@ export class EventController {
     isArray: true,
   })
   @Get('/warning')
-  @ApiOperation({ title: '获取异常列表', description: '接获取异常列表收数据' })
+  @ApiOperation({ title: '获取异常列表', description: '获取异常列表' })
   warningList(@Query() pagination: Pagination) {
     return this.eventService.getWarningList(pagination);
   }
@@ -56,9 +56,30 @@ export class EventController {
   @ApiOkResponse({
     description: '分配负责人',
   })
-  @Get('/warning/:id/principal')
+  @Post('/warning/:id/principal')
   @ApiOperation({ title: '分配负责人', description: '分配负责人' })
-  bindPrincipal(@Param('id', new MongodIdPipe()) id: string, @Body('name') name: string) {
-    return this.eventService.bindPrincipal(id, name);
+  async bindPrincipal(@Param('id', new MongodIdPipe()) id: string, @Body() name: string) {
+    await this.eventService.bindPrincipal(id, name);
+    return { statusCode: 200, msg: '分配负责人成功' };
+  }
+
+  @ApiOkResponse({
+    description: '取消警告',
+  })
+  @Post('/warning/:id/cancle')
+  @ApiOperation({ title: '取消警告', description: '取消警告' })
+  async cancelWarning(@Param('id', new MongodIdPipe()) id: string) {
+    await this.eventService.cancelWarning(id);
+    return { statusCode: 200, msg: '取消警告成功' };
+  }
+
+  @ApiOkResponse({
+    description: '获取未处理警告数',
+  })
+  @Get('/warning/unhandle')
+  @ApiOperation({ title: '获取未处理警告数', description: '获取未处理警告数' })
+  async countUnhandleWarning() {
+    const count: number = await this.eventService.countUnhandleWarning();
+    return { statusCode: 200, msg: '获取未处理警告数成功', data: count };
   }
 }

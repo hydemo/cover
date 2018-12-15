@@ -77,6 +77,14 @@ export class WellService {
   async updateById(_id: string, well: CreateWellDTO) {
     return await this.wellModel.findByIdAndUpdate(_id, well).exec();
   }
+  // 根据id布防
+  async defenceById(_id: string) {
+    return await this.wellModel.findByIdAndUpdate(_id, { isDefence: true }).exec();
+  }
+  // 根据id撤防
+  async unDefenceById(_id: string) {
+    return await this.wellModel.findByIdAndUpdate(_id, { isDefence: false }).exec();
+  }
   // 根据id删除
   async deleteById(_id: string) {
     return await this.wellModel.findByIdAndDelete(_id).exec();

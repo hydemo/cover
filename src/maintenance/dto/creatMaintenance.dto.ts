@@ -3,6 +3,21 @@ import { IsOptional, IsString, IsDate, IsMongoId, IsNumber, IsEnum } from 'class
 import { Type } from 'class-transformer';
 
 export class CreateMaintenanceDTO {
+  @IsMongoId()
+  @Type(() => String)
+  @ApiModelProperty({ description: '窑井Id' })
+  readonly wellId: string;
+
+  @IsMongoId()
+  @Type(() => String)
+  @ApiModelProperty({ description: '井盖Id' })
+  readonly coverId: string;
+
+  @IsString()
+  @Type(() => String)
+  @ApiModelProperty({ description: '设备Id' })
+  readonly deviceId: string;
+
   @IsString()
   @IsEnum(['Battery', 'Open', 'Leak'])
   @Type(() => String)

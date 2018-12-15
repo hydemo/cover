@@ -37,17 +37,28 @@ export class MaintenanceController {
   })
   @Get('/')
   @ApiOperation({ title: '获取维修记录列表', description: '获取维修记录列表' })
-  maintenanceList(@Query() pagination: Pagination) {
-    return this.maintenanceService.findAll(pagination);
+  async maintenanceList(@Query() pagination: Pagination) {
+    return await this.maintenanceService.findAll(pagination);
   }
 
-  @Put('/:id/response')
+  @Put('/:id/undefence')
   @ApiOkResponse({
-    description: '响应成功',
+    description: '撤防',
   })
-  @ApiOperation({ title: '响应维修记录', description: '响应维修记录' })
-  responseMaintenance(@Param('id', new MongodIdPipe()) id: string) {
-    return this.maintenanceService.responseMaintenance(id);
+  @ApiOperation({ title: '撤防', description: '撤防' })
+  async unDefence(@Param('id', new MongodIdPipe()) id: string) {
+    await this.maintenanceService.unDefence(id);
+    return { statusCode: 200, msg: '撤防成功' };
+  }
+
+  @Put('/:id/defence')
+  @ApiOkResponse({
+    description: '布防',
+  })
+  @ApiOperation({ title: '布防', description: '布防' })
+  async defence(@Param('id', new MongodIdPipe()) id: string) {
+    await this.maintenanceService.defence(id);
+    return { statusCode: 200, msg: '布防成功' };
   }
 
   @Put('/:id/feedback')
@@ -55,7 +66,8 @@ export class MaintenanceController {
     description: '反馈成功',
   })
   @ApiOperation({ title: '反馈维修记录', description: '反馈维修记录' })
-  feedbackMaintenance(@Param('id', new MongodIdPipe()) id: string, @Body('feedback') feedback: string) {
-    return this.maintenanceService.feedbackMaintenance(id, feedback);
+  async feedbackMaintenance(@Param('id', new MongodIdPipe()) id: string, @Body() feedback: string) {
+    await this.maintenanceService.feedbackMaintenance(id, feedback);
+    return { statusCode: 200, msg: '反馈成功' };
   }
 }

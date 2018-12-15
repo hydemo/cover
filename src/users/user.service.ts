@@ -21,9 +21,9 @@ export class UserService {
   async create(createUserDTO: CreateUserDTO): Promise<IUser> {
     const existing = await this.userModel.findOne({ email: createUserDTO.email });
     if (existing) {
-      throw new HttpException(`删除失败,邮箱已存在`, 404);
+      throw new HttpException(`添加失败,邮箱已存在`, 404);
     }
-    createUserDTO.password = this.cryptoUtil.encryptPassword(createUserDTO.password);
+    createUserDTO.password = await this.cryptoUtil.encryptPassword(createUserDTO.password);
     const creatUser = new this.userModel(createUserDTO);
     await creatUser.save();
     return creatUser;
@@ -57,6 +57,12 @@ export class UserService {
   }
   // 根据id修改
   async updateById(_id: string, user: CreateUserDTO) {
+    if (user.email) {
+      const existing = await this.userModel.findOne({ email: user.email });
+      if (existing) {
+        throw new HttpException(`修改失败,邮箱已存在`, 404);
+      }
+    }
     return await this.userModel.findByIdAndUpdate(_id, user).exec();
   }
   // 根据id删除

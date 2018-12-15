@@ -47,8 +47,9 @@ export class DeviceController {
   })
   @ApiCreatedResponse({ description: '获取设备' })
   @ApiOperation({ title: '根据id获取设备信息', description: '根据id获取设备信息' })
-  findById(@Param('id', new MongodIdPipe()) id: string) {
-    return this.deviceService.findById(id);
+  async findById(@Param('id', new MongodIdPipe()) id: string) {
+    const data: CreateDeviceDTO = await this.deviceService.findById(id);
+    return { statusCode: 200, msg: '获取设备成功', data };
   }
 
   @Post()
@@ -56,8 +57,9 @@ export class DeviceController {
     description: '添加设备成功',
   })
   @ApiOperation({ title: '添加设备', description: '添加设备' })
-  create(@Body() creatDeviceDTO: CreateDeviceDTO) {
-    return this.deviceService.create(creatDeviceDTO);
+  async create(@Body() creatDeviceDTO: CreateDeviceDTO) {
+    await this.deviceService.create(creatDeviceDTO);
+    return { statusCode: 200, msg: '添加设备成功' };
   }
 
   @Put('/:id')
@@ -65,8 +67,9 @@ export class DeviceController {
     description: '修改设备成功',
   })
   @ApiOperation({ title: '修改设备', description: '修改设备' })
-  update(@Param('id', new MongodIdPipe()) id: string, @Body() creatDeviceDTO: CreateDeviceDTO) {
-    return this.deviceService.updateById(id, creatDeviceDTO);
+  async update(@Param('id', new MongodIdPipe()) id: string, @Body() creatDeviceDTO: CreateDeviceDTO) {
+    await this.deviceService.updateById(id, creatDeviceDTO);
+    return { statusCode: 200, msg: '修改设备成功' };
   }
 
   @Delete('/:id')
@@ -74,7 +77,8 @@ export class DeviceController {
     description: '删除设备成功',
   })
   @ApiOperation({ title: '删除设备', description: '删除设备' })
-  delete(@Param('id', new MongodIdPipe()) id: string) {
-    return this.deviceService.deleteById(id);
+  async delete(@Param('id', new MongodIdPipe()) id: string) {
+    await this.deviceService.deleteById(id);
+    return { statusCode: 200, msg: '删除设备成功' };
   }
 }
