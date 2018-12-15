@@ -63,8 +63,8 @@ export class CreateMaintenanceDTO {
   readonly recoverTime?: Date;
 
   @IsNumber()
-  @IsEnum([0, 1, 2])
+  @IsEnum([0, 1, 2, 3])
   @Type(() => Number)
   @ApiModelProperty({ description: '状态' })
-  readonly status: number;
+  readonly status?: number = 0;
 }

@@ -27,7 +27,7 @@ export const MaintenanceSchema = new mongoose.Schema(
     // 恢复时间
     recoverTime: Date,
     // 状态
-    status: { type: Number, enum: [0, 1, 2], default: 0 },
+    status: { type: Number, enum: [0, 1, 2, 3], default: 0 },
   },
   { collection: 'Maintenance', versionKey: false, timestamps: true },
 );

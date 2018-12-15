@@ -23,9 +23,8 @@ export class MaintenanceService {
 
   // 查询全部数据
   async findAll(pagination: Pagination): Promise<IList<IMaintenance>> {
-    const reg = new RegExp(pagination.search, 'i');
     const list = await this.maintenanceModel
-      .find()
+      .find({ status: { $lt: 3 } })
       .limit(pagination.limit)
       .sort({ status: 1 })
       .skip((pagination.offset - 1) * pagination.limit)
@@ -55,13 +54,16 @@ export class MaintenanceService {
       .findById(_id)
       .lean()
       .exec();
+    await this.maintenanceModel
+      .findByIdAndUpdate(_id, { status: 2 })
+      .exec();
     await this.wellService.defenceById(maintenance.wellId);
   }
 
   // 反馈
   async feedbackMaintenance(_id: string, feedback: string) {
     await this.maintenanceModel
-      .findByIdAndUpdate(_id, { feedbackTime: Date.now(), status: 2, feedback })
+      .findByIdAndUpdate(_id, { feedbackTime: Date.now(), status: 3, feedback })
       .exec();
   }
 }
