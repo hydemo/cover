@@ -165,7 +165,7 @@ export class EventService {
     well.status.batteryLevel = battery.batteryLevel;
     await this.wellService.updateById(battery.wellId, well);
     await this.dataService.createBattery(battery);
-    if (battery.batteryLevel < 20) {
+    if (battery.batteryLevel < 20 && !well.isDefence) {
       const warning: WarningsDTO = {
         wellId: battery.wellId,
         coverId: battery.coverId,
@@ -183,7 +183,7 @@ export class EventService {
     well.status.coverIsOpen = alarm.coverIsOpen;
     well.status.gasLeak = alarm.gasLeak;
     await this.wellService.updateById(alarm.wellId, well);
-    if (alarm.coverIsOpen) {
+    if (alarm.coverIsOpen && !well.isDefence) {
       const warning: WarningsDTO = {
         wellId: alarm.wellId,
         coverId: alarm.coverId,
@@ -194,7 +194,7 @@ export class EventService {
       };
       await this.create(warning);
     }
-    if (alarm.gasLeak) {
+    if (alarm.gasLeak && !well.isDefence) {
       const warning: WarningsDTO = {
         wellId: alarm.wellId,
         coverId: alarm.coverId,
