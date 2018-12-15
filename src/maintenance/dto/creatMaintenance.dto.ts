@@ -62,6 +62,12 @@ export class CreateMaintenanceDTO {
   @ApiModelProperty({ description: '恢复时间' })
   readonly recoverTime?: Date;
 
+  @IsDate()
+  @IsOptional()
+  @Type(() => Date)
+  @ApiModelProperty({ description: '反馈时间' })
+  readonly feedbackTime?: Date;
+
   @IsNumber()
   @IsEnum([0, 1, 2, 3])
   @Type(() => Number)

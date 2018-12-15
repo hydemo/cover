@@ -70,7 +70,7 @@ export class MaintenanceService {
       .lean()
       .exec();
     await this.maintenanceModel
-      .findByIdAndUpdate(_id, { status: 2 })
+      .findByIdAndUpdate(_id, { recoverTime: Date.now(), status: 2 })
       .exec();
     await this.wellService.defenceById(maintenance.wellId);
   }
