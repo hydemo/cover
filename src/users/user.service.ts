@@ -58,7 +58,7 @@ export class UserService {
   // 根据id修改
   async updateById(_id: string, user: CreateUserDTO) {
     if (user.email) {
-      const existing = await this.userModel.findOne({ email: user.email });
+      const existing = await this.userModel.findOne({ _id: { $ne: _id }, email: user.email });
       if (existing) {
         throw new HttpException(`修改失败,邮箱已存在`, 404);
       }
