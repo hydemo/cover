@@ -5,13 +5,8 @@ import { Type } from 'class-transformer';
 export class AudioFreDTO {
   @IsMongoId()
   @Type(() => String)
-  @ApiModelProperty({ description: '窑井Id' })
+  @ApiModelProperty({ description: '窨井Id' })
   readonly wellId: string;
-
-  @IsMongoId()
-  @Type(() => String)
-  @ApiModelProperty({ description: '井盖Id' })
-  readonly coverId: string;
 
   @IsString()
   @Type(() => String)

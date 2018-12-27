@@ -1,10 +1,8 @@
 import { Document } from 'mongoose';
 
 export interface IWellCover extends Document {
-  // 窑井Id
+  // 窨井Id
   readonly wellId: string;
-  // 井盖Id
-  readonly coverId: string;
   // 设备id
   readonly deviceId: string;
   // 测距传感器数值

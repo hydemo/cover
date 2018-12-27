@@ -1,10 +1,8 @@
 import { Document } from 'mongoose';
 
 export interface IWarning extends Document {
-  // 窑井Id
+  // 窨井Id
   readonly wellId: string;
-  // 井盖Id
-  readonly coverId: string;
   // 设备id
   readonly deviceId: string;
   // 警告类型

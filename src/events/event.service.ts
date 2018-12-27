@@ -38,8 +38,6 @@ export class EventService {
           const battery: BatteryDTO = {
             // 窑井Id
             wellId: well._id,
-            // 井盖Id
-            coverId: well.coverId,
             // 设备id
             deviceId: well.deviceId,
             // 电量水平
@@ -53,8 +51,6 @@ export class EventService {
           const alarm: AlarmDTO = {
             // 窑井Id
             wellId: well._id,
-            // 井盖Id
-            coverId: well.coverId,
             // 设备id
             deviceId: well.deviceId,
             // 是否打开
@@ -70,8 +66,6 @@ export class EventService {
           const audioFre: AudioFreDTO = {
             // 窑井Id
             wellId: well._id,
-            // 井盖Id
-            coverId: well.coverId,
             // 设备id
             deviceId: well.deviceId,
             // 超声波频率
@@ -87,8 +81,6 @@ export class EventService {
           const wellCover: WellCoverDTO = {
             // 窑井Id
             wellId: well._id,
-            // 井盖Id
-            coverId: well.coverId,
             // 设备id
             deviceId: well.deviceId,
             // 测距传感器数值
@@ -104,8 +96,6 @@ export class EventService {
           const deviceInfo: DeviceInfoDTO = {
             // 窑井Id
             wellId: well._id,
-            // 井盖Id
-            coverId: well.coverId,
             // 设备序号
             deviceSn: event.deviceSn,
             // 设备名称
@@ -132,16 +122,15 @@ export class EventService {
     return { list, total };
   }
 
-  async bindPrincipal(id: string, name: string) {
+  async bindPrincipal(id: string, userId: string) {
     const warning: IWarning = await this.warningModel
       .findById(id)
       .exec();
     const well: CreateWellDTO = await this.wellService.findById(warning.wellId);
     const maintenance: CreateMaintenanceDTO = {
       wellId: warning.wellId,
-      coverId: warning.coverId,
       deviceId: warning.deviceId,
-      principal: name,
+      principal: userId,
       warningId: warning._id,
       location: well.location,
       maintenanceType: warning.warningType,
@@ -168,7 +157,6 @@ export class EventService {
     if (battery.batteryLevel < 20 && !well.isDefence) {
       const warning: WarningsDTO = {
         wellId: battery.wellId,
-        coverId: battery.coverId,
         deviceId: battery.deviceId,
         warningType: 'Battery',
         batteryLevel: battery.batteryLevel,
@@ -186,7 +174,6 @@ export class EventService {
     if (alarm.coverIsOpen && !well.isDefence) {
       const warning: WarningsDTO = {
         wellId: alarm.wellId,
-        coverId: alarm.coverId,
         deviceId: alarm.deviceId,
         warningType: 'Open',
         coverIsOpen: alarm.coverIsOpen,
@@ -197,7 +184,6 @@ export class EventService {
     if (alarm.gasLeak && !well.isDefence) {
       const warning: WarningsDTO = {
         wellId: alarm.wellId,
-        coverId: alarm.coverId,
         deviceId: alarm.deviceId,
         warningType: 'Leak',
         gasLeak: alarm.gasLeak,

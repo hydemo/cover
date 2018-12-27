@@ -12,6 +12,8 @@ import { MaintenanceModule } from './maintenance/maintenance.module';
 import { AuthModule } from './auth/auth.module';
 import { HttpExceptionFilter } from './common/filter/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptor/logging.interceptor';
+import { OwnerModule } from './owner/owner.module';
+import { SimModule } from './sim/sim.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -37,11 +39,13 @@ async function bootstrap() {
       UserModule,
       MaintenanceModule,
       AuthModule,
+      OwnerModule,
+      SimModule,
     ],
   });
   SwaggerModule.setup('v1/api', app, ApiDocument);
   //
-  await app.listen(8000);
+  await app.listen(8080);
 
 }
 bootstrap();

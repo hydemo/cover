@@ -4,10 +4,8 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 export const AudioFreSchema = new mongoose.Schema(
   {
-    // 窑井Id
+    // 窨井Id
     wellId: ObjectId,
-    // 井盖Id
-    coverId: ObjectId,
     // 设备id
     deviceId: ObjectId,
     // 超声波频率

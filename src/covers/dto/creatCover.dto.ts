@@ -17,7 +17,7 @@ export class CreateCoverDTO {
   @IsString()
   @IsOptional()
   @Type(() => String)
-  @ApiModelPropertyOptional({ description: '业主姓名' })
+  @ApiModelPropertyOptional({ description: '业主名称' })
   readonly ownerName?: string;
 
   @IsString()

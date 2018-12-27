@@ -1,15 +1,15 @@
 import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
-import { IsMongoId, IsOptional, IsString, IsNumber, ValidateNested } from 'class-validator';
+import { IsMongoId, IsOptional, IsString, IsNumber, ValidateNested, IsBoolean } from 'class-validator';
 import { Type } from 'class-transformer';
 import { StatusDTO } from './status.dto';
 
 export class CreateWellDTO {
   @IsString()
   @Type(() => String)
-  @ApiModelProperty({ description: '编号' })
+  @ApiModelProperty({ description: '窨井编号' })
   readonly wellSN: string;
 
-  @IsString()
+  @IsMongoId()
   @IsOptional()
   @Type(() => String)
   @ApiModelPropertyOptional({ description: '业主id' })
@@ -18,34 +18,29 @@ export class CreateWellDTO {
   @IsString()
   @IsOptional()
   @Type(() => String)
-  @ApiModelPropertyOptional({ description: '业主姓名' })
-  readonly ownerName?: string;
-
-  @IsString()
-  @IsOptional()
-  @Type(() => String)
-  @ApiModelPropertyOptional({ description: '窑井类型' })
+  @ApiModelPropertyOptional({ description: '窨井类型' })
   readonly wellType?: string;
 
   @IsNumber()
   @IsOptional()
-  @Type(() => Number)
-  @ApiModelPropertyOptional({ description: '窑井口径' })
-  readonly wellCaliber?: number;
+  @ApiModelPropertyOptional({ description: '井壁口径' })
+  readonly wellCaliber?: string;
 
   @IsNumber()
   @IsOptional()
-  @Type(() => Number)
-  @ApiModelPropertyOptional({ description: '窑井深度' })
-  readonly wellDepth?: number;
+  @ApiModelPropertyOptional({ description: '井壁口径' })
+  readonly coverCaliber?: string;
 
-  @IsString()
-  @Type(() => String)
+  @IsNumber()
+  @IsOptional()
+  @ApiModelPropertyOptional({ description: '窨井深度' })
+  readonly wellDepth?: string;
+
+  @IsNumber()
   @ApiModelPropertyOptional({ description: '经度' })
   readonly longitude?: string;
 
-  @IsString()
-  @Type(() => String)
+  @IsNumber()
   @ApiModelPropertyOptional({ description: '纬度' })
   readonly latitude?: string;
 
@@ -63,14 +58,12 @@ export class CreateWellDTO {
   @IsMongoId()
   @IsOptional()
   @Type(() => String)
-  @ApiModelPropertyOptional({ description: '井盖id' })
-  readonly coverId?: string;
-
-  @IsMongoId()
-  @IsOptional()
-  @Type(() => String)
   @ApiModelPropertyOptional({ description: '设备id' })
   readonly deviceId?: string;
 
+  @IsBoolean()
+  @IsOptional()
+  @Type(() => Boolean)
+  @ApiModelPropertyOptional({ description: '布防/撤防' })
   readonly isDefence?: boolean = true;
 }

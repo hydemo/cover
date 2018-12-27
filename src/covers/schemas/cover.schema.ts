@@ -6,7 +6,7 @@ export const CoverSchema = new mongoose.Schema(
     coverSN: { type: String, required: true, unique: true },
     // 业主id
     ownerId: String,
-    // 业主姓名
+    // 业主名称
     ownerName: String,
     // 井盖材料
     coverMaterial: String,

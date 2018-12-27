@@ -19,16 +19,12 @@ export class DeviceService {
 
   // 查询全部数据
   async findAll(pagination: Pagination): Promise<IList<IDevice>> {
-    const reg = new RegExp(pagination.search, 'i');
-    const search = [
-      { deviceName: reg },
-    ];
     const list = await this.deviceModel
-      .find({ $or: search })
+      .find()
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .exec();
-    const total = await this.deviceModel.countDocuments({ $or: search });
+    const total = await this.deviceModel.countDocuments();
     return { list, total };
   }
 

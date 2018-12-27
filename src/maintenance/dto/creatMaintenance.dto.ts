@@ -5,13 +5,8 @@ import { Type } from 'class-transformer';
 export class CreateMaintenanceDTO {
   @IsMongoId()
   @Type(() => String)
-  @ApiModelProperty({ description: '窑井Id' })
+  @ApiModelProperty({ description: '窨井Id' })
   readonly wellId: string;
-
-  @IsMongoId()
-  @Type(() => String)
-  @ApiModelProperty({ description: '井盖Id' })
-  readonly coverId: string;
 
   @IsString()
   @Type(() => String)
@@ -24,7 +19,7 @@ export class CreateMaintenanceDTO {
   @ApiModelProperty({ description: '维修类型' })
   readonly maintenanceType: string;
 
-  @IsString()
+  @IsMongoId()
   @Type(() => String)
   @ApiModelProperty({ description: '负责人' })
   readonly principal: string;

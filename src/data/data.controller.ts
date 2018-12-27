@@ -85,12 +85,12 @@ export class DataController {
   }
 
   @ApiOkResponse({
-    description: '窑井信息历史数据列表',
+    description: '窨井信息历史数据列表',
     type: WellCoverDTO,
     isArray: true,
   })
   @Get('/wellCover/well/:id')
-  @ApiOperation({ title: '获取窑井信息历史数据列表', description: '获取窑井信息历史数据列表' })
+  @ApiOperation({ title: '获取窨井信息历史数据列表', description: '获取窨井信息历史数据列表' })
   wellCoverList(@Param('id', new MongodIdPipe()) id: string, @Query() pagination: Pagination) {
     return this.dataService.findAllWellCover(id, pagination);
   }

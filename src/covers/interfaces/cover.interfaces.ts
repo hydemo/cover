@@ -5,7 +5,7 @@ export interface ICover extends Document {
   readonly coverSN: string;
   // 业主id
   readonly ownerId: string;
-  // 业主姓名
+  // 业主名称
   readonly ownerName: string;
   // 井盖材料
   readonly coverMaterial: string;

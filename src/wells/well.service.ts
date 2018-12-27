@@ -5,11 +5,11 @@ import { CreateWellDTO } from './dto/creatWell.dto';
 import { Pagination } from '../common/dto/pagination.dto';
 import { IList } from '../common/interface/list.interface';
 import { DeviceService } from '../devices/device.service';
-import { CoverService } from '../covers/cover.service';
 import { CreateDeviceDTO } from '../devices/dto/creatDevice.dto';
-import { CreateCoverDTO } from '../covers/dto/creatCover.dto';
+import { CreateOwnerDTO } from '../owner/dto/creatOwner.dto';
 import { IDevice } from '../devices/interfaces/device.interfaces';
-import { ICover } from '../covers/interfaces/cover.interfaces';
+import { IOwner } from '../owner/interfaces/owner.interfaces';
+import { OwnerService } from '../owner/owner.service';
 
 @Injectable()
 export class WellService {
@@ -17,7 +17,7 @@ export class WellService {
   constructor(
     @Inject('WellModelToken') private readonly wellModel: Model<IWell>,
     private readonly deviceService: DeviceService,
-    private readonly coverService: CoverService,
+    private readonly ownerService: OwnerService,
   ) { }
 
   // 创建数据
@@ -28,25 +28,21 @@ export class WellService {
 
   // 查询全部数据
   async findPage(pagination: Pagination): Promise<IList<IWell>> {
-    const reg = new RegExp(pagination.search, 'i');
-    const search = [
-      { ownerId: reg },
-      { ownerName: reg },
-      { wellType: reg },
-      { wellSN: reg },
-      { longitude: reg },
-      { latitude: reg },
-      { location: reg },
-    ];
     const list: IWell[] = await this.wellModel
-      .find({ $or: search })
+      .find()
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
+      .populate({ path: 'ownerId', model: 'Owner' })
+      .populate({
+        path: 'deviceId', model: 'Device', populate: {
+          path: 'simId', model: 'Sim',
+        },
+      })
       .exec();
-    const total = await this.wellModel.countDocuments({ $or: search });
+    const total = await this.wellModel.countDocuments();
     return { list, total };
   }
-  // 获取窑井完整列表
+  // 获取窨井完整列表
   async findAll(): Promise<IWell[]> {
     return await this.wellModel
       .find()
@@ -55,7 +51,7 @@ export class WellService {
   // 获取井盖打开列表
   async findOpen(): Promise<IWell[]> {
     return await this.wellModel
-      .find({ 'status.coverIsOpen': true })
+      .find({ 'status.ownerIsOpen': true })
       .exec();
   }
   // 获取漏气列表
@@ -99,12 +95,12 @@ export class WellService {
     return await this.wellModel.findByIdAndUpdate(_id, { deviceId: creatDevice._id });
   }
   // 绑定旧井盖
-  async bindOldCover(_id: string, coverId: string) {
-    return await this.wellModel.findByIdAndUpdate(_id, { coverId });
+  async bindOldOwner(_id: string, ownerId: string) {
+    return await this.wellModel.findByIdAndUpdate(_id, { ownerId });
   }
   // 绑定新井盖
-  async bindNewCover(_id: string, cover: CreateCoverDTO) {
-    const creatCover: ICover = await this.coverService.create(cover);
-    return await this.wellModel.findByIdAndUpdate(_id, { coverId: creatCover._id });
+  async bindNewOwner(_id: string, owner: CreateOwnerDTO) {
+    const creatOwner: IOwner = await this.ownerService.create(owner);
+    return await this.wellModel.findByIdAndUpdate(_id, { ownerId: creatOwner._id });
   }
 }

@@ -58,15 +58,15 @@ export class EventController {
   })
   @Post('/warning/:id/principal')
   @ApiOperation({ title: '分配负责人', description: '分配负责人' })
-  async bindPrincipal(@Param('id', new MongodIdPipe()) id: string, @Body('name') name: string) {
-    await this.eventService.bindPrincipal(id, name);
+  async bindPrincipal(@Param('id', new MongodIdPipe()) id: string, @Body('userId') userId: string) {
+    await this.eventService.bindPrincipal(id, userId);
     return { statusCode: 200, msg: '分配负责人成功' };
   }
 
   @ApiOkResponse({
     description: '取消警告',
   })
-  @Post('/warning/:id/cancle')
+  @Post('/warning/:id/cancel')
   @ApiOperation({ title: '取消警告', description: '取消警告' })
   async cancelWarning(@Param('id', new MongodIdPipe()) id: string) {
     await this.eventService.cancelWarning(id);

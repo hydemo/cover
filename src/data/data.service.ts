@@ -137,7 +137,7 @@ export class DataService {
     return { list, total };
   }
   /**
-   * 新增窑井信息历史记录
+   * 新增窨井信息历史记录
    * @param WellCoverDTO WellCover实体
    */
   async createWellCover(wellCoverDTO: WellCoverDTO) {
@@ -145,7 +145,7 @@ export class DataService {
     return await wellCover.save();
   }
   /**
-   * 获取窑井信息历史数据
+   * 获取窨井信息历史数据
    * @param pagination 分页
    */
   async findAllWellCover(wellId: string, pagination: Pagination): Promise<IList<IWellCover>> {

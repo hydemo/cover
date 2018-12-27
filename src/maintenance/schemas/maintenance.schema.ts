@@ -7,15 +7,13 @@ export const MaintenanceSchema = new mongoose.Schema(
     // 维修类型
     maintenanceType: { type: String, enum: ['Battery', 'Open', 'Leak'], required: true },
     // 负责人
-    principal: String,
+    principal: ObjectId,
     // 发生时间
     occurTime: Date,
     // 警告id
     warningId: ObjectId,
-    // 窑井Id
+    // 窨井Id
     wellId: ObjectId,
-    // 井盖Id
-    coverId: ObjectId,
     // 设备id
     deviceId: ObjectId,
     // 地点

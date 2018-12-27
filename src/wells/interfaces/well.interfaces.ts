@@ -2,18 +2,18 @@ import { Document } from 'mongoose';
 import { IStatus } from './status.interfaces';
 
 export interface IWell extends Document {
-  // 编号
+  // 窨井编号
   readonly wellSN: string;
   // 业主id
   readonly ownerId?: string;
-  // 业主姓名
-  readonly ownerName?: string;
-  // 窑井类型
+  // 窨井类型
   readonly wellType?: string;
-  // 窑井口径
-  readonly wellCaliber?: number;
-  // 窑井深度
-  readonly wellDepth?: number;
+  // 井壁口径
+  readonly wellCaliber?: string;
+  // 井盖口径
+  readonly coverCaliber?: string;
+  // 窨井深度
+  readonly wellDepth?: string;
   // 经度
   readonly longitude?: string;
   // 纬度
@@ -22,8 +22,6 @@ export interface IWell extends Document {
   readonly location?: string;
   // 状态
   readonly status: IStatus;
-  // 窑井位置
-  readonly coverId?: string;
   // 设备Id
   readonly deviceId?: string;
   // 布防/撤防
