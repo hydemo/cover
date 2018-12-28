@@ -18,6 +18,7 @@ import { WarningsDTO } from './dto/creatWarning.dto';
 import { Pagination } from '../common/dto/pagination.dto';
 import { MongodIdPipe } from '../common/pipe/mongodId.pipe';
 import { IUser } from 'src/users/interfaces/user.interfaces';
+import { AuthGuard } from '@nestjs/passport';
 
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy
@@ -57,6 +58,7 @@ export class EventController {
   @ApiOkResponse({
     description: '分配负责人',
   })
+  @UseGuards(AuthGuard())
   @Post('/warning/:id/principal')
   @ApiOperation({ title: '分配负责人', description: '分配负责人' })
   async bindPrincipal(

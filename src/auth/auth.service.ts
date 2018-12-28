@@ -22,8 +22,8 @@ export class AuthService {
 
     async login(email: string, password: string): Promise<IUser> {
         const user: IUser = await this.userService.findOneByEmail(email);
-        if (!user) throw new HttpException('登录账号有误', 406);
-        if (!this.cryptoUtil.checkPassword(password, user.password)) throw new HttpException('登录密码有误', 406);
+        if (!user) throw new HttpException('登录账号有误', 4000);
+        if (!this.cryptoUtil.checkPassword(password, user.password)) throw new HttpException('登录密码有误', 4000);
         user.accessToken = await this.createToken({ email });
         delete user.password;
         return user;
