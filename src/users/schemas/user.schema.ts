@@ -4,6 +4,8 @@ export const UserSchema = new mongoose.Schema(
   {
     // 姓名
     name: String,
+    // 头像
+    avatar: String,
     // 邮箱
     email: String,
     // 密码

@@ -26,7 +26,7 @@ export class MaintenanceService {
     const list = await this.maintenanceModel
       .find()
       .limit(pagination.limit)
-      .sort({ status: 1, creadedAt: 1 })
+      .sort({ status: 1, occurTime: -1 })
       .skip((pagination.offset - 1) * pagination.limit)
       .populate({ path: 'wellId', model: 'Well' })
       .populate({ path: 'coverId', model: 'Cover' })

@@ -54,6 +54,13 @@ export class WellService {
       .find({ 'status.ownerIsOpen': true })
       .exec();
   }
+
+  // 获取电量不足列表
+  async findBattery(): Promise<IWell[]> {
+    return await this.wellModel
+      .find({ 'status.batteryLevel': { $lt: 20 } })
+      .exec();
+  }
   // 获取漏气列表
   async findLeak(): Promise<IWell[]> {
     return await this.wellModel

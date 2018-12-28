@@ -3,6 +3,7 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { CoverModule } from './covers/cover.module';
 import { WellModule } from './wells/well.module';
+import { join } from 'path';
 import { DeviceModule } from './devices/device.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DataModule } from './data/data.module';
@@ -21,6 +22,8 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new LoggingInterceptor());
+  const uploadedPath = join(__dirname, '../', 'upload');
+  app.useStaticAssets(uploadedPath);
   const ApiOptions = new DocumentBuilder()
     .setTitle('井盖API文档')
     .setDescription('井盖API文档')

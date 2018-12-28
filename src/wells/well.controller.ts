@@ -55,14 +55,25 @@ export class WellController {
   }
 
   @ApiOkResponse({
-    description: '业主打开列表',
+    description: '井盖打开列表',
     type: CreateWellDTO,
     isArray: true,
   })
-  @ApiOperation({ title: '获取业主打开列表', description: '获取业主打开列表' })
+  @ApiOperation({ title: '获取井盖打开列表', description: '获取井盖打开列表' })
   @Get('/open')
   async wellListOpen() {
     return await this.wellService.findOpen();
+  }
+
+  @ApiOkResponse({
+    description: '电量不足列表',
+    type: CreateWellDTO,
+    isArray: true,
+  })
+  @ApiOperation({ title: '获取电量不足列表', description: '获取电量不足列表' })
+  @Get('/battery')
+  async wellListBattery() {
+    return await this.wellService.findBattery();
   }
 
   @ApiOkResponse({
