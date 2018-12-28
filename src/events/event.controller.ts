@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UnauthorizedException, UseGuards, UsePipes, ExecutionContext } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UnauthorizedException, UseGuards, Request } from '@nestjs/common';
 
 // import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
 // import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
@@ -62,11 +62,11 @@ export class EventController {
   @Post('/warning/:id/principal')
   @ApiOperation({ title: '分配负责人', description: '分配负责人' })
   async bindPrincipal(
-    context: ExecutionContext,
+    @Request() request,
     @Param('id', new MongodIdPipe()) id: string,
     @Body('userId') userId: string,
   ) {
-    const request = context.switchToHttp().getRequest();
+
     const user: IUser = request.user;
     await this.eventService.bindPrincipal(id, userId, user._id);
     // await this.eventService.bindPrincipal(id, userId, user._id);
