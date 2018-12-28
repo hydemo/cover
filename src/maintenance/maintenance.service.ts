@@ -24,15 +24,16 @@ export class MaintenanceService {
   // 查询全部数据
   async findAll(pagination: Pagination): Promise<IList<IMaintenance>> {
     const list = await this.maintenanceModel
-      .find({ status: { $lt: 3 } })
+      .find()
       .limit(pagination.limit)
-      .sort({ status: -1, creadedAt: -1 })
+      .sort({ status: 1, creadedAt: 1 })
       .skip((pagination.offset - 1) * pagination.limit)
       .populate({ path: 'wellId', model: 'Well' })
       .populate({ path: 'coverId', model: 'Cover' })
       .populate({ path: 'deviceId', model: 'Device' })
+      .populate({ path: 'principal', model: 'User' })
       .exec();
-    const total = await this.maintenanceModel.countDocuments({ status: { $lt: 3 } });
+    const total = await this.maintenanceModel.countDocuments();
     return { list, total };
   }
 

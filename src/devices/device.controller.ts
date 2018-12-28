@@ -81,4 +81,14 @@ export class DeviceController {
     await this.deviceService.deleteById(id);
     return { statusCode: 200, msg: '删除设备成功' };
   }
+
+  @Put('/:_id/sim/:simId')
+  @ApiOkResponse({
+    description: '绑定旧sim卡成功',
+  })
+  @ApiOperation({ title: '绑定旧sim卡', description: '绑定旧sim卡' })
+  async bindOldDevice(@Param('_id', new MongodIdPipe()) _id: string, @Param('simId', new MongodIdPipe()) simId: string) {
+    this.deviceService.bindOldSim(_id, simId);
+    return { statusCode: 200, msg: '绑定旧sim卡成功' };
+  }
 }

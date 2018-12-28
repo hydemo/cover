@@ -26,6 +26,8 @@ export const MaintenanceSchema = new mongoose.Schema(
     recoverTime: Date,
     // 反馈时间
     feedbackTime: Date,
+    // 接警人
+    creatorId: ObjectId,
     // 状态
     status: { type: Number, enum: [0, 1, 2, 3], default: 0 },
   },

@@ -23,6 +23,7 @@ export class DeviceService {
       .find()
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
+      .populate({ path: 'simId', model: 'Sim' })
       .exec();
     const total = await this.deviceModel.countDocuments();
     return { list, total };
@@ -44,5 +45,10 @@ export class DeviceService {
   // 根据id删除
   async deleteById(_id: string) {
     return await this.deviceModel.findByIdAndDelete(_id).exec();
+  }
+
+  // 绑定旧sim卡
+  async bindOldSim(_id: string, simId: string) {
+    return await this.deviceModel.findByIdAndUpdate(_id, { simId });
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UnauthorizedException, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGuards, UsePipes, ExecutionContext } from '@nestjs/common';
 
 // import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
 // import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
@@ -83,5 +83,14 @@ export class UserController {
   async resetPassWord(@Param('id', new MongodIdPipe()) id: string, @Body('password') password: string) {
     await this.userService.resetPassword(id, password);
     return { statusCode: 200, msg: '修改用户密码成功 ' };
+  }
+  @Get('/me')
+  @ApiOkResponse({
+    description: '获取当前用户信息',
+  })
+  @UseGuards(AuthGuard())
+  @ApiOperation({ title: '获取当前用户信息', description: '获取当前用户信息' })
+  async getMe(@Request() req) {
+    return { statusCode: 200, data: req.user };
   }
 }

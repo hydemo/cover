@@ -63,6 +63,11 @@ export class CreateMaintenanceDTO {
   @ApiModelProperty({ description: '反馈时间' })
   readonly feedbackTime?: Date;
 
+  @IsMongoId()
+  @Type(() => String)
+  @ApiModelProperty({ description: '接警人' })
+  readonly creatorId: string;
+
   @IsNumber()
   @IsEnum([0, 1, 2, 3])
   @Type(() => Number)

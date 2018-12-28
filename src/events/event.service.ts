@@ -122,7 +122,7 @@ export class EventService {
     return { list, total };
   }
 
-  async bindPrincipal(id: string, userId: string) {
+  async bindPrincipal(id: string, userId: string, creatorId: string) {
     const warning: IWarning = await this.warningModel
       .findById(id)
       .exec();
@@ -135,7 +135,9 @@ export class EventService {
       location: well.location,
       maintenanceType: warning.warningType,
       occurTime: warning.createdAt,
+      creatorId,
       status: 0,
+
     };
     await this.maintenanceService.create(maintenance);
     await this.warningModel.findByIdAndUpdate(id, { isHandle: true });
@@ -154,7 +156,7 @@ export class EventService {
     well.status.batteryLevel = battery.batteryLevel;
     await this.wellService.updateById(battery.wellId, well);
     await this.dataService.createBattery(battery);
-    if (battery.batteryLevel < 20 && !well.isDefence) {
+    if (battery.batteryLevel < 20 && well.isDefence) {
       const warning: WarningsDTO = {
         wellId: battery.wellId,
         deviceId: battery.deviceId,
@@ -171,7 +173,7 @@ export class EventService {
     well.status.coverIsOpen = alarm.coverIsOpen;
     well.status.gasLeak = alarm.gasLeak;
     await this.wellService.updateById(alarm.wellId, well);
-    if (alarm.coverIsOpen && !well.isDefence) {
+    if (alarm.coverIsOpen && well.isDefence) {
       const warning: WarningsDTO = {
         wellId: alarm.wellId,
         deviceId: alarm.deviceId,
@@ -181,7 +183,7 @@ export class EventService {
       };
       await this.create(warning);
     }
-    if (alarm.gasLeak && !well.isDefence) {
+    if (alarm.gasLeak && well.isDefence) {
       const warning: WarningsDTO = {
         wellId: alarm.wellId,
         deviceId: alarm.deviceId,

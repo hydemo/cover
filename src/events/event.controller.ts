@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UnauthorizedException, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UnauthorizedException, UseGuards, UsePipes, ExecutionContext } from '@nestjs/common';
 
 // import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
 // import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
@@ -17,6 +17,7 @@ import { EventsDTO } from './dto/event.dto';
 import { WarningsDTO } from './dto/creatWarning.dto';
 import { Pagination } from '../common/dto/pagination.dto';
 import { MongodIdPipe } from '../common/pipe/mongodId.pipe';
+import { IUser } from 'src/users/interfaces/user.interfaces';
 
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy
@@ -58,8 +59,15 @@ export class EventController {
   })
   @Post('/warning/:id/principal')
   @ApiOperation({ title: '分配负责人', description: '分配负责人' })
-  async bindPrincipal(@Param('id', new MongodIdPipe()) id: string, @Body('userId') userId: string) {
-    await this.eventService.bindPrincipal(id, userId);
+  async bindPrincipal(
+    context: ExecutionContext,
+    @Param('id', new MongodIdPipe()) id: string,
+    @Body('userId') userId: string,
+  ) {
+    const request = context.switchToHttp().getRequest();
+    const user: IUser = request.user;
+    await this.eventService.bindPrincipal(id, userId, user._id);
+    // await this.eventService.bindPrincipal(id, userId, user._id);
     return { statusCode: 200, msg: '分配负责人成功' };
   }
 

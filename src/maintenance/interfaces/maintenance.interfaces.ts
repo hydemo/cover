@@ -23,6 +23,8 @@ export interface IMaintenance extends Document {
   readonly recoverTime: Date;
   // 反馈时间
   readonly feedbackTime: Date;
+  // 接警人
+  readonly creatorId: string;
   // 状态
   readonly status: number;
 }

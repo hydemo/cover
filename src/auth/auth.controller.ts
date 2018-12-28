@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 
 import {
   ApiUseTags,
@@ -13,6 +13,7 @@ import {
 import { CreateUserDTO } from '../users/dto/creatUsers.dto';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './login.dto';
+import { AuthGuard } from '_@nestjs_passport@5.1.0@@nestjs/passport';
 
 @ApiUseTags('auth')
 
