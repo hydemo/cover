@@ -17,7 +17,7 @@ import { EventsDTO } from './dto/event.dto';
 import { WarningsDTO } from './dto/creatWarning.dto';
 import { Pagination } from '../common/dto/pagination.dto';
 import { MongodIdPipe } from '../common/pipe/mongodId.pipe';
-import { IUser } from 'src/users/interfaces/user.interfaces';
+import { IUser } from '../users/interfaces/user.interfaces';
 import { AuthGuard } from '@nestjs/passport';
 
 // UseGuards()傳入@nest/passport下的AuthGuard

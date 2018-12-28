@@ -9,7 +9,7 @@ const validator = new Validator();
 export class MongodIdPipe implements PipeTransform<string, string> {
   transform(value: string, metadata: ArgumentMetadata): string {
     if (!validator.isMongoId(value)) {
-      throw new ApiException('无效的ID', ApiErrorCode.USER_ID_INVALID, 4000);
+      throw new ApiException('无效的ID', ApiErrorCode.USER_ID_INVALID, 406);
     }
     return value;
   }

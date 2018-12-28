@@ -3,6 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../users/user.service';
 import { IUser } from '../users/interfaces/user.interfaces';
 import { CryptoUtil } from '../utils/crypto.util';
+import { ApiErrorCode } from '../common/enum/api-error-code.enum';
+import { ApiException } from '../common/expection/api.exception';
 
 @Injectable()
 export class AuthService {
@@ -22,8 +24,9 @@ export class AuthService {
 
     async login(email: string, password: string): Promise<IUser> {
         const user: IUser = await this.userService.findOneByEmail(email);
-        if (!user) throw new HttpException('登录账号有误', 4000);
-        if (!this.cryptoUtil.checkPassword(password, user.password)) throw new HttpException('登录密码有误', 4000);
+        if (!user) throw new ApiException('登陆账号有误', ApiErrorCode.ACCOUNT_INVALID, 406);
+        if (!this.cryptoUtil.checkPassword(password, user.password))
+            throw new ApiException('密码有误', ApiErrorCode.PASSWORD_INVALID, 406);
         user.accessToken = await this.createToken({ email });
         delete user.password;
         return user;
