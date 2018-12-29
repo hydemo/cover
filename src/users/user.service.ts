@@ -29,20 +29,35 @@ export class UserService {
     return creatUser;
   }
 
+  async findByCondition(condition: any): Promise<IUser[]> {
+    return await this.userModel.find(condition);
+  }
+
   // 查询全部数据
   async findAll(pagination: Pagination): Promise<IList<IUser>> {
-    const reg = new RegExp(pagination.search, 'i');
-    const search = [
-      { name: reg },
-      { email: reg },
-    ];
+    const search = [];
+    const condition: any = {};
+    if (pagination.search) {
+      const sea = JSON.parse(pagination.search);
+      for (const key in sea) {
+        if (key === 'base' && sea[key]) {
+          search.push({ name: new RegExp(sea[key], 'i') });
+          search.push({ email: new RegExp(sea[key], 'i') });
+        } else if (sea[key] === 0 || sea[key]) {
+          condition[key] = sea[key];
+        }
+      }
+      if (search.length) {
+        condition.$or = search;
+      }
+    }
     const list = await this.userModel
-      .find({ $or: search })
+      .find(condition)
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .select({ password: 0 })
       .exec();
-    const total = await this.userModel.countDocuments({ $or: search });
+    const total = await this.userModel.countDocuments(condition);
     return { list, total };
   }
 
@@ -73,5 +88,10 @@ export class UserService {
   async resetPassword(_id: string, newPass: string) {
     const password = this.cryptoUtil.encryptPassword(newPass);
     return await this.userModel.findByIdAndUpdate(_id, { password }).exec();
+  }
+  async upload(userId: string, filename: string) {
+    const user = await this.userModel.findByIdAndUpdate(userId, { avatar: filename });
+    delete user.password;
+    return user;
   }
 }

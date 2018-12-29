@@ -26,10 +26,40 @@ export class WellService {
     return await creatWell.save();
   }
 
+  async findByCondition(condition: any): Promise<IWell[]> {
+    return await this.wellModel.find(condition);
+  }
+
   // 查询全部数据
   async findPage(pagination: Pagination): Promise<IList<IWell>> {
+    const search = [];
+    const condition: any = {};
+    if (pagination.search) {
+      const sea = JSON.parse(pagination.search);
+      for (const key in sea) {
+        if (key === 'base' && sea[key]) {
+          search.push({ wellSN: new RegExp(sea[key], 'i') });
+          search.push({ wellType: new RegExp(sea[key], 'i') });
+          search.push({ location: new RegExp(sea[key], 'i') });
+          const ownerCondition = {
+            $or: [
+              { ownerId: new RegExp(sea[key], 'i') },
+              { ownerName: new RegExp(sea[key], 'i') },
+            ],
+          };
+          const owners = await this.ownerService.findByCondition(ownerCondition);
+          const ownerIds = owners.map(owner => owner._id);
+          search.push({ ownerId: { $in: ownerIds } });
+        } else if (sea[key] === 0 || sea[key]) {
+          condition[key] = sea[key];
+        }
+      }
+      if (search.length) {
+        condition.$or = search;
+      }
+    }
     const list: IWell[] = await this.wellModel
-      .find()
+      .find(condition)
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .populate({ path: 'ownerId', model: 'Owner' })
@@ -39,7 +69,7 @@ export class WellService {
         },
       })
       .exec();
-    const total = await this.wellModel.countDocuments();
+    const total = await this.wellModel.countDocuments(condition);
     return { list, total };
   }
   // 获取窨井完整列表
@@ -51,7 +81,7 @@ export class WellService {
   // 获取井盖打开列表
   async findOpen(): Promise<IWell[]> {
     return await this.wellModel
-      .find({ 'status.ownerIsOpen': true })
+      .find({ 'status.coverIsOpen': true })
       .exec();
   }
 
@@ -75,6 +105,12 @@ export class WellService {
   async findByDeviceSn(deviceSn: string): Promise<IWell> {
     const device: IDevice = await this.deviceService.findByDeviceSn(deviceSn);
     return await this.wellModel.findOne({ deviceId: device._id }).exec();
+  }
+  async getCounts() {
+    const open = await this.wellModel.countDocuments({ 'status.coverIsOpen': true });
+    const leak = await this.wellModel.countDocuments({ 'status.gasLeak': true });
+    const battery = await this.wellModel.countDocuments({ 'status.batteryLevel': { $lt: 20 } });
+    return { open, battery, leak };
   }
   // 根据id修改
   async updateById(_id: string, well: CreateWellDTO) {

@@ -5,6 +5,8 @@ import { CreateMaintenanceDTO } from './dto/creatMaintenance.dto';
 import { Pagination } from '../common/dto/pagination.dto';
 import { IList } from '../common/interface/list.interface';
 import { WellService } from '../wells/well.service';
+import { UserService } from '../users/user.service';
+import { DeviceService } from '../devices/device.service';
 
 @Injectable()
 export class MaintenanceService {
@@ -12,6 +14,8 @@ export class MaintenanceService {
   constructor(
     @Inject('MaintenanceModelToken') private readonly maintenanceModel: Model<IMaintenance>,
     @Inject(WellService) private readonly wellService: WellService,
+    @Inject(UserService) private readonly userService: UserService,
+    @Inject(DeviceService) private readonly deviceService: DeviceService,
   ) { }
 
   // 创建数据
@@ -23,8 +27,41 @@ export class MaintenanceService {
 
   // 查询全部数据
   async findAll(pagination: Pagination): Promise<IList<IMaintenance>> {
+    const search = [];
+    const condition: any = {};
+    if (pagination.search) {
+      const sea = JSON.parse(pagination.search);
+      for (const key in sea) {
+        if (key === 'base' && sea[key]) {
+          search.push({ location: new RegExp(sea[key], 'i') });
+          const wellCondition = {
+            $or: [{ wellSN: new RegExp(sea[key], 'i') }],
+          };
+          const wells = await this.wellService.findByCondition(wellCondition);
+          const wellIds = wells.map(well => well._id);
+          search.push({ wellId: { $in: wellIds } });
+          const deviceCondition = {
+            $or: [{ deviceSn: new RegExp(sea[key], 'i') }],
+          };
+          const devices = await this.deviceService.findByCondition(deviceCondition);
+          const deviceIds = devices.map(device => device._id);
+          search.push({ deviceId: { $in: deviceIds } });
+          const userCondition = {
+            $or: [{ name: new RegExp(sea[key], 'i') }],
+          };
+          const users = await this.userService.findByCondition(userCondition);
+          const userIds = users.map(user => user._id);
+          search.push({ principal: { $in: userIds } });
+        } else if (sea[key] === 0 || sea[key]) {
+          condition[key] = sea[key];
+        }
+      }
+      if (search.length) {
+        condition.$or = search;
+      }
+    }
     const list = await this.maintenanceModel
-      .find()
+      .find(condition)
       .limit(pagination.limit)
       .sort({ status: 1, occurTime: -1 })
       .skip((pagination.offset - 1) * pagination.limit)
@@ -33,7 +70,7 @@ export class MaintenanceService {
       .populate({ path: 'deviceId', model: 'Device' })
       .populate({ path: 'principal', model: 'User' })
       .exec();
-    const total = await this.maintenanceModel.countDocuments();
+    const total = await this.maintenanceModel.countDocuments(condition);
     return { list, total };
   }
 

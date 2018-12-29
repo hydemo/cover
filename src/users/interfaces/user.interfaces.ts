@@ -11,5 +11,6 @@ export interface IUser extends Document {
   password: string;
   //
   accessToken: string;
+  avatar: string;
 
 }

@@ -17,18 +17,36 @@ export class OwnerService {
     return creatOwner;
   }
 
+  async findByCondition(condition: any): Promise<IOwner[]> {
+    return await this.ownerModel.find(condition);
+  }
+
   // 查询全部数据
   async findAll(pagination: Pagination): Promise<IList<IOwner>> {
-    const reg = new RegExp(pagination.search, 'i');
-    const search = [
-      { ownerName: reg },
-    ];
+    const search = [];
+    const condition: any = {};
+    if (pagination.search) {
+      const sea = JSON.parse(pagination.search);
+      for (const key in sea) {
+        if (key === 'base' && sea[key]) {
+          search.push({ ownerId: new RegExp(sea[key], 'i') });
+          search.push({ ownerName: new RegExp(sea[key], 'i') });
+          search.push({ contact: new RegExp(sea[key], 'i') });
+          search.push({ phone: new RegExp(sea[key], 'i') });
+        } else if (sea[key] === 0 || sea[key]) {
+          condition[key] = sea[key];
+        }
+      }
+      if (search.length) {
+        condition.$or = search;
+      }
+    }
     const list = await this.ownerModel
-      .find({ $or: search })
+      .find(condition)
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .exec();
-    const total = await this.ownerModel.countDocuments({ $or: search });
+    const total = await this.ownerModel.countDocuments(condition);
     return { list, total };
   }
 

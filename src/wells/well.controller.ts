@@ -55,6 +55,14 @@ export class WellController {
   }
 
   @ApiOkResponse({
+    description: '获取异常个数',
+  })
+  @ApiOperation({ title: '获取异常个数', description: '获取异常个数' })
+  @Get('/counts')
+  async getCounts() {
+    return await this.wellService.getCounts();
+  }
+  @ApiOkResponse({
     description: '井盖打开列表',
     type: CreateWellDTO,
     isArray: true,

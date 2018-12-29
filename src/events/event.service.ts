@@ -109,8 +109,24 @@ export class EventService {
     }
   }
   async getWarningList(pagination: Pagination): Promise<IList<IWarning>> {
+    const search = [];
+    const condition: any = {};
+    if (pagination.search) {
+      const sea = JSON.parse(pagination.search);
+      for (const key in sea) {
+        if (key === 'base' && sea[key]) {
+          continue;
+        } else if (sea[key] === 0 || sea[key]) {
+          condition[key] = false;
+        }
+      }
+      if (search.length) {
+        condition.$or = search;
+      }
+    }
+    console.log(condition, 'condition')
     const list = await this.warningModel
-      .find()
+      .find(condition)
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .sort({ isHandle: 1, createdAt: -1 })
@@ -118,7 +134,7 @@ export class EventService {
       .populate({ path: 'coverId', model: 'Cover' })
       .populate({ path: 'deviceId', model: 'Device' })
       .exec();
-    const total = await this.warningModel.countDocuments();
+    const total = await this.warningModel.countDocuments(condition);
     return { list, total };
   }
 
@@ -180,6 +196,7 @@ export class EventService {
         warningType: 'Open',
         coverIsOpen: alarm.coverIsOpen,
         isHandle: false,
+        batteryLevel: well.status.batteryLevel,
       };
       await this.create(warning);
     }
@@ -190,6 +207,7 @@ export class EventService {
         warningType: 'Leak',
         gasLeak: alarm.gasLeak,
         isHandle: false,
+        batteryLevel: well.status.batteryLevel,
       };
       await this.create(warning);
     }

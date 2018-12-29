@@ -13,9 +13,9 @@ export const WarningSchema = new mongoose.Schema(
     // 电量水平
     batteryLevel: Number,
     // 井盖是否打开
-    coverIsOpen: Boolean,
+    coverIsOpen: { type: Boolean, default: false },
     // 燃气是否泄漏
-    gasLeak: Boolean,
+    gasLeak: { type: Boolean, default: false },
     // 警告状态
     isHandle: { type: Boolean, default: false },
   },

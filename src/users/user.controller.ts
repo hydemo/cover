@@ -1,7 +1,19 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGuards, UsePipes, ExecutionContext } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  Request,
+  UseGuards,
+  UseInterceptors,
+  FileInterceptor,
+  UploadedFile,
+} from '@nestjs/common';
 
-// import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
-// import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
 import { UserService } from './user.service';
 import { Pagination } from '../common/dto/pagination.dto';
 import {
@@ -92,5 +104,15 @@ export class UserController {
   @ApiOperation({ title: '获取当前用户信息', description: '获取当前用户信息' })
   async getMe(@Request() req) {
     return { statusCode: 200, data: req.user };
+  }
+
+  @Post('/upload')
+  @UseGuards(AuthGuard())
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadImage(@Request() req, @UploadedFile() file) {
+    const array = (file.originalname).split('.');
+    const length = array.length;
+    const filename = `${file.filename}.${array[length - 1]}`;
+    return await this.userService.upload(req.user._id, filename);
   }
 }

@@ -19,21 +19,28 @@ export class CoverService {
 
   // 查询全部数据
   async findAll(pagination: Pagination): Promise<IList<ICover>> {
-    const reg = new RegExp(pagination.search, 'i');
-    const search = [
-      { coverSN: reg },
-      { ownerId: reg },
-      { ownerName: reg },
-      { coverMaterial: reg },
-      { coverType: reg },
-      { holeLocation: reg },
-    ];
+    const search = [];
+    const condition: any = {};
+    if (pagination.search) {
+      const sea = JSON.parse(pagination.search);
+      for (const key in sea) {
+        if (key === 'base' && sea[key]) {
+          search.push({ name: new RegExp(sea[key], 'i') });
+          search.push({ email: new RegExp(sea[key], 'i') });
+        } else if (sea[key] === 0 || sea[key]) {
+          condition[key] = sea[key];
+        }
+      }
+      if (search.length) {
+        condition.$or = search;
+      }
+    }
     const list = await this.coverModel
-      .find({ $or: search })
+      .find(condition)
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .exec();
-    const total = await this.coverModel.countDocuments({ $or: search });
+    const total = await this.coverModel.countDocuments(condition);
     return { list, total };
   }
 

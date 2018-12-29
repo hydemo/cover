@@ -1,5 +1,5 @@
 import { ApiModelPropertyOptional } from '@nestjs/swagger';
-import { IsNumber, IsPositive, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsPositive, IsOptional, IsJSON, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class Pagination {
@@ -15,9 +15,7 @@ export class Pagination {
   @ApiModelPropertyOptional({ type: Number, example: 10 })
   @Type(() => Number)
   readonly limit?: number = 10;
+
   @IsString()
-  @IsOptional()
-  @ApiModelPropertyOptional({ type: String, example: '' })
-  @Type(() => String)
-  readonly search?: string = '';
+  readonly search?: string;
 }

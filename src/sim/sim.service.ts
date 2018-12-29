@@ -19,16 +19,31 @@ export class SimService {
 
   // 查询全部数据
   async findAll(pagination: Pagination): Promise<IList<ISim>> {
-    const reg = new RegExp(pagination.search, 'i');
-    const search = [
-      { cardNumber: reg },
-    ];
+    const search = [];
+    const condition: any = {};
+    if (pagination.search) {
+      const sea = JSON.parse(pagination.search);
+      for (const key in sea) {
+        if (key === 'base' && sea[key]) {
+          search.push({ cardNumber: new RegExp(sea[key], 'i') });
+          search.push({ operator: new RegExp(sea[key], 'i') });
+          search.push({ tatalFlow: new RegExp(sea[key], 'i') });
+          search.push({ tatalTariff: new RegExp(sea[key], 'i') });
+          search.push({ status: new RegExp(sea[key], 'i') });
+        } else if (sea[key] === 0 || sea[key]) {
+          condition[key] = sea[key];
+        }
+      }
+      if (search.length) {
+        condition.$or = search;
+      }
+    }
     const list = await this.simModel
-      .find({ $or: search })
+      .find(condition)
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .exec();
-    const total = await this.simModel.countDocuments({ $or: search });
+    const total = await this.simModel.countDocuments(condition);
     return { list, total };
   }
 

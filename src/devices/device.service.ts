@@ -17,15 +17,39 @@ export class DeviceService {
     return creatDevice;
   }
 
+  async findByCondition(condition: any): Promise<IDevice[]> {
+    return await this.deviceModel.find(condition);
+  }
+
   // 查询全部数据
   async findAll(pagination: Pagination): Promise<IList<IDevice>> {
+    const search = [];
+    const condition: any = {};
+    if (pagination.search) {
+      const sea = JSON.parse(pagination.search);
+      for (const key in sea) {
+        if (key === 'base' && sea[key]) {
+          search.push({ deviceSn: new RegExp(sea[key], 'i') });
+          search.push({ deviceName: new RegExp(sea[key], 'i') });
+          search.push({ deviceType: new RegExp(sea[key], 'i') });
+          search.push({ hardwareVersion: new RegExp(sea[key], 'i') });
+          search.push({ softwareVersion: new RegExp(sea[key], 'i') });
+          search.push({ status: new RegExp(sea[key], 'i') });
+        } else if (sea[key] === 0 || sea[key]) {
+          condition[key] = sea[key];
+        }
+      }
+      if (search.length) {
+        condition.$or = search;
+      }
+    }
     const list = await this.deviceModel
-      .find()
+      .find(condition)
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .populate({ path: 'simId', model: 'Sim' })
       .exec();
-    const total = await this.deviceModel.countDocuments();
+    const total = await this.deviceModel.countDocuments(condition);
     return { list, total };
   }
 
