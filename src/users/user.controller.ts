@@ -25,6 +25,8 @@ import {
   ApiBadRequestResponse,
   ApiInternalServerErrorResponse,
   ApiOperation,
+  ApiConsumes,
+  ApiImplicitFile,
 } from '@nestjs/swagger';
 import { MongodIdPipe } from '../common/pipe/mongodId.pipe';
 import { IUser } from './interfaces/user.interfaces';
@@ -32,6 +34,7 @@ import { CreateUserDTO } from './dto/creatUsers.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../common/guard/roles.guard';
 import { Roles } from '../common/decorator/roles.decorator';
+import { MulterField } from '@nestjs/common/interfaces/external/multer-options.interface';
 
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy
@@ -107,12 +110,15 @@ export class UserController {
   }
 
   @Post('/upload')
-  @UseGuards(AuthGuard())
+  // @UseGuards(AuthGuard())
+  @ApiConsumes('multipart/form-data')
+  @ApiImplicitFile({ name: 'file', required: true, description: 'List of cats' })
   @UseInterceptors(FileInterceptor('file'))
   async uploadImage(@Request() req, @UploadedFile() file) {
-    const array = (file.originalname).split('.');
-    const length = array.length;
-    const filename = `${file.filename}.${array[length - 1]}`;
-    return await this.userService.upload(req.user._id, filename);
+    return file;
+    // const array = (file.originalname).split('.');
+    // const length = array.length;
+    // const filename = `${file.filename}.${array[length - 1]}`;
+    // return await this.userService.upload(req.user._id, filename);
   }
 }
