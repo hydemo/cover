@@ -10,8 +10,8 @@ import { CreateOwnerDTO } from '../owner/dto/creatOwner.dto';
 import { IDevice } from '../devices/interfaces/device.interfaces';
 import { IOwner } from '../owner/interfaces/owner.interfaces';
 import { OwnerService } from '../owner/owner.service';
-import { ApiErrorCode } from 'src/common/enum/api-error-code.enum';
-import { ApiException } from 'src/common/expection/api.exception';
+import { ApiErrorCode } from '../common/enum/api-error-code.enum';
+import { ApiException } from '../common/expection/api.exception';
 
 @Injectable()
 export class WellService {

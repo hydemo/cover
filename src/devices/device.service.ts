@@ -4,9 +4,9 @@ import { IDevice } from './interfaces/device.interfaces';
 import { CreateDeviceDTO } from './dto/creatDevice.dto';
 import { Pagination } from '../common/dto/pagination.dto';
 import { IList } from '../common/interface/list.interface';
-import { ApiErrorCode } from 'src/common/enum/api-error-code.enum';
-import { ApiException } from 'src/common/expection/api.exception';
-import { SimService } from 'src/sim/sim.service';
+import { ApiErrorCode } from '../common/enum/api-error-code.enum';
+import { ApiException } from '../common/expection/api.exception';
+import { SimService } from '../sim/sim.service';
 
 @Injectable()
 export class DeviceService {

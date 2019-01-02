@@ -4,8 +4,8 @@ import { ISim } from './interfaces/sim.interfaces';
 import { CreateSimDTO } from './dto/creatSim.dto';
 import { Pagination } from '../common/dto/pagination.dto';
 import { IList } from '../common/interface/list.interface';
-import { ApiErrorCode } from 'src/common/enum/api-error-code.enum';
-import { ApiException } from 'src/common/expection/api.exception';
+import { ApiErrorCode } from '../common/enum/api-error-code.enum';
+import { ApiException } from '../common/expection/api.exception';
 
 @Injectable()
 export class SimService {

@@ -12,8 +12,8 @@ import {
 } from '@nestjs/swagger';
 import { MongodIdPipe } from '../common/pipe/mongodId.pipe';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/common/guard/roles.guard';
-import { Roles } from 'src/common/decorator/roles.decorator';
+import { RolesGuard } from '../common/guard/roles.guard';
+import { Roles } from '../common/decorator/roles.decorator';
 
 @ApiUseTags('devices')
 

@@ -3,8 +3,8 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { AuthService } from './auth.service';
-import { ApiException } from 'src/common/expection/api.exception';
-import { ApiErrorCode } from 'src/common/enum/api-error-code.enum';
+import { ApiException } from '../common/expection/api.exception';
+import { ApiErrorCode } from '../common/enum/api-error-code.enum';
 
 @Injectable()
 export class AuthStrategy extends PassportStrategy(Strategy) {

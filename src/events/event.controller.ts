@@ -12,8 +12,8 @@ import { Pagination } from '../common/dto/pagination.dto';
 import { MongodIdPipe } from '../common/pipe/mongodId.pipe';
 import { IUser } from '../users/interfaces/user.interfaces';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/common/guard/roles.guard';
-import { Roles } from 'src/common/decorator/roles.decorator';
+import { RolesGuard } from '../common/guard/roles.guard';
+import { Roles } from '../common/decorator/roles.decorator';
 
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy

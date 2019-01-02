@@ -6,8 +6,8 @@ import { Pagination } from '../common/dto/pagination.dto';
 import { IList } from '../common/interface/list.interface';
 import { CryptoUtil } from '../utils/crypto.util';
 import { JwtService } from '@nestjs/jwt';
-import { ApiErrorCode } from 'src/common/enum/api-error-code.enum';
-import { ApiException } from 'src/common/expection/api.exception';
+import { ApiErrorCode } from '../common/enum/api-error-code.enum';
+import { ApiException } from '../common/expection/api.exception';
 
 @Injectable()
 export class UserService {

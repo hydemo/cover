@@ -30,9 +30,9 @@ import { CreateUserDTO } from './dto/creatUsers.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../common/guard/roles.guard';
 import { Roles } from '../common/decorator/roles.decorator';
-import { ApiException } from 'src/common/expection/api.exception';
-import { ApiErrorCode } from 'src/common/enum/api-error-code.enum';
-import { CryptoUtil } from 'src/utils/crypto.util';
+import { ApiException } from '../common/expection/api.exception';
+import { ApiErrorCode } from '../common/enum/api-error-code.enum';
+import { CryptoUtil } from '../utils/crypto.util';
 
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy
