@@ -113,16 +113,22 @@ export class EventService {
     const condition: any = {};
     if (pagination.search) {
       const sea = JSON.parse(pagination.search);
+      console.log(sea, 'sea')
       for (const key in sea) {
-        if (key === 'base' && sea[key]) {
-          continue;
-        } else if (sea[key] === 0 || sea[key]) {
+        if (key === 'batteryLevel' && sea[key]) {
+          condition[key] = sea[key];
+        } else if (key === 'warningType' && sea[key]) {
+          condition[key] = sea[key];
+        } else if (sea[key] === 0) {
           condition[key] = false;
+        } else if (sea[key]) {
+          condition[key] = true;
         }
       }
       if (search.length) {
-        condition.$or = search;
+        condition.$and = search;
       }
+      console.log(condition, 'aaa')
     }
     const list = await this.warningModel
       .find(condition)
