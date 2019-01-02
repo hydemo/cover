@@ -26,6 +26,8 @@ export const DeviceSchema = new mongoose.Schema(
     installer: String,
     // NB模组号
     NBModuleNumber: String,
+    // 是否删除
+    isDelete: { type: Boolean, default: false },
     // sim卡ID
     simId: mongoose.Schema.Types.ObjectId,
   },

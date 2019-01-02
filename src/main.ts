@@ -1,7 +1,6 @@
 import { AppModule } from './app.module';
-import { NestFactory, Reflector } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { CoverModule } from './covers/cover.module';
 import { WellModule } from './wells/well.module';
 import { join } from 'path';
 import { DeviceModule } from './devices/device.module';
@@ -34,7 +33,6 @@ async function bootstrap() {
 
   const ApiDocument = SwaggerModule.createDocument(app, ApiOptions, {
     include: [
-      CoverModule,
       DeviceModule,
       DataModule,
       WellModule,

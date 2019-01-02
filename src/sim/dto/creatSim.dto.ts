@@ -41,4 +41,6 @@ export class CreateSimDTO {
   @Type(() => String)
   @ApiModelPropertyOptional({ description: '累计资费' })
   readonly status?: string;
+
+  readonly isDelete?: boolean;
 }

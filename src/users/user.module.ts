@@ -1,13 +1,14 @@
 import { Module, MulterModule } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { join } from 'path';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { usersProviders } from './user.providers';
 import { DatabaseModule } from '../database/database.module';
 import { CryptoUtil } from '../utils/crypto.util';
-import { AuthModule } from '../auth/auth.module';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { join } from 'path';
 
 @Module({
   providers: [
@@ -28,7 +29,14 @@ import { join } from 'path';
     MulterModule.registerAsync({
       useFactory: () => {
         const uploadPath = join(__dirname, '../..', 'upload');
-        return { dest: uploadPath };
+        const storage = diskStorage({
+          destination: uploadPath
+          , filename: (req, file, cb) => {
+            const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
+            cb(null, `${randomName}${extname(file.originalname)}`);
+          },
+        });
+        return { storage };
       },
     }),
     DatabaseModule,

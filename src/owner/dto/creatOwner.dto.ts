@@ -53,4 +53,6 @@ export class CreateOwnerDTO {
   @Type(() => String)
   @ApiModelPropertyOptional({ description: '联系邮箱' })
   readonly email?: string;
+
+  readonly isDelete?: boolean;
 }

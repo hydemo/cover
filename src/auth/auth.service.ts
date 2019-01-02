@@ -25,6 +25,7 @@ export class AuthService {
     async login(email: string, password: string): Promise<IUser> {
         const user: IUser = await this.userService.findOneByEmail(email);
         if (!user) throw new ApiException('登陆账号有误', ApiErrorCode.ACCOUNT_INVALID, 406);
+        if (user.isDeleted) throw new ApiException('账号已删除', ApiErrorCode.ACCOUNT_DELETED, 406);
         if (!this.cryptoUtil.checkPassword(password, user.password))
             throw new ApiException('密码有误', ApiErrorCode.PASSWORD_INVALID, 406);
         user.accessToken = await this.createToken({ email });

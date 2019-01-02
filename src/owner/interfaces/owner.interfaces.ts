@@ -19,4 +19,6 @@ export interface IOwner extends Document {
   readonly contactAddress?: string;
   // 联系邮箱
   readonly email?: string;
+  // 是否删除
+  readonly isDelete?: boolean;
 }

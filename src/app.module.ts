@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { CoverModule } from './covers/cover.module';
 import { WellModule } from './wells/well.module';
 import { DataModule } from './data/data.module';
 import { EventModule } from './events/event.module';
@@ -12,7 +11,6 @@ import { DeviceModule } from './devices/device.module';
 
 @Module({
   imports: [
-    CoverModule,
     WellModule,
     DeviceModule,
     DataModule,

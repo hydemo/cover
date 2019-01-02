@@ -124,14 +124,12 @@ export class EventService {
         condition.$or = search;
       }
     }
-    console.log(condition, 'condition')
     const list = await this.warningModel
       .find(condition)
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .sort({ isHandle: 1, createdAt: -1 })
       .populate({ path: 'wellId', model: 'Well' })
-      .populate({ path: 'coverId', model: 'Cover' })
       .populate({ path: 'deviceId', model: 'Device' })
       .exec();
     const total = await this.warningModel.countDocuments(condition);

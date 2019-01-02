@@ -1,31 +1,26 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, ReflectMetadata, UnauthorizedException, UseGuards, UsePipes } from '@nestjs/common';
-
-// import { AuthGuard } from '@nestjs/passport';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { CreateWellDTO } from './dto/creatWell.dto';
-// import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
-// import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
 import { WellService } from './well.service';
 import { Pagination } from '../common/dto/pagination.dto';
 import { CreateDeviceDTO } from '../devices/dto/creatDevice.dto';
 import {
   ApiOperation,
   ApiUseTags,
-  ApiBearerAuth,
   ApiOkResponse,
   ApiForbiddenResponse,
   ApiCreatedResponse,
-  ApiBadRequestResponse,
-  ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
 import { MongodIdPipe } from '../common/pipe/mongodId.pipe';
 import { CreateOwnerDTO } from '../owner/dto/creatOwner.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../common/guard/roles.guard';
+import { Roles } from '../common/decorator/roles.decorator';
 
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy
 @ApiUseTags('wells')
-// @ApiBearerAuth()
 @ApiForbiddenResponse({ description: 'Unauthorized' })
-// @UseGuards(AuthGuard())
+@UseGuards(AuthGuard(), RolesGuard)
 @Controller('wells')
 export class WellController {
   constructor(
@@ -39,6 +34,7 @@ export class WellController {
   })
   @ApiOperation({ title: '获取窨井列表', description: '获取窨井列表' })
   @Get('/')
+  @Roles('3')
   async wellList(@Query() pagination: Pagination) {
     return await this.wellService.findPage(pagination);
   }
@@ -50,6 +46,7 @@ export class WellController {
   })
   @ApiOperation({ title: '获取窨井完整列表', description: '获取窨井完整列表' })
   @Get('/all')
+  @Roles('3')
   async wellListAll() {
     return await this.wellService.findAll();
   }
@@ -59,6 +56,7 @@ export class WellController {
   })
   @ApiOperation({ title: '获取异常个数', description: '获取异常个数' })
   @Get('/counts')
+  @Roles('3')
   async getCounts() {
     return await this.wellService.getCounts();
   }
@@ -69,6 +67,7 @@ export class WellController {
   })
   @ApiOperation({ title: '获取井盖打开列表', description: '获取井盖打开列表' })
   @Get('/open')
+  @Roles('3')
   async wellListOpen() {
     return await this.wellService.findOpen();
   }
@@ -80,6 +79,7 @@ export class WellController {
   })
   @ApiOperation({ title: '获取电量不足列表', description: '获取电量不足列表' })
   @Get('/battery')
+  @Roles('3')
   async wellListBattery() {
     return await this.wellService.findBattery();
   }
@@ -91,11 +91,13 @@ export class WellController {
   })
   @ApiOperation({ title: '获取漏气列表', description: '获取漏气列表' })
   @Get('/leak')
+  @Roles('3')
   async wellListLeak() {
     return await this.wellService.findLeak();
   }
 
   @Get('/:id')
+  @Roles('3')
   @ApiOkResponse({
     description: '获取窨井成功',
   })
@@ -106,6 +108,7 @@ export class WellController {
   }
 
   @Post('/')
+  @Roles('1')
   @ApiOkResponse({
     description: '添加窨井成功',
   })
@@ -116,6 +119,7 @@ export class WellController {
   }
 
   @Put('/:id')
+  @Roles('1')
   @ApiOkResponse({
     description: '修改窨井成功',
   })
@@ -126,6 +130,7 @@ export class WellController {
   }
 
   @Delete('/:id')
+  @Roles('1')
   @ApiOkResponse({
     description: '删除窨井成功',
   })
@@ -136,6 +141,7 @@ export class WellController {
   }
 
   @Put('/:id/device/:deviceId')
+  @Roles('1')
   @ApiOkResponse({
     description: '绑定旧设备成功',
   })
@@ -146,6 +152,7 @@ export class WellController {
   }
 
   @Post('/:id/device')
+  @Roles('1')
   @ApiOkResponse({
     description: '绑定新设备成功',
   })
@@ -156,6 +163,7 @@ export class WellController {
   }
 
   @Put('/:id/owner/:ownerId')
+  @Roles('1')
   @ApiOkResponse({
     description: '绑定旧业主成功',
   })
@@ -166,6 +174,7 @@ export class WellController {
   }
 
   @Post('/:id/owner')
+  @Roles('1')
   @ApiOkResponse({
     description: '绑定新业主成功',
   })
@@ -177,6 +186,7 @@ export class WellController {
   }
 
   @Put('/:id/defence')
+  @Roles('1')
   @ApiOkResponse({
     description: '布防',
   })
@@ -187,6 +197,7 @@ export class WellController {
   }
 
   @Put('/:id/undefence')
+  @Roles('1')
   @ApiOkResponse({
     description: '撤防',
   })
@@ -195,19 +206,4 @@ export class WellController {
     await this.wellService.unDefenceById(_id);
     return { statusCode: 200, msg: '撤防成功' };
   }
-  // // @Put(':userId/:depId')
-  // // updateUserDepById(@Param('userId') userId, @Param('depId') depId){
-  // //   return this.usersService.updateUserDepById(userId, depId);
-  // // }
-
-  // @Put(':userId')
-  // updateUserById(@Param('userId') id, @Body() userDTO: UserDTO) {
-  //   return this.usersService.updateUserById(id, userDTO);
-  //   // return this.usersService.updateUserRolesByIds(id, userDTO);
-  // }
-
-  // @Delete(':userId')
-  // delete(@Param('userId') id) {
-  //   return this.usersService.deleteUser(id);
-  // }
 }

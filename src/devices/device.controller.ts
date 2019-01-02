@@ -1,29 +1,24 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UnauthorizedException, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 
 import { CreateDeviceDTO } from './dto/creatDevice.dto';
-// import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
-// import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
 import { DeviceService } from './device.service';
 import { Pagination } from '../common/dto/pagination.dto';
 import {
   ApiUseTags,
-  ApiBearerAuth,
   ApiOkResponse,
   ApiForbiddenResponse,
   ApiCreatedResponse,
-  ApiBadRequestResponse,
-  ApiInternalServerErrorResponse,
   ApiOperation,
 } from '@nestjs/swagger';
 import { MongodIdPipe } from '../common/pipe/mongodId.pipe';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/common/guard/roles.guard';
+import { Roles } from 'src/common/decorator/roles.decorator';
 
-// UseGuards()傳入@nest/passport下的AuthGuard
-// strategy
 @ApiUseTags('devices')
 
-// @ApiBearerAuth()
 @ApiForbiddenResponse({ description: 'Unauthorized' })
-// @UseGuards(AuthGuard())
+@UseGuards(AuthGuard(), RolesGuard)
 @Controller('devices')
 export class DeviceController {
   constructor(
@@ -35,12 +30,14 @@ export class DeviceController {
     type: CreateDeviceDTO,
     isArray: true,
   })
+  @Roles('3')
   @Get('/')
   @ApiOperation({ title: '获取设备列表', description: '获取设备列表' })
   deviceList(@Query() pagination: Pagination) {
     return this.deviceService.findAll(pagination);
   }
 
+  @Roles('3')
   @Get('/:id')
   @ApiOkResponse({
     description: '获取设备成功',
@@ -52,6 +49,7 @@ export class DeviceController {
     return { statusCode: 200, msg: '获取设备成功', data };
   }
 
+  @Roles('1')
   @Post()
   @ApiOkResponse({
     description: '添加设备成功',
@@ -62,6 +60,7 @@ export class DeviceController {
     return { statusCode: 200, msg: '添加设备成功' };
   }
 
+  @Roles('1')
   @Put('/:id')
   @ApiOkResponse({
     description: '修改设备成功',
@@ -72,6 +71,7 @@ export class DeviceController {
     return { statusCode: 200, msg: '修改设备成功' };
   }
 
+  @Roles('1')
   @Delete('/:id')
   @ApiOkResponse({
     description: '删除设备成功',
@@ -82,6 +82,7 @@ export class DeviceController {
     return { statusCode: 200, msg: '删除设备成功' };
   }
 
+  @Roles('1')
   @Put('/:_id/sim/:simId')
   @ApiOkResponse({
     description: '绑定旧sim卡成功',

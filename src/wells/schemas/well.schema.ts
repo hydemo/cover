@@ -6,7 +6,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 export const WellSchema = new mongoose.Schema(
   {
     // 窨井编号
-    wellSN: String,
+    wellSN: { type: String, unique: true },
     // 业主id
     ownerId: ObjectId,
     // 窨井类型
@@ -29,6 +29,8 @@ export const WellSchema = new mongoose.Schema(
     deviceId: ObjectId,
     // 布防/撤防
     isDefence: { type: Boolean, default: true },
+    // 是否删除
+    isDelete: { type: Boolean, default: false },
   },
   { collection: 'Well', versionKey: false, timestamps: true },
 );

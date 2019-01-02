@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 
 import { CreateSimDTO } from './dto/creatSim.dto';
 import { SimService } from './sim.service';
@@ -11,11 +11,14 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { MongodIdPipe } from '../common/pipe/mongodId.pipe';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../common/guard/roles.guard';
+import { Roles } from '../common/decorator/roles.decorator';
 
 @ApiUseTags('sims')
 
 @ApiForbiddenResponse({ description: 'Unauthorized' })
-// @UseGuards(AuthGuard())
+@UseGuards(AuthGuard(), RolesGuard)
 @Controller('sims')
 export class SimController {
   constructor(
@@ -28,12 +31,14 @@ export class SimController {
     isArray: true,
   })
   @Get('/')
+  @Roles('3')
   @ApiOperation({ title: '获取sim卡列表', description: '获取sim卡列表' })
   simList(@Query() pagination: Pagination) {
     return this.simService.findAll(pagination);
   }
 
   @Get('/:id')
+  @Roles('3')
   @ApiOkResponse({
     description: '获取sim卡成功',
   })
@@ -45,6 +50,7 @@ export class SimController {
   }
 
   @Post()
+  @Roles('1')
   @ApiOkResponse({
     description: '添加sim卡成功',
   })
@@ -55,6 +61,7 @@ export class SimController {
   }
 
   @Put('/:id')
+  @Roles('1')
   @ApiOkResponse({
     description: '修改sim卡成功',
   })
@@ -65,6 +72,7 @@ export class SimController {
   }
 
   @Delete('/:id')
+  @Roles('1')
   @ApiOkResponse({
     description: '删除sim卡成功',
   })

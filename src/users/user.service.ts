@@ -6,6 +6,8 @@ import { Pagination } from '../common/dto/pagination.dto';
 import { IList } from '../common/interface/list.interface';
 import { CryptoUtil } from '../utils/crypto.util';
 import { JwtService } from '@nestjs/jwt';
+import { ApiErrorCode } from 'src/common/enum/api-error-code.enum';
+import { ApiException } from 'src/common/expection/api.exception';
 
 @Injectable()
 export class UserService {
@@ -19,9 +21,13 @@ export class UserService {
 
   // 创建数据
   async create(createUserDTO: CreateUserDTO): Promise<IUser> {
-    const existing = await this.userModel.findOne({ email: createUserDTO.email });
+    const existing = await this.userModel.findOne({ email: createUserDTO.email, isDelete: false });
     if (existing) {
-      throw new HttpException(`添加失败,邮箱已存在`, 404);
+      throw new ApiException('邮箱已存在', ApiErrorCode.EMAIL_EXIST, 406);
+    }
+    const deleteOne = await this.userModel.findOne({ email: createUserDTO.email, isDelete: true });
+    if (deleteOne) {
+      return this.userModel.findByIdAndUpdate(deleteOne._id, { isDelete: false });
     }
     createUserDTO.password = await this.cryptoUtil.encryptPassword(createUserDTO.password);
     const creatUser = new this.userModel(createUserDTO);
@@ -30,6 +36,7 @@ export class UserService {
   }
 
   async findByCondition(condition: any): Promise<IUser[]> {
+    condition.isDelete = false;
     return await this.userModel.find(condition);
   }
 
@@ -51,6 +58,7 @@ export class UserService {
         condition.$or = search;
       }
     }
+    condition.isDelete = false;
     const list = await this.userModel
       .find(condition)
       .limit(pagination.limit)
@@ -75,14 +83,14 @@ export class UserService {
     if (user.email) {
       const existing = await this.userModel.findOne({ _id: { $ne: _id }, email: user.email });
       if (existing) {
-        throw new HttpException(`修改失败,邮箱已存在`, 404);
+        throw new ApiException('邮箱已存在', ApiErrorCode.EMAIL_EXIST, 406);
       }
     }
     return await this.userModel.findByIdAndUpdate(_id, user).exec();
   }
   // 根据id删除
   async deleteById(_id: string) {
-    return await this.userModel.findByIdAndDelete(_id).exec();
+    return await this.userModel.findByIdAndUpdate(_id, { isDelete: true }).exec();
   }
   // 根据id修改密码
   async resetPassword(_id: string, newPass: string) {
@@ -93,5 +101,14 @@ export class UserService {
     const user = await this.userModel.findByIdAndUpdate(userId, { avatar: filename });
     delete user.password;
     return user;
+  }
+  async updateMe(_id: string, user: CreateUserDTO) {
+    if (user.email) {
+      const existing = await this.userModel.findOne({ _id: { $ne: _id }, email: user.email });
+      if (existing) {
+        throw new ApiException('邮箱已存在', ApiErrorCode.EMAIL_EXIST, 406);
+      }
+    }
+    return await this.userModel.findByIdAndUpdate(_id, user).exec();
   }
 }

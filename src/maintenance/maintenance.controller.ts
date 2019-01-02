@@ -1,29 +1,23 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UnauthorizedException, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put, Query, UseGuards } from '@nestjs/common';
 
 import { CreateMaintenanceDTO } from './dto/creatMaintenance.dto';
-// import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
-// import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
 import { MaintenanceService } from './maintenance.service';
 import { Pagination } from '../common/dto/pagination.dto';
 import {
   ApiUseTags,
-  ApiBearerAuth,
   ApiOkResponse,
   ApiForbiddenResponse,
-  ApiCreatedResponse,
-  ApiBadRequestResponse,
-  ApiInternalServerErrorResponse,
   ApiOperation,
 } from '@nestjs/swagger';
 import { MongodIdPipe } from '../common/pipe/mongodId.pipe';
+import { AuthGuard } from '@nestjs/passport';
 
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy
 @ApiUseTags('maintenances')
 
-// @ApiBearerAuth()
 @ApiForbiddenResponse({ description: 'Unauthorized' })
-// @UseGuards(AuthGuard())
+@UseGuards(AuthGuard())
 @Controller('maintenances')
 export class MaintenanceController {
   constructor(

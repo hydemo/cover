@@ -18,6 +18,8 @@ export const OwnerSchema = new mongoose.Schema(
     location: String,
     // 联系地址
     contactAddress: String,
+    // 是否删除
+    isDelete: { type: Boolean, default: false },
     // 联系邮箱
     email: String,
   },

@@ -27,4 +27,6 @@ export interface IDevice extends Document {
   readonly NBModuleNumber?: string;
   // sim卡ID
   readonly simId?: string;
+  // 是否删除
+  readonly isDelete?: boolean;
 }

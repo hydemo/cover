@@ -66,4 +66,5 @@ export class CreateWellDTO {
   @Type(() => Boolean)
   @ApiModelPropertyOptional({ description: '布防/撤防' })
   readonly isDefence?: boolean = true;
+  readonly isDelete?: boolean;
 }

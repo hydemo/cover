@@ -15,4 +15,6 @@ export interface ISim extends Document {
   readonly tatalTariff?: string;
   // 状态
   readonly status?: string;
+  // 是否删除
+  readonly isDelete?: boolean;
 }

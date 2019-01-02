@@ -4,6 +4,8 @@ import { ISim } from './interfaces/sim.interfaces';
 import { CreateSimDTO } from './dto/creatSim.dto';
 import { Pagination } from '../common/dto/pagination.dto';
 import { IList } from '../common/interface/list.interface';
+import { ApiErrorCode } from 'src/common/enum/api-error-code.enum';
+import { ApiException } from 'src/common/expection/api.exception';
 
 @Injectable()
 export class SimService {
@@ -12,6 +14,14 @@ export class SimService {
 
   // 创建数据
   async create(createSimDTO: CreateSimDTO): Promise<ISim> {
+    const existing = await this.simModel.findOne({ cardNumber: createSimDTO.cardNumber, isDelete: false });
+    if (existing) {
+      throw new ApiException('SIM卡号已存在', ApiErrorCode.SIM_EXIST, 406);
+    }
+    const deleteOne = await this.simModel.findOne({ cardNumber: createSimDTO.cardNumber, isDelete: true });
+    if (deleteOne) {
+      return this.simModel.findByIdAndUpdate(deleteOne._id, { isDelete: false });
+    }
     const creatSim = new this.simModel(createSimDTO);
     await creatSim.save();
     return creatSim;
@@ -52,16 +62,27 @@ export class SimService {
     return await this.simModel.findById(_id).exec();
   }
 
+  async findByCondition(condition: any): Promise<ISim[]> {
+    condition.isDelete = false;
+    return await this.simModel.find(condition);
+  }
   // 根据sn查询
   async findBySimSn(simSn: string): Promise<ISim> {
-    return await this.simModel.findOne({ simSn }).exec();
+    return await this.simModel.findOne({ simSn, isDelete: false }).exec();
   }
   // 根据id修改
   async updateById(_id: string, sim: CreateSimDTO) {
+    if (sim.cardNumber) {
+      const existing = await this.simModel
+        .findOne({ _id: { $ne: _id }, cardNumber: sim.cardNumber });
+      if (existing) {
+        throw new ApiException('SIM卡号已存在', ApiErrorCode.SIM_EXIST, 406);
+      }
+    }
     return await this.simModel.findByIdAndUpdate(_id, sim).exec();
   }
   // 根据id删除
   async deleteById(_id: string) {
-    return await this.simModel.findByIdAndDelete(_id).exec();
+    return await this.simModel.findByIdAndUpdate(_id, { isDelete: true }).exec();
   }
 }

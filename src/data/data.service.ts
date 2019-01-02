@@ -60,12 +60,14 @@ export class DataService {
    * 获取超声波历史数据
    * @param pagination 分页
    */
-  async findAllAudioFre(wellId: string, pagination: Pagination): Promise<IList<IAudioFre>> {
+  async findAudioFre(wellId: string, pagination: Pagination): Promise<IList<IAudioFre>> {
     const condition = { wellId };
     const list = await this.audioFreModel
       .find(condition)
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
+      .populate({ path: 'wellId', model: 'Well' })
+      .populate({ path: 'deviceId', model: 'Device' })
       .exec();
     const total = await this.audioFreModel.countDocuments();
     return { list, total };
@@ -82,12 +84,14 @@ export class DataService {
    * 获取电量历史数据
    * @param pagination 分页
    */
-  async findAllBattery(wellId: string, pagination: Pagination): Promise<IList<IBattery>> {
+  async findBattery(wellId: string, pagination: Pagination): Promise<IList<IBattery>> {
     const condition = { wellId };
     const list = await this.batteryModel
       .find(condition)
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
+      .populate({ path: 'wellId', model: 'Well' })
+      .populate({ path: 'deviceId', model: 'Device' })
       .exec();
     const total = await this.batteryModel.countDocuments();
     return { list, total };
@@ -148,22 +152,51 @@ export class DataService {
    * 获取窨井信息历史数据
    * @param pagination 分页
    */
-  async findAllWellCover(wellId: string, pagination: Pagination): Promise<IList<IWellCover>> {
+  async findWellCover(wellId: string, pagination: Pagination): Promise<IList<IWellCover>> {
     const condition = { wellId };
     const list = await this.wellCoverModel
       .find(condition)
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
+      .populate({ path: 'wellId', model: 'Well' })
+      .populate({ path: 'deviceId', model: 'Device' })
       .exec();
     const total = await this.wellCoverModel.countDocuments();
     return { list, total };
   }
-  // // 根据id修改
-  // async updateBatteryById(_id, battery: BatteryDTO) {
-  //   return await this.batteryMode.findByIdAndUpdate(_id, battery).exec();
-  // }
-  // // 根据id删除
-  // async deleteBatteryById(_id) {
-  //   return await this.batteryMode.findByIdAndDelete(_id).exec();
-  // }
+  /**
+   * 获取电量历史数据
+   */
+  async findBatteryAll(wellId: string): Promise<IList<IBattery>> {
+    const condition = { wellId };
+    const list = await this.batteryModel
+      .find(condition)
+      .exec();
+    const total = await this.batteryModel.countDocuments();
+    return { list, total };
+  }
+
+  /**
+   * 获取窨井信息历史数据不分页
+   */
+  async findWellCoverAll(wellId: string): Promise<IList<IWellCover>> {
+    const condition = { wellId };
+    const list = await this.wellCoverModel
+      .find(condition)
+      .exec();
+    const total = await this.wellCoverModel.countDocuments();
+    return { list, total };
+  }
+
+  /**
+   * 获取超声波历史数据
+   */
+  async findAudioFreAll(wellId: string): Promise<IList<IAudioFre>> {
+    const condition = { wellId };
+    const list = await this.audioFreModel
+      .find(condition)
+      .exec();
+    const total = await this.audioFreModel.countDocuments();
+    return { list, total };
+  }
 }

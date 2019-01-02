@@ -7,10 +7,11 @@ export interface IUser extends Document {
   readonly email: string;
   // 角色
   readonly role: number;
+  // 是否删除
+  readonly isDelete?: boolean;
   // 密码
   password: string;
   //
   accessToken: string;
   avatar: string;
-
 }

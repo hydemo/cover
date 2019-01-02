@@ -25,4 +25,6 @@ export class CreateUserDTO {
   password: string;
 
   accessToken: string;
+
+  readonly isDelete?: boolean;
 }

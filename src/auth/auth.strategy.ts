@@ -3,6 +3,8 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { AuthService } from './auth.service';
+import { ApiException } from 'src/common/expection/api.exception';
+import { ApiErrorCode } from 'src/common/enum/api-error-code.enum';
 
 @Injectable()
 export class AuthStrategy extends PassportStrategy(Strategy) {
@@ -29,6 +31,7 @@ export class AuthStrategy extends PassportStrategy(Strategy) {
         if (!user) {
             throw new UnauthorizedException();
         }
+        if (user.isDeleted) throw new ApiException('账号已删除', ApiErrorCode.ACCOUNT_DELETED, 406);
         return user;
     }
 }

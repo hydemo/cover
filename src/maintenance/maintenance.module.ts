@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { MaintenanceService } from './maintenance.service';
 import { MaintenanceController } from './maintenance.controller';
 import { maintenancesProviders } from './maintenance.providers';
@@ -11,7 +13,19 @@ import { DeviceModule } from '../devices/device.module';
   providers: [MaintenanceService, ...maintenancesProviders],
   exports: [MaintenanceService],
   controllers: [MaintenanceController],
-  imports: [DatabaseModule, WellModule, UserModule, DeviceModule],
+  imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.register({
+      secretOrPrivateKey: 'secretKey',
+      signOptions: {
+        expiresIn: 24 * 60 * 60,
+      },
+    }),
+    DatabaseModule,
+    WellModule,
+    UserModule,
+    DeviceModule,
+  ],
 })
 
 export class MaintenanceModule { }

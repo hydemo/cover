@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 
 import { CreateOwnerDTO } from './dto/creatOwner.dto';
 import { OwnerService } from './owner.service';
@@ -11,11 +11,14 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { MongodIdPipe } from '../common/pipe/mongodId.pipe';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../common/guard/roles.guard';
+import { Roles } from '../common/decorator/roles.decorator';
 
 @ApiUseTags('owners')
 
 @ApiForbiddenResponse({ description: 'Unauthorized' })
-// @UseGuards(AuthGuard())
+@UseGuards(AuthGuard(), RolesGuard)
 @Controller('owners')
 export class OwnerController {
   constructor(
@@ -27,6 +30,7 @@ export class OwnerController {
     type: CreateOwnerDTO,
     isArray: true,
   })
+  @Roles('3')
   @Get('/')
   @ApiOperation({ title: '获取业主列表', description: '获取业主列表' })
   ownerList(@Query() pagination: Pagination) {
@@ -34,6 +38,7 @@ export class OwnerController {
   }
 
   @Get('/:id')
+  @Roles('3')
   @ApiOkResponse({
     description: '获取业主成功',
   })
@@ -45,6 +50,7 @@ export class OwnerController {
   }
 
   @Post()
+  @Roles('1')
   @ApiOkResponse({
     description: '添加业主成功',
   })
@@ -55,6 +61,7 @@ export class OwnerController {
   }
 
   @Put('/:id')
+  @Roles('1')
   @ApiOkResponse({
     description: '修改业主成功',
   })
@@ -65,6 +72,7 @@ export class OwnerController {
   }
 
   @Delete('/:id')
+  @Roles('1')
   @ApiOkResponse({
     description: '删除业主成功',
   })

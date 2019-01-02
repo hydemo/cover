@@ -26,4 +26,6 @@ export interface IWell extends Document {
   readonly deviceId?: string;
   // 布防/撤防
   readonly isDefence?: boolean;
+  // 是否删除
+  readonly isDelete?: boolean;
 }

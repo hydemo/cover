@@ -79,4 +79,6 @@ export class CreateDeviceDTO {
   @Type(() => String)
   @ApiModelPropertyOptional({ description: 'sim卡ID' })
   readonly simId?: string;
+
+  readonly isDelete?: boolean;
 }

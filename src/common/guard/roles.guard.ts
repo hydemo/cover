@@ -18,7 +18,6 @@ export class RolesGuard implements CanActivate {
 
         // 在请求对象中获取 user 对象，此 user 对象是 AuthStrategy 中 validate 方法成功执行后的返回值
         const request = context.switchToHttp().getRequest();
-        // console.log(request.user);
         const user: IUser = request.user;
         // const role = parseInt(roles);
         // 判断是否为管理员，或当前操作的资源是否是私人的

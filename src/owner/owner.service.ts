@@ -4,6 +4,8 @@ import { IOwner } from './interfaces/owner.interfaces';
 import { CreateOwnerDTO } from './dto/creatOwner.dto';
 import { Pagination } from '../common/dto/pagination.dto';
 import { IList } from '../common/interface/list.interface';
+import { ApiErrorCode } from 'src/common/enum/api-error-code.enum';
+import { ApiException } from 'src/common/expection/api.exception';
 
 @Injectable()
 export class OwnerService {
@@ -12,12 +14,21 @@ export class OwnerService {
 
   // 创建数据
   async create(createOwnerDTO: CreateOwnerDTO): Promise<IOwner> {
+    const existing = await this.ownerModel.findOne({ ownerId: createOwnerDTO.ownerId, isDelete: false });
+    if (existing) {
+      throw new ApiException('业主ID已存在', ApiErrorCode.OWNER_EXIST, 406);
+    }
+    const deleteOne = await this.ownerModel.findOne({ ownerId: createOwnerDTO.ownerId, isDelete: true });
+    if (deleteOne) {
+      return this.ownerModel.findByIdAndUpdate(deleteOne._id, { isDelete: false });
+    }
     const creatOwner = new this.ownerModel(createOwnerDTO);
     await creatOwner.save();
     return creatOwner;
   }
 
   async findByCondition(condition: any): Promise<IOwner[]> {
+    condition.isDelete = false;
     return await this.ownerModel.find(condition);
   }
 
@@ -41,6 +52,7 @@ export class OwnerService {
         condition.$or = search;
       }
     }
+    condition.isDelete = false;
     const list = await this.ownerModel
       .find(condition)
       .limit(pagination.limit)
@@ -57,14 +69,21 @@ export class OwnerService {
 
   // 根据sn查询
   async findByOwnerSn(ownerSn: string): Promise<IOwner> {
-    return await this.ownerModel.findOne({ ownerSn }).exec();
+    return await this.ownerModel.findOne({ ownerSn, isDelete: false }).exec();
   }
   // 根据id修改
   async updateById(_id: string, owner: CreateOwnerDTO) {
+    if (owner.ownerId) {
+      const existing = await this.ownerModel
+        .findOne({ _id: { $ne: _id }, ownerId: owner.ownerId });
+      if (existing) {
+        throw new ApiException('业主ID已存在', ApiErrorCode.OWNER_EXIST, 406);
+      }
+    }
     return await this.ownerModel.findByIdAndUpdate(_id, owner).exec();
   }
   // 根据id删除
   async deleteById(_id: string) {
-    return await this.ownerModel.findByIdAndDelete(_id).exec();
+    return await this.ownerModel.findByIdAndUpdate(_id, { isDelete: true }).exec();
   }
 }

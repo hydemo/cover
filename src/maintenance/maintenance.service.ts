@@ -43,7 +43,7 @@ export class MaintenanceService {
           const deviceCondition = {
             $or: [{ deviceSn: new RegExp(sea[key], 'i') }],
           };
-          const devices = await this.deviceService.findByCondition(deviceCondition);
+          const devices = await this.deviceService.findByCondition(deviceCondition, sea[key]);
           const deviceIds = devices.map(device => device._id);
           search.push({ deviceId: { $in: deviceIds } });
           const userCondition = {
@@ -66,7 +66,6 @@ export class MaintenanceService {
       .sort({ status: 1, occurTime: -1 })
       .skip((pagination.offset - 1) * pagination.limit)
       .populate({ path: 'wellId', model: 'Well' })
-      .populate({ path: 'coverId', model: 'Cover' })
       .populate({ path: 'deviceId', model: 'Device' })
       .populate({ path: 'principal', model: 'User' })
       .exec();
@@ -82,7 +81,6 @@ export class MaintenanceService {
       .sort({ status: -1, creadedAt: -1 })
       .skip((pagination.offset - 1) * pagination.limit)
       .populate({ path: 'wellId', model: 'Well' })
-      .populate({ path: 'coverId', model: 'Cover' })
       .populate({ path: 'deviceId', model: 'Device' })
       .exec();
     const total = await this.maintenanceModel.countDocuments();
