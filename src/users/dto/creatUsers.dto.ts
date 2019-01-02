@@ -24,6 +24,11 @@ export class CreateUserDTO {
   @ApiModelPropertyOptional({ description: '密码' })
   password: string;
 
+  @IsString()
+  @Type(() => String)
+  @ApiModelPropertyOptional({ description: '区域' })
+  readonly location: string;
+
   accessToken: string;
 
   readonly isDelete?: boolean;

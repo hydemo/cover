@@ -14,6 +14,8 @@ export const UserSchema = new mongoose.Schema(
     role: { type: Number, enum: [0, 1, 2] },
     // 是否删除
     isDelete: { type: Boolean, default: false },
+    // 位置
+    location: String,
   },
   { collection: 'User', versionKey: false, timestamps: true },
 );

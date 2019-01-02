@@ -9,6 +9,8 @@ export interface IUser extends Document {
   readonly role: number;
   // 是否删除
   readonly isDelete?: boolean;
+  // 区域
+  readonly location?: string;
   // 密码
   password: string;
   //
