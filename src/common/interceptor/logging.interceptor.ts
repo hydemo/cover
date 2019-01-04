@@ -8,7 +8,8 @@ export class LoggingInterceptor implements NestInterceptor {
     context: ExecutionContext,
     call$: Observable<any>,
   ): Observable<any> {
-    Logger.log('Before...');
+    Logger.log(context);
+
     const now = Date.now();
     return call$.pipe(
       tap(() => Logger.log(`After... ${Date.now() - now}ms`)),
