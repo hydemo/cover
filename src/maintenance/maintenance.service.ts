@@ -60,6 +60,7 @@ export class MaintenanceService {
         condition.$or = search;
       }
     }
+    condition.principal = userId;
     const list = await this.maintenanceModel
       .find(condition)
       .limit(pagination.limit)
