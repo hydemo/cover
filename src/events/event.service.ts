@@ -129,9 +129,10 @@ export class EventService {
       .find(condition)
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
-      .sort({ isHandle: 1, createdAt: -1 })
+      .sort({ isHandle: 1, handleTime: -1 })
       .populate({ path: 'wellId', model: 'Well' })
       .populate({ path: 'deviceId', model: 'Device' })
+      .populate({ path: 'handler', model: 'User' })
       .exec();
     const total = await this.warningModel.countDocuments(condition);
     return { list, total };
@@ -141,13 +142,11 @@ export class EventService {
     const warning: IWarning = await this.warningModel
       .findById(id)
       .exec();
-    const well: CreateWellDTO = await this.wellService.findById(warning.wellId);
     const maintenance: CreateMaintenanceDTO = {
       wellId: warning.wellId,
       deviceId: warning.deviceId,
       principal: userId,
       warningId: warning._id,
-      location: well.location,
       maintenanceType: warning.warningType,
       occurTime: warning.createdAt,
       creatorId,

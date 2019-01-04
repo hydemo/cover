@@ -35,11 +35,6 @@ export class CreateMaintenanceDTO {
   readonly warningId: string;
 
   @IsString()
-  @Type(() => String)
-  @ApiModelProperty({ description: '地点' })
-  readonly location: string;
-
-  @IsString()
   @IsOptional()
   @Type(() => String)
   @ApiModelProperty({ description: '反馈报告' })

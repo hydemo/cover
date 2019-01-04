@@ -16,8 +16,6 @@ export const MaintenanceSchema = new mongoose.Schema(
     wellId: ObjectId,
     // 设备id
     deviceId: ObjectId,
-    // 地点
-    location: String,
     // 反馈报告
     feedback: String,
     // 响应时间

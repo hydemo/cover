@@ -13,8 +13,6 @@ export interface IMaintenance extends Document {
   readonly occurTime: Date;
   // 警告id
   readonly warningId: string;
-  // 地点
-  readonly location: string;
   // 反馈报告
   readonly feedback: string;
   // 响应时间
