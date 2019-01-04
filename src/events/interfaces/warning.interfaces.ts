@@ -17,4 +17,10 @@ export interface IWarning extends Document {
   readonly isHandle: boolean;
   // 创建时间
   readonly createdAt: Date;
+  // 处理人
+  readonly handler?: string;
+  // 处理时间
+  readonly handleTime?: Date;
+  // 处理方式
+  readonly handleType?: number;
 }

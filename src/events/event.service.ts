@@ -113,7 +113,6 @@ export class EventService {
     const condition: any = {};
     if (pagination.search) {
       const sea = JSON.parse(pagination.search);
-      console.log(sea, 'sea')
       for (const key in sea) {
         if (key === 'batteryLevel' && sea[key]) {
           condition[key] = sea[key];
@@ -125,10 +124,6 @@ export class EventService {
           condition[key] = true;
         }
       }
-      if (search.length) {
-        condition.$and = search;
-      }
-      console.log(condition, 'aaa')
     }
     const list = await this.warningModel
       .find(condition)
@@ -157,14 +152,23 @@ export class EventService {
       occurTime: warning.createdAt,
       creatorId,
       status: 0,
-
     };
     await this.maintenanceService.create(maintenance);
-    await this.warningModel.findByIdAndUpdate(id, { isHandle: true });
+    await this.warningModel.findByIdAndUpdate(id, {
+      isHandle: true,
+      handler: creatorId,
+      handleTime: Date.now(),
+      handleType: 0,
+    });
   }
 
-  async cancelWarning(id: string) {
-    await this.warningModel.findByIdAndUpdate(id, { isHandle: true });
+  async cancelWarning(id: string, creatorId: string) {
+    await this.warningModel.findByIdAndUpdate(id, {
+      isHandle: true,
+      handler: creatorId,
+      handleTime: Date.now(),
+      handleType: 1,
+    });
   }
 
   async countUnhandleWarning(): Promise<number> {

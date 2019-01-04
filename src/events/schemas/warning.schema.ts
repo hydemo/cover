@@ -18,6 +18,12 @@ export const WarningSchema = new mongoose.Schema(
     gasLeak: { type: Boolean, default: false },
     // 警告状态
     isHandle: { type: Boolean, default: false },
+    // 处理人
+    handler: ObjectId,
+    // 处理时间
+    handleTime: Date,
+    // 处理方式
+    handleType: { type: Number, enum: [0, 1] },
   },
   { collection: 'Warning', versionKey: false, timestamps: true },
 );

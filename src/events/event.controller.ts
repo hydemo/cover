@@ -61,9 +61,7 @@ export class EventController {
     @Param('id', new MongodIdPipe()) id: string,
     @Body('userId') userId: string,
   ) {
-
-    const user: IUser = request.user;
-    await this.eventService.bindPrincipal(id, userId, user._id);
+    await this.eventService.bindPrincipal(id, userId, request.user._id);
     return { statusCode: 200, msg: '分配负责人成功' };
   }
 
@@ -74,8 +72,11 @@ export class EventController {
   @UseGuards(AuthGuard(), RolesGuard)
   @Roles('2')
   @ApiOperation({ title: '取消警告', description: '取消警告' })
-  async cancelWarning(@Param('id', new MongodIdPipe()) id: string) {
-    await this.eventService.cancelWarning(id);
+  async cancelWarning(
+    @Request() request,
+    @Param('id', new MongodIdPipe()) id: string,
+  ) {
+    await this.eventService.cancelWarning(id, request.user._id);
     return { statusCode: 200, msg: '取消警告成功' };
   }
 

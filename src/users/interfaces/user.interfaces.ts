@@ -11,6 +11,8 @@ export interface IUser extends Document {
   readonly isDelete?: boolean;
   // 区域
   readonly location: string;
+  // 联系电话
+  readonly phone?: string;
   // 密码
   password: string;
   //

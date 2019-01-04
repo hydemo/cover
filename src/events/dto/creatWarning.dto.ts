@@ -44,4 +44,11 @@ export class WarningsDTO {
   @Type(() => Boolean)
   @ApiModelProperty({ description: '是否处理' })
   readonly isHandle?: boolean = false;
+
+  // 处理人
+  readonly handler?: string;
+  // 处理时间
+  readonly handleTime?: Date;
+  // 处理方式
+  readonly handleType?: number;
 }

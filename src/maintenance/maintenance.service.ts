@@ -26,7 +26,7 @@ export class MaintenanceService {
   }
 
   // 查询全部数据
-  async findAll(pagination: Pagination): Promise<IList<IMaintenance>> {
+  async findAll(pagination: Pagination, userId: string): Promise<IList<IMaintenance>> {
     const search = [];
     const condition: any = {};
     if (pagination.search) {
@@ -68,6 +68,7 @@ export class MaintenanceService {
       .populate({ path: 'wellId', model: 'Well' })
       .populate({ path: 'deviceId', model: 'Device' })
       .populate({ path: 'principal', model: 'User' })
+      .populate({ path: 'creatorId', model: 'User' })
       .exec();
     const total = await this.maintenanceModel.countDocuments(condition);
     return { list, total };
@@ -82,6 +83,8 @@ export class MaintenanceService {
       .skip((pagination.offset - 1) * pagination.limit)
       .populate({ path: 'wellId', model: 'Well' })
       .populate({ path: 'deviceId', model: 'Device' })
+      .populate({ path: 'principal', model: 'User' })
+      .populate({ path: 'creatorId', model: 'User' })
       .exec();
     const total = await this.maintenanceModel.countDocuments();
     return { list, total };

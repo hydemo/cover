@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put, Query, UseGuards, Request } from '@nestjs/common';
 
 import { CreateMaintenanceDTO } from './dto/creatMaintenance.dto';
 import { MaintenanceService } from './maintenance.service';
@@ -31,8 +31,19 @@ export class MaintenanceController {
   })
   @Get('/')
   @ApiOperation({ title: '获取维修记录列表', description: '获取维修记录列表' })
-  async maintenanceList(@Query() pagination: Pagination) {
-    return await this.maintenanceService.findAll(pagination);
+  async maintenanceList(@Request() req, @Query() pagination: Pagination) {
+    return await this.maintenanceService.findAll(pagination, req.user._id);
+  }
+
+  @ApiOkResponse({
+    description: '维修记录列表cms',
+    type: CreateMaintenanceDTO,
+    isArray: true,
+  })
+  @Get('/all')
+  @ApiOperation({ title: '获取维修记录列表cms', description: '获取维修记录列表cms' })
+  async maintenanceListAll(@Request() req, @Query() pagination: Pagination) {
+    return await this.maintenanceService.findAllCms(pagination);
   }
 
   @ApiOkResponse({

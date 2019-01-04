@@ -1,5 +1,5 @@
 import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsEnum, IsEmail, IsNumber } from 'class-validator';
+import { IsString, IsEnum, IsEmail, IsNumber, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateUserDTO {
@@ -26,8 +26,14 @@ export class CreateUserDTO {
 
   @IsString()
   @Type(() => String)
-  @ApiModelPropertyOptional({ description: '区域' })
+  @ApiModelProperty({ description: '区域' })
   readonly location: string;
+
+  @IsString()
+  @IsOptional()
+  @Type(() => String)
+  @ApiModelProperty({ description: '联系电话' })
+  readonly phone?: string;
 
   accessToken: string;
 

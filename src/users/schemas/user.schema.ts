@@ -12,6 +12,8 @@ export const UserSchema = new mongoose.Schema(
     password: String,
     // 角色
     role: { type: Number, enum: [0, 1, 2] },
+    // 联系电话
+    phone: { type: String },
     // 是否删除
     isDelete: { type: Boolean, default: false },
     // 位置
