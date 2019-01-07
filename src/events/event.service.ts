@@ -16,8 +16,8 @@ import { IList } from '../common/interface/list.interface';
 import { CreateWellDTO } from '../wells/dto/creatWell.dto';
 import { MaintenanceService } from '../maintenance/maintenance.service';
 import { CreateMaintenanceDTO } from '../maintenance/dto/creatMaintenance.dto';
-import { DeviceService } from 'src/devices/device.service';
-import { IDevice } from 'src/devices/interfaces/device.interfaces';
+import { DeviceService } from '../devices/device.service';
+import { IDevice } from '../devices/interfaces/device.interfaces';
 
 @Injectable()
 export class EventService {

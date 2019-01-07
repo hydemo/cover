@@ -8,7 +8,7 @@ import { DatabaseModule } from '../database/database.module';
 import { DataModule } from '../data/data.module';
 import { WellModule } from '../wells/well.module';
 import { MaintenanceModule } from '../maintenance/maintenance.module';
-import { DeviceModule } from 'src/devices/device.module';
+import { DeviceModule } from '../devices/device.module';
 
 @Module({
   providers: [EventService, ...eventProviders],
