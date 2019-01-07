@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, HttpService } from '@nestjs/common';
 import { EventsDTO } from './dto/event.dto';
 import { DataService } from '../data/data.service';
 import { WellService } from '../wells/well.service';
@@ -16,6 +16,8 @@ import { IList } from '../common/interface/list.interface';
 import { CreateWellDTO } from '../wells/dto/creatWell.dto';
 import { MaintenanceService } from '../maintenance/maintenance.service';
 import { CreateMaintenanceDTO } from '../maintenance/dto/creatMaintenance.dto';
+import { DeviceService } from 'src/devices/device.service';
+import { IDevice } from 'src/devices/interfaces/device.interfaces';
 
 @Injectable()
 export class EventService {
@@ -23,15 +25,23 @@ export class EventService {
     @Inject('WarningModelToken') private readonly warningModel: Model<IWarning>,
     @Inject(DataService) private readonly dataService: DataService,
     @Inject(WellService) private readonly wellService: WellService,
+    @Inject(DeviceService) private readonly deviceService: DeviceService,
     @Inject(MaintenanceService) private readonly maintenanceService: MaintenanceService,
+    private readonly httpService: HttpService,
   ) { }
 
+
+  async receiveDeviceInfoChange(deviceID: string, event: any) {
+    const device: IDevice = await this.deviceService.findBydeviceID(deviceID)
+    await this.deviceService.updateById(device._id, { NBModuleNumber: event.nodeId })
+  }
   /**
    * 接收数据
    * @param EventsDTO event实体
    */
-  async receiveData(event: EventsDTO) {
-    const well: IWell = await this.wellService.findByDeviceSn(event.deviceSn);
+  async receiveData(deviceID: string, event: any) {
+    const device: IDevice = await this.deviceService.findBydeviceID(deviceID)
+    const well: IWell = await this.wellService.findByDeviceId(device._id);
     switch (event.serviceType) {
       case 'Battery':
         {
@@ -41,7 +51,7 @@ export class EventService {
             // 设备id
             deviceId: well.deviceId,
             // 电量水平
-            batteryLevel: event.batteryLevel,
+            batteryLevel: event.data.batteryLevel,
           };
           await this.receiveBattery(battery);
         }
@@ -54,9 +64,9 @@ export class EventService {
             // 设备id
             deviceId: well.deviceId,
             // 是否打开
-            coverIsOpen: event.coverIsOpen,
+            coverIsOpen: event.data.coverIsOpen,
             // 是否泄漏
-            gasLeak: event.gasLeak,
+            gasLeak: event.data.gasLeak,
           };
           await this.receiveAlarm(alarm);
         }
@@ -69,9 +79,9 @@ export class EventService {
             // 设备id
             deviceId: well.deviceId,
             // 超声波频率
-            frequency: event.frequency,
+            frequency: event.data.frequency,
             // 超声波振幅
-            amplitude: event.amplitude,
+            amplitude: event.data.amplitude,
           };
           await this.receiveAudioFre(audioFre);
         }
@@ -84,9 +94,9 @@ export class EventService {
             // 设备id
             deviceId: well.deviceId,
             // 测距传感器数值
-            distance: event.distance,
+            distance: event.data.distance,
             // 光敏器件电压值
-            photoresistor: event.photoresistor,
+            photoresistor: event.data.photoresistor,
           };
           await this.receiveWellCover(wellCover);
         }
@@ -95,13 +105,13 @@ export class EventService {
         {
           const deviceInfo: DeviceInfoDTO = {
             // 窑井Id
-            wellId: well._id,
+            deviceID: deviceID,
             // 设备序号
-            deviceSn: event.deviceSn,
+            deviceSn: event.data.deviceSn,
             // 设备名称
-            deviceName: event.deviceName,
+            deviceName: event.data.deviceName
           };
-          await this.receiveDeviceInfo(deviceInfo);
+          await this.receiveDeviceInfo(device._id, deviceInfo);
         }
         break;
       default:
@@ -218,8 +228,9 @@ export class EventService {
       await this.create(warning);
     }
   }
-  async receiveDeviceInfo(deviceInfo: DeviceInfoDTO) {
-    await this.dataService.createDeviceInfo(deviceInfo);
+  async receiveDeviceInfo(deviceId: string, data: DeviceInfoDTO) {
+    await this.deviceService.updateById(deviceId, { deviceSn: data.deviceSn, })
+    await this.dataService.createDeviceInfo(data);
   }
   async receiveWellCover(wellCover: WellCoverDTO) {
     const well: CreateWellDTO = await this.wellService.findById(wellCover.wellId);
@@ -239,6 +250,15 @@ export class EventService {
   async create(warning: WarningsDTO) {
     const creatWarning = new this.warningModel(warning);
     await creatWarning.save();
+  }
+
+  async getData(): Promise<any> {
+    const result = await this.httpService.post('https://180.101.147.89:8743/iocm/app/sec/v1.1.0/login', {
+      appId: 'GDHKNUr_4AXCUn_A7Vzo6W1NH7Qa',
+      secret: '6UwnH2syFzd_oHpwgdeCtHcWPSca',
+    }).toPromise();
+    return await result;
+    console.log(result, 'result');
   }
 
 }

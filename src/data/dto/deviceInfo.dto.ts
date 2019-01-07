@@ -6,7 +6,7 @@ export class DeviceInfoDTO {
   @IsMongoId()
   @Type(() => String)
   @ApiModelProperty({ description: '窨井Id' })
-  readonly wellId: string;
+  readonly deviceID: string;
 
   @IsString()
   @Type(() => String)

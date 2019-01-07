@@ -6,7 +6,13 @@ export class CreateDeviceDTO {
   @IsString()
   @Type(() => String)
   @ApiModelProperty({ description: '设备序号' })
-  readonly deviceSn: string;
+  readonly deviceSn?: string;
+
+  // 设备id
+  @IsString()
+  @Type(() => String)
+  @ApiModelProperty({ description: '设备ID' })
+  readonly deviceID?: string;
 
   @IsString()
   @IsOptional()

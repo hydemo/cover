@@ -31,9 +31,19 @@ export class EventController {
   })
   @Post('/')
   @ApiOperation({ title: '接收数据', description: '接收数据' })
-  async receiveData(@Body() event: EventsDTO) {
-    await this.eventService.receiveData(event);
+  async receiveData(@Body() data: any) {
+    if (data.notifyType === 'deviceInfoChanged') {
+      await this.eventService.receiveDeviceInfoChange(data.deviceId, data.deviceInfo)
+    } else if (data.notifyType === 'deviceDataChanged')
+      await this.eventService.receiveData(data.deviceId, data.service);
     return { statusCode: 200, msg: '数据接收成功' };
+  }
+
+  @Get('/')
+  @ApiOperation({ title: '获取数据', description: '获取数据' })
+  async getData() {
+    return await this.eventService.getData();
+    // return { statusCode: 200, msg: '数据接收成功' };
   }
 
   @ApiOkResponse({
@@ -45,8 +55,8 @@ export class EventController {
   @UseGuards(AuthGuard(), RolesGuard)
   @Roles('3')
   @ApiOperation({ title: '获取异常列表', description: '获取异常列表' })
-  warningList(@Query() pagination: Pagination) {
-    return this.eventService.getWarningList(pagination);
+  async warningList(@Query() pagination: Pagination) {
+    return await this.eventService.getWarningList(pagination);
   }
 
   @ApiOkResponse({

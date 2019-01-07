@@ -120,9 +120,8 @@ export class WellService {
     return await this.wellModel.findById(_id).lean().exec();
   }
   // 根据deviceId查询
-  async findByDeviceSn(deviceSn: string): Promise<IWell> {
-    const device: IDevice = await this.deviceService.findByDeviceSn(deviceSn);
-    return await this.wellModel.findOne({ deviceId: device._id, isDelete: false }).exec();
+  async findByDeviceId(deviceId: string): Promise<IWell> {
+    return await this.wellModel.findOne({ deviceId, isDelete: false }).exec();
   }
   async getCounts() {
     const open = await this.wellModel

@@ -43,6 +43,9 @@ export class DeviceService {
     const a = { $or: [{ simId: { $in: simIds } }] };
     return await this.deviceModel.find(condition);
   }
+  async findBydeviceID(deviceID: string): Promise<IDevice> {
+    return await this.deviceModel.findOne({ deviceID, isDelete: false }).lean().exec()
+  }
 
   // 查询全部数据
   async findAll(pagination: Pagination): Promise<IList<IDevice>> {

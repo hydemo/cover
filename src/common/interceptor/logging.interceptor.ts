@@ -9,7 +9,7 @@ export class LoggingInterceptor implements NestInterceptor {
     call$: Observable<any>,
   ): Observable<any> {
     const request = context.switchToHttp().getRequest();
-    Logger.log(`${request}`);
+    Logger.log(`${request.body}`);
 
     const now = Date.now();
     return call$.pipe(
