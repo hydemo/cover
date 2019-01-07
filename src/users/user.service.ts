@@ -15,7 +15,6 @@ export class UserService {
   constructor(
     @Inject('UserModelToken') private readonly userModel: Model<IUser>,
     @Inject(CryptoUtil) private readonly cryptoUtil: CryptoUtil,
-    @Inject(JwtService) private readonly jwtService: JwtService,
 
   ) { }
 

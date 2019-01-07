@@ -109,7 +109,6 @@ export class EventService {
     }
   }
   async getWarningList(pagination: Pagination): Promise<IList<IWarning>> {
-    const search = [];
     const condition: any = {};
     if (pagination.search) {
       const sea = JSON.parse(pagination.search);

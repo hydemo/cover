@@ -14,7 +14,7 @@ export class CreateUserDTO {
   readonly email: string;
 
   @IsNumber()
-  @IsEnum([0, 1, 2])
+  @IsEnum([0, 1, 2, 3])
   @Type(() => Number)
   @ApiModelProperty({ description: '角色' })
   readonly role: number;

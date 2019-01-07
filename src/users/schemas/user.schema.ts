@@ -11,7 +11,7 @@ export const UserSchema = new mongoose.Schema(
     // 密码
     password: String,
     // 角色
-    role: { type: Number, enum: [0, 1, 2] },
+    role: { type: Number, enum: [0, 1, 2, 3] },
     // 联系电话
     phone: { type: String },
     // 是否删除

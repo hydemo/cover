@@ -31,6 +31,12 @@ export class CreateWellDTO {
   @ApiModelPropertyOptional({ description: '井壁口径' })
   readonly coverCaliber?: string;
 
+  @IsString()
+  @IsOptional()
+  @Type(() => String)
+  @ApiModelPropertyOptional({ description: '井盖材料' })
+  readonly coverMaterial?: string;
+
   @IsNumber()
   @IsOptional()
   @ApiModelPropertyOptional({ description: '窨井深度' })

@@ -12,6 +12,8 @@ export interface IWell extends Document {
   readonly wellCaliber?: string;
   // 井盖口径
   readonly coverCaliber?: string;
+  // 井盖材料
+  readonly coverMaterial?: string;
   // 窨井深度
   readonly wellDepth?: string;
   // 经度

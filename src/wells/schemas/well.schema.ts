@@ -15,6 +15,8 @@ export const WellSchema = new mongoose.Schema(
     wellCaliber: String,
     // 井盖口径
     coverCaliber: String,
+    // 井盖材料
+    coverMaterial: String,
     // 窨井深度
     wellDepth: String,
     // 经度
