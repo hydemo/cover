@@ -18,9 +18,9 @@ export class DeviceService {
 
   // 创建数据
   async create(createDeviceDTO: CreateDeviceDTO): Promise<IDevice> {
-    const existing = await this.deviceModel.findOne({ deviceSn: createDeviceDTO.deviceSn, isDelete: false });
+    const existing = await this.deviceModel.findOne({ deviceID: createDeviceDTO.deviceID, isDelete: false });
     if (existing) {
-      throw new ApiException('设备序号已存在', ApiErrorCode.DEVICE_EXIST, 406);
+      throw new ApiException('设备ID已存在', ApiErrorCode.DEVICE_EXIST, 406);
     }
     const deleteOne = await this.deviceModel.findOne({ deviceSn: createDeviceDTO.deviceSn, isDelete: true });
     if (deleteOne) {
@@ -44,7 +44,7 @@ export class DeviceService {
     return await this.deviceModel.find(condition);
   }
   async findBydeviceID(deviceID: string): Promise<IDevice> {
-    return await this.deviceModel.findOne({ deviceID, isDelete: false }).lean().exec()
+    return await this.deviceModel.findOne({ deviceID, isDelete: false }).lean().exec();
   }
 
   // 查询全部数据
@@ -81,6 +81,7 @@ export class DeviceService {
       .find(condition)
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
+      .sort({ status: 1 })
       .populate({ path: 'simId', model: 'Sim' })
       .lean()
       .exec();
@@ -101,7 +102,7 @@ export class DeviceService {
   async updateById(_id: string, device: CreateDeviceDTO) {
     if (device.deviceSn) {
       const existing = await this.deviceModel
-        .findOne({ _id: { $ne: _id }, deviceSn: device.deviceSn });
+        .findOne({ _id: { $ne: _id }, deviceID: device.deviceID });
       if (existing) {
         throw new ApiException('设备序号已存在', ApiErrorCode.DEVICE_EXIST, 406);
       }

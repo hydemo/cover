@@ -1,6 +1,11 @@
 import { Model } from 'mongoose';
+import * as fs from 'fs';
+import * as https from 'https';
 import { Inject, Injectable, HttpService } from '@nestjs/common';
 import { EventsDTO } from './dto/event.dto';
+import axios from 'axios';
+import httpsAgent from 'https-agent';
+import request from 'request';
 import { DataService } from '../data/data.service';
 import { WellService } from '../wells/well.service';
 import { IWarning } from './interfaces/warning.interfaces';
@@ -18,6 +23,8 @@ import { MaintenanceService } from '../maintenance/maintenance.service';
 import { CreateMaintenanceDTO } from '../maintenance/dto/creatMaintenance.dto';
 import { DeviceService } from '../devices/device.service';
 import { IDevice } from '../devices/interfaces/device.interfaces';
+import { CreateDeviceDTO } from '../devices/dto/creatDevice.dto';
+import { DeviceStatus } from '../common/enum/device-status.enum';
 
 @Injectable()
 export class EventService {
@@ -30,17 +37,16 @@ export class EventService {
     private readonly httpService: HttpService,
   ) { }
 
-
   async receiveDeviceInfoChange(deviceID: string, event: any) {
-    const device: IDevice = await this.deviceService.findBydeviceID(deviceID)
-    await this.deviceService.updateById(device._id, { NBModuleNumber: event.nodeId })
+    const device: IDevice = await this.deviceService.findBydeviceID(deviceID);
+    await this.deviceService.updateById(device._id, { NBModuleNumber: event.nodeId });
   }
   /**
    * 接收数据
    * @param EventsDTO event实体
    */
   async receiveData(deviceID: string, event: any) {
-    const device: IDevice = await this.deviceService.findBydeviceID(deviceID)
+    const device: IDevice = await this.deviceService.findBydeviceID(deviceID);
     const well: IWell = await this.wellService.findByDeviceId(device._id);
     switch (event.serviceType) {
       case 'Battery':
@@ -105,11 +111,11 @@ export class EventService {
         {
           const deviceInfo: DeviceInfoDTO = {
             // 窑井Id
-            deviceID: deviceID,
+            deviceID,
             // 设备序号
             deviceSn: event.data.deviceSn,
             // 设备名称
-            deviceName: event.data.deviceName
+            deviceName: event.data.deviceName,
           };
           await this.receiveDeviceInfo(device._id, deviceInfo);
         }
@@ -229,7 +235,7 @@ export class EventService {
     }
   }
   async receiveDeviceInfo(deviceId: string, data: DeviceInfoDTO) {
-    await this.deviceService.updateById(deviceId, { deviceSn: data.deviceSn, })
+    await this.deviceService.updateById(deviceId, { deviceSn: data.deviceSn });
     await this.dataService.createDeviceInfo(data);
   }
   async receiveWellCover(wellCover: WellCoverDTO) {
@@ -252,13 +258,46 @@ export class EventService {
     await creatWarning.save();
   }
 
-  async getData(): Promise<any> {
-    const result = await this.httpService.post('https://180.101.147.89:8743/iocm/app/sec/v1.1.0/login', {
-      appId: 'GDHKNUr_4AXCUn_A7Vzo6W1NH7Qa',
-      secret: '6UwnH2syFzd_oHpwgdeCtHcWPSca',
-    }).toPromise();
-    return await result;
-    console.log(result, 'result');
+  async syncDevice(token): Promise<any> {
+    const result = await axios({
+      method: 'get',
+      url: 'https://180.101.147.89:8743/iocm/app/dm/v1.4.0/devices?pageNo=0&pageSize=100',
+      httpsAgent: new https.Agent({
+        // host: 'https://180.101.147.89:8437',
+        // port: 8437,
+        cert: fs.readFileSync('./client.crt'),
+        key: fs.readFileSync('./client.key'),
+        // secureOptions: 3,
+        rejectUnauthorized: false,
+        keepAlive: true,
+        // agent: false,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        'app_key': 'GDHKNUr_4AXCUn_A7Vzo6W1NH7Qa',
+      },
+    });
+    const devices = result.data.devices;
+    await Promise.all(devices.map(async device => {
+      let code = device.deviceInfo.status;
+      if (device.deviceInfo.statusDetail === 'NOT_ACTIVE') {
+        code = device.deviceInfo.statusDetail;
+      }
+      const createDeviceInfo: CreateDeviceDTO = {
+        deviceName: device.deviceInfo.nodeId,
+        deviceID: device.deviceId,
+        NBModuleNumber: device.deviceInfo.nodeId,
+        status: DeviceStatus[code],
+      };
+      const exist = await this.deviceService.findBydeviceID(device.deviceId);
+      if (!exist) {
+        await this.deviceService.create(createDeviceInfo);
+      } else {
+        await this.deviceService.updateById(exist._id, createDeviceInfo);
+      }
+    }));
+    return;
   }
 
 }

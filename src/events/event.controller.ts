@@ -33,17 +33,17 @@ export class EventController {
   @ApiOperation({ title: '接收数据', description: '接收数据' })
   async receiveData(@Body() data: any) {
     if (data.notifyType === 'deviceInfoChanged') {
-      await this.eventService.receiveDeviceInfoChange(data.deviceId, data.deviceInfo)
+      await this.eventService.receiveDeviceInfoChange(data.deviceId, data.deviceInfo);
     } else if (data.notifyType === 'deviceDataChanged')
       await this.eventService.receiveData(data.deviceId, data.service);
     return { statusCode: 200, msg: '数据接收成功' };
   }
 
-  @Get('/')
-  @ApiOperation({ title: '获取数据', description: '获取数据' })
-  async getData() {
-    return await this.eventService.getData();
-    // return { statusCode: 200, msg: '数据接收成功' };
+  @Get('/sync/device')
+  @ApiOperation({ title: '同步设备信息', description: '同步设备信息' })
+  async syncDevice(@Query('token') token: string) {
+    await this.eventService.syncDevice(token);
+    return { statusCode: 200, msg: '同步完成' };
   }
 
   @ApiOkResponse({
@@ -98,7 +98,7 @@ export class EventController {
   @Roles('3')
   @ApiOperation({ title: '获取未处理警告数', description: '获取未处理警告数' })
   async countUnhandleWarning() {
-    const count: number = await this.eventService.countUnhandleWarning();
-    return { statusCode: 200, msg: '获取未处理警告数成功', data: count };
+    await this.eventService.countUnhandleWarning();
+    return { statusCode: 200, msg: '获取未处理警告数成功' };
   }
 }
