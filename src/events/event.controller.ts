@@ -47,7 +47,7 @@ export class EventController {
   }
 
   @Get('/sync/data')
-  @ApiOperation({ title: '同步设备信息', description: '同步设备信息' })
+  @ApiOperation({ title: '同步设备数据', description: '同步设备数据' })
   async syncData(@Query('token') token: string, @Query('id') id: string) {
     await this.eventService.syncData(token, id);
     return { statusCode: 200, msg: '同步完成' };
