@@ -28,6 +28,8 @@ export const DeviceSchema = new mongoose.Schema(
     installer: String,
     // NB模组号
     NBModuleNumber: String,
+    // 电量警告门限
+    batteryLimit: { type: Number, min: 0, max: 400, default: 360 },
     // 是否删除
     isDelete: { type: Boolean, default: false },
     // sim卡ID

@@ -1,5 +1,5 @@
 import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString, IsDate } from 'class-validator';
+import { IsOptional, IsString, IsDate, IsNumber } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateDeviceDTO {
@@ -85,6 +85,12 @@ export class CreateDeviceDTO {
   @Type(() => String)
   @ApiModelPropertyOptional({ description: 'sim卡ID' })
   readonly simId?: string;
+
+  @IsNumber()
+  @IsOptional()
+  @Type(() => Number)
+  @ApiModelPropertyOptional({ description: '电量警告门限' })
+  readonly batteryLimit?: number;
 
   readonly isDelete?: boolean;
 }

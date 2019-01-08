@@ -1,4 +1,5 @@
 import { Model } from 'mongoose';
+import * as moment from 'moment';
 import * as fs from 'fs';
 import * as https from 'https';
 import { Inject, Injectable, HttpService } from '@nestjs/common';
@@ -42,12 +43,13 @@ export class EventService {
    * 接收数据
    * @param EventsDTO event实体
    */
-  async receiveData(deviceID: string, event: any) {
+  async receiveData(deviceID: string, event: any, eventTime: string) {
     const device: IDevice = await this.deviceService.findBydeviceID(deviceID);
     const well: IWell = await this.wellService.findByDeviceId(device._id);
-    switch (event.serviceType) {
+    switch (event.serviceId) {
       case 'Battery':
         {
+          if (!well) break;
           const battery: BatteryDTO = {
             // 窑井Id
             wellId: well._id,
@@ -55,12 +57,15 @@ export class EventService {
             deviceId: well.deviceId,
             // 电量水平
             batteryLevel: event.data.batteryLevel,
+            // 发生时间
+            createdAt: moment(eventTime),
           };
-          await this.receiveBattery(battery);
+          await this.receiveBattery(battery, device.batteryLimit);
         }
         break;
       case 'Alarm':
         {
+          if (!well) break;
           const alarm: AlarmDTO = {
             // 窑井Id
             wellId: well._id,
@@ -70,27 +75,33 @@ export class EventService {
             coverIsOpen: event.data.coverIsOpen,
             // 是否泄漏
             gasLeak: event.data.gasLeak,
+            // 发生时间
+            createdAt: moment(eventTime),
           };
           await this.receiveAlarm(alarm);
         }
         break;
       case 'AudioFre':
         {
+          if (!well) break;
           const audioFre: AudioFreDTO = {
             // 窑井Id
             wellId: well._id,
             // 设备id
             deviceId: well.deviceId,
             // 超声波频率
-            frequency: event.data.frequency,
+            frequency: event.data.freq,
             // 超声波振幅
             amplitude: event.data.amplitude,
+            // 发生时间
+            createdAt: moment(eventTime),
           };
           await this.receiveAudioFre(audioFre);
         }
         break;
       case 'WellCover':
         {
+          if (!well) break;
           const wellCover: WellCoverDTO = {
             // 窑井Id
             wellId: well._id,
@@ -100,6 +111,8 @@ export class EventService {
             distance: event.data.distance,
             // 光敏器件电压值
             photoresistor: event.data.photoresistor,
+            // 发生时间
+            createdAt: moment(eventTime),
           };
           await this.receiveWellCover(wellCover);
         }
@@ -113,6 +126,8 @@ export class EventService {
             deviceSn: event.data.deviceSn,
             // 设备名称
             deviceName: event.data.deviceName,
+            // 发生时间
+            createdAt: moment(eventTime),
           };
           await this.receiveDeviceInfo(device._id, deviceInfo);
         }
@@ -186,18 +201,19 @@ export class EventService {
     return await this.warningModel.countDocuments({ isHandle: false });
   }
 
-  async receiveBattery(battery: BatteryDTO) {
+  async receiveBattery(battery: BatteryDTO, limit: number) {
     const well: CreateWellDTO = await this.wellService.findById(battery.wellId);
     well.status.batteryLevel = battery.batteryLevel;
     await this.wellService.updateById(battery.wellId, well);
     await this.dataService.createBattery(battery);
-    if (battery.batteryLevel < 20 && well.isDefence) {
+    if (battery.batteryLevel < limit && well.isDefence) {
       const warning: WarningsDTO = {
         wellId: battery.wellId,
         deviceId: battery.deviceId,
         warningType: 'Battery',
         batteryLevel: battery.batteryLevel,
         isHandle: false,
+        createdAt: battery.createdAt,
       };
       await this.create(warning);
     }
@@ -216,6 +232,7 @@ export class EventService {
         coverIsOpen: alarm.coverIsOpen,
         isHandle: false,
         batteryLevel: well.status.batteryLevel,
+        createdAt: alarm.createdAt,
       };
       await this.create(warning);
     }
@@ -227,6 +244,7 @@ export class EventService {
         gasLeak: alarm.gasLeak,
         isHandle: false,
         batteryLevel: well.status.batteryLevel,
+        createdAt: alarm.createdAt,
       };
       await this.create(warning);
     }
@@ -255,10 +273,10 @@ export class EventService {
     await creatWarning.save();
   }
 
-  async syncDevice(token): Promise<any> {
-    const result = await axios({
+  async axiosGet(token, url): Promise<any> {
+    return await axios({
       method: 'get',
-      url: 'https://180.101.147.89:8743/iocm/app/dm/v1.4.0/devices?pageNo=0&pageSize=100',
+      url,
       httpsAgent: new https.Agent({
         // host: 'https://180.101.147.89:8437',
         // port: 8437,
@@ -275,8 +293,13 @@ export class EventService {
         'app_key': 'GDHKNUr_4AXCUn_A7Vzo6W1NH7Qa',
       },
     });
+  }
+  async syncDevice(token): Promise<any> {
+    const url = 'https://180.101.147.89:8743/iocm/app/dm/v1.4.0/devices?pageNo=0&pageSize=100';
+    const result = await this.axiosGet(token, url);
     const devices = result.data.devices;
     await Promise.all(devices.map(async device => {
+      if (device.deviceInfo.nodeId !== '869487030005895') return;
       let code = device.deviceInfo.status;
       if (device.deviceInfo.statusDetail === 'NOT_ACTIVE') {
         code = device.deviceInfo.statusDetail;
@@ -295,6 +318,36 @@ export class EventService {
       }
     }));
     return;
+  }
+
+  async syncData(token, deviceId): Promise<any> {
+    const url = `https://180.101.147.89:8743/iocm/app/data/v1.2.0/deviceDataHistory?deviceId=${deviceId}&gatewayId=${deviceId}`;
+    const result = await this.axiosGet(token, url);
+    const history = result.data.deviceDataHistoryDTOs.reverse();
+    for (const his of history) {
+      await this.receiveData(deviceId, his, his.timestamp);
+    }
+    // const devices = result.data.devices;
+    // await Promise.all(devices.map(async device => {
+    //   if (device.deviceInfo.nodeId !== '869487030005895') return;
+    //   let code = device.deviceInfo.status;
+    //   if (device.deviceInfo.statusDetail === 'NOT_ACTIVE') {
+    //     code = device.deviceInfo.statusDetail;
+    //   }
+    //   const createDeviceInfo: CreateDeviceDTO = {
+    //     deviceName: device.deviceInfo.nodeId,
+    //     deviceID: device.deviceId,
+    //     NBModuleNumber: device.deviceInfo.nodeId,
+    //     status: DeviceStatus[code],
+    //   };
+    //   const exist = await this.deviceService.findBydeviceID(device.deviceId);
+    //   if (!exist) {
+    //     await this.deviceService.create(createDeviceInfo);
+    //   } else {
+    //     await this.deviceService.updateById(exist._id, createDeviceInfo);
+    //   }
+    // }));
+    // return;
   }
 
 }

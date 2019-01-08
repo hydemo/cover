@@ -22,4 +22,6 @@ export class AlarmDTO {
   @Type(() => Boolean)
   @ApiModelProperty({ description: '燃气燃气是否泄漏' })
   readonly gasLeak: boolean = false;
+
+  readonly createdAt?: any;
 }

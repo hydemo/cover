@@ -18,4 +18,6 @@ export class DeviceInfoDTO {
   @Type(() => String)
   @ApiModelPropertyOptional({ description: '设备名称' })
   readonly deviceName?: string;
+
+  readonly createdAt?: any;
 }

@@ -33,4 +33,6 @@ export class ConfigReportDTO {
   @Type(() => Number)
   @ApiModelProperty({ description: '位置检测周期' })
   readonly distCheckPeriod: number;
+
+  readonly createdAt?: any;
 }

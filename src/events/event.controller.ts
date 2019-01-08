@@ -35,7 +35,7 @@ export class EventController {
     if (data.notifyType === 'deviceInfoChanged') {
       await this.eventService.receiveDeviceInfoChange(data.deviceId, data.deviceInfo);
     } else if (data.notifyType === 'deviceDataChanged')
-      await this.eventService.receiveData(data.deviceId, data.service);
+      await this.eventService.receiveData(data.deviceId, data.service, data.service.eventTime);
     return { statusCode: 200, msg: '数据接收成功' };
   }
 
@@ -43,6 +43,13 @@ export class EventController {
   @ApiOperation({ title: '同步设备信息', description: '同步设备信息' })
   async syncDevice(@Query('token') token: string) {
     await this.eventService.syncDevice(token);
+    return { statusCode: 200, msg: '同步完成' };
+  }
+
+  @Get('/sync/data')
+  @ApiOperation({ title: '同步设备信息', description: '同步设备信息' })
+  async syncData(@Query('token') token: string, @Query('id') id: string) {
+    await this.eventService.syncData(token, id);
     return { statusCode: 200, msg: '同步完成' };
   }
 

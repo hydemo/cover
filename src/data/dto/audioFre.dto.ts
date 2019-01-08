@@ -24,4 +24,6 @@ export class AudioFreDTO {
   @Type(() => Number)
   @ApiModelProperty({ description: '超声波振幅' })
   readonly amplitude: number;
+
+  readonly createdAt?: any;
 }

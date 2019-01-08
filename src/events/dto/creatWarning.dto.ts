@@ -51,4 +51,6 @@ export class WarningsDTO {
   readonly handleTime?: Date;
   // 处理方式
   readonly handleType?: number;
+
+  readonly createdAt?: any;
 }

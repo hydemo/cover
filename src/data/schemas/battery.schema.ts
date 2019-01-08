@@ -9,7 +9,7 @@ export const BatterySchema = new mongoose.Schema(
     // 设备id
     deviceId: ObjectId,
     // 电量水平
-    batteryLevel: { type: Number, min: 0, max: 100 },
+    batteryLevel: { type: Number, min: 0, max: 400 },
   },
   { collection: 'Battery', versionKey: false, timestamps: true },
 );

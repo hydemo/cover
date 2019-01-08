@@ -19,4 +19,6 @@ export class BatteryDTO {
   @Type(() => Number)
   @ApiModelProperty({ description: '电量水平' })
   readonly batteryLevel: number;
+
+  readonly createdAt?: any;
 }

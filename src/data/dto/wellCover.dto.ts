@@ -24,4 +24,6 @@ export class WellCoverDTO {
   @Type(() => Number)
   @ApiModelProperty({ description: '光敏器件电压值' })
   readonly photoresistor: number;
+
+  readonly createdAt?: any;
 }
