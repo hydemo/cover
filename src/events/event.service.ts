@@ -299,55 +299,59 @@ export class EventService {
     const result = await this.axiosGet(token, url);
     const devices = result.data.devices;
     await Promise.all(devices.map(async device => {
-      if (device.deviceInfo.nodeId !== '869487030005895') return;
-      let code = device.deviceInfo.status;
-      if (device.deviceInfo.statusDetail === 'NOT_ACTIVE') {
-        code = device.deviceInfo.statusDetail;
-      }
-      const createDeviceInfo: CreateDeviceDTO = {
-        deviceName: device.deviceInfo.nodeId,
-        deviceID: device.deviceId,
-        NBModuleNumber: device.deviceInfo.nodeId,
-        status: DeviceStatus[code],
-      };
-      const exist = await this.deviceService.findBydeviceID(device.deviceId);
-      if (!exist) {
-        await this.deviceService.create(createDeviceInfo);
+      if (device.deviceInfo.nodeId !== '869487030005895') {
+        return;
       } else {
-        await this.deviceService.updateById(exist._id, createDeviceInfo);
+        let code = device.deviceInfo.status;
+        if (device.deviceInfo.statusDetail === 'NOT_ACTIVE') {
+          code = device.deviceInfo.statusDetail;
+        }
+        const createDeviceInfo: CreateDeviceDTO = {
+          deviceName: device.deviceInfo.nodeId,
+          deviceID: device.deviceId,
+          NBModuleNumber: device.deviceInfo.nodeId,
+          status: DeviceStatus[code],
+        };
+        const exist = await this.deviceService.findBydeviceID(device.deviceId);
+        if (!exist) {
+          await this.deviceService.create(createDeviceInfo);
+        } else {
+          await this.deviceService.updateById(exist._id, createDeviceInfo);
+        }
       }
     }));
-    return;
   }
 
-  async syncData(token, deviceId): Promise<any> {
-    const url = `https://180.101.147.89:8743/iocm/app/data/v1.2.0/deviceDataHistory?deviceId=${deviceId}&gatewayId=${deviceId}`;
-    const result = await this.axiosGet(token, url);
-    const history = result.data.deviceDataHistoryDTOs.reverse();
-    for (const his of history) {
-      await this.receiveData(deviceId, his, his.timestamp);
-    }
-    // const devices = result.data.devices;
-    // await Promise.all(devices.map(async device => {
-    //   if (device.deviceInfo.nodeId !== '869487030005895') return;
-    //   let code = device.deviceInfo.status;
-    //   if (device.deviceInfo.statusDetail === 'NOT_ACTIVE') {
-    //     code = device.deviceInfo.statusDetail;
-    //   }
-    //   const createDeviceInfo: CreateDeviceDTO = {
-    //     deviceName: device.deviceInfo.nodeId,
-    //     deviceID: device.deviceId,
-    //     NBModuleNumber: device.deviceInfo.nodeId,
-    //     status: DeviceStatus[code],
-    //   };
-    //   const exist = await this.deviceService.findBydeviceID(device.deviceId);
-    //   if (!exist) {
-    //     await this.deviceService.create(createDeviceInfo);
-    //   } else {
-    //     await this.deviceService.updateById(exist._id, createDeviceInfo);
-    //   }
-    // }));
-    // return;
+}
+
+async syncData(token, deviceId): Promise < any > {
+  const url = `https://180.101.147.89:8743/iocm/app/data/v1.2.0/deviceDataHistory?deviceId=${deviceId}&gatewayId=${deviceId}`;
+  const result = await this.axiosGet(token, url);
+  const history = result.data.deviceDataHistoryDTOs.reverse();
+  for(const his of history) {
+    await this.receiveData(deviceId, his, his.timestamp);
   }
+  // const devices = result.data.devices;
+  // await Promise.all(devices.map(async device => {
+  //   if (device.deviceInfo.nodeId !== '869487030005895') return;
+  //   let code = device.deviceInfo.status;
+  //   if (device.deviceInfo.statusDetail === 'NOT_ACTIVE') {
+  //     code = device.deviceInfo.statusDetail;
+  //   }
+  //   const createDeviceInfo: CreateDeviceDTO = {
+  //     deviceName: device.deviceInfo.nodeId,
+  //     deviceID: device.deviceId,
+  //     NBModuleNumber: device.deviceInfo.nodeId,
+  //     status: DeviceStatus[code],
+  //   };
+  //   const exist = await this.deviceService.findBydeviceID(device.deviceId);
+  //   if (!exist) {
+  //     await this.deviceService.create(createDeviceInfo);
+  //   } else {
+  //     await this.deviceService.updateById(exist._id, createDeviceInfo);
+  //   }
+  // }));
+  // return;
+}
 
 }
