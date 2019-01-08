@@ -105,6 +105,7 @@ export class EventController {
   @Roles('3')
   @ApiOperation({ title: '获取未处理警告数', description: '获取未处理警告数' })
   async countUnhandleWarning() {
-    return await this.eventService.countUnhandleWarning();
+    const result = await this.eventService.countUnhandleWarning();
+    return { statusCode: 200, msg: '获取未处理警告数成功', data: result };
   }
 }
