@@ -48,6 +48,7 @@ export class SimService {
         condition.$or = search;
       }
     }
+    condition.isDelete = false;
     const list = await this.simModel
       .find(condition)
       .limit(pagination.limit)
