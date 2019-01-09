@@ -23,7 +23,7 @@ import { DeviceService } from '../devices/device.service';
 import { IDevice } from '../devices/interfaces/device.interfaces';
 import { CreateDeviceDTO } from '../devices/dto/creatDevice.dto';
 import { DeviceStatus } from '../common/enum/device-status.enum';
-
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 @Injectable()
 export class EventService {
   constructor(
@@ -285,7 +285,7 @@ export class EventService {
         cert: fs.readFileSync('./client.crt'),
         key: fs.readFileSync('./client.key'),
         // secureOptions: 3,
-        rejectUnauthorized: false,
+        // rejectUnauthorized: false,
         keepAlive: true,
         // agent: false,
       }),
@@ -294,7 +294,7 @@ export class EventService {
         'Authorization': `Bearer ${token}`,
         'app_key': 'GDHKNUr_4AXCUn_A7Vzo6W1NH7Qa',
       },
-    });
+    }).catch(e => console.log(e, 'rrr'));
   }
   async syncDevice(token): Promise<any> {
     const url = 'https://180.101.147.89:8743/iocm/app/dm/v1.4.0/devices?pageNo=0&pageSize=100';
@@ -350,6 +350,33 @@ export class EventService {
     //   }
     // }));
     // return;
+  }
+
+  async getToken() {
+    const url = `https://180.101.147.89:8743/iocm/app/sec/v1.1.0/login`;
+    const result = await axios({
+      method: 'post',
+      url,
+      httpsAgent: new https.Agent({
+        // host: 'https://180.101.147.89:8437',
+        // port: 8437,
+        cert: fs.readFileSync('./client.crt'),
+        key: fs.readFileSync('./client.key'),
+        secureOptions: 3,
+        rejectUnauthorized: false,
+        keepAlive: true,
+        // secureProtocol: 
+        // agent: false,
+      }),
+      data: {
+        appId: 'GDHKNUr_4AXCUn_A7Vzo6W1NH7Qa',
+        secret: '6UwnH2syFzd_oHpwgdeCtHcWPSca',
+      },
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    }).catch(e => console.log(e.request, 'e'));
+    console.log(result, 'result');
   }
 
 }

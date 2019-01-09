@@ -46,6 +46,13 @@ export class EventController {
     return { statusCode: 200, msg: '同步完成' };
   }
 
+  @Get('/sync/token')
+  @ApiOperation({ title: '获取token', description: '获取token' })
+  async getToken() {
+    const token = await this.eventService.getToken();
+    return { statusCode: 200, msg: '同步完成', token };
+  }
+
   @Get('/sync/data')
   @ApiOperation({ title: '同步设备数据', description: '同步设备数据' })
   async syncData(@Query('token') token: string, @Query('id') id: string) {
