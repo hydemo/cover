@@ -43,6 +43,7 @@ export class DataService {
     const list = await this.alarmModel
       .find(condition)
       .limit(pagination.limit)
+      .sort({ createdAt: -1 })
       .skip((pagination.offset - 1) * pagination.limit)
       .exec();
     const total = await this.alarmModel.countDocuments(condition);
@@ -64,6 +65,7 @@ export class DataService {
     const condition = { wellId };
     const list = await this.audioFreModel
       .find(condition)
+      .sort({ createdAt: -1 })
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .populate({ path: 'wellId', model: 'Well' })
@@ -88,6 +90,7 @@ export class DataService {
     const condition = { wellId };
     const list = await this.batteryModel
       .find(condition)
+      .sort({ createdAt: -1 })
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .populate({ path: 'wellId', model: 'Well' })
@@ -112,6 +115,7 @@ export class DataService {
     const condition = { wellId };
     const list = await this.configReportModel
       .find(condition)
+      .sort({ createdAt: -1 })
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .exec();
@@ -134,6 +138,7 @@ export class DataService {
     const condition = { wellId };
     const list = await this.deviceInfoModel
       .find(condition)
+      .sort({ createdAt: -1 })
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .exec();
@@ -156,6 +161,7 @@ export class DataService {
     const condition = { wellId };
     const list = await this.wellCoverModel
       .find(condition)
+      .sort({ createdAt: -1 })
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .populate({ path: 'wellId', model: 'Well' })
