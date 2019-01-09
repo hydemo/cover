@@ -47,7 +47,6 @@ export class UserController {
     private readonly cryptoUtil: CryptoUtil,
   ) { }
 
-  @Roles('0')
   @ApiOkResponse({
     description: '用户列表',
     type: CreateUserDTO,
