@@ -40,6 +40,19 @@ export class EventService {
     if (!device) return;
     await this.deviceService.updateById(device._id, { NBModuleNumber: event.nodeId });
   }
+
+  async receiveAddDevice(deviceID: string, deviceInfo: any) {
+    let code = deviceInfo.status;
+    if (deviceInfo.statusDetail === 'NOT_ACTIVE') {
+      code = deviceInfo.statusDetail;
+    }
+    const createDeviceInfo: CreateDeviceDTO = {
+      deviceID,
+      NBModuleNumber: deviceInfo.nodeId,
+      status: DeviceStatus[code],
+    };
+    await this.deviceService.create(createDeviceInfo);
+  }
   /**
    * 接收数据
    * @param EventsDTO event实体
@@ -301,13 +314,12 @@ export class EventService {
     const result = await this.axiosGet(token, url);
     const devices = result.data.devices;
     await Promise.all(devices.map(async device => {
-      if (device.deviceInfo.nodeId !== '869487030005895') return;
+      if (device.deviceInfo.nodeId !== '869487030007651' || device.deviceInfo.nodeId !== '869487030006752') return;
       let code = device.deviceInfo.status;
       if (device.deviceInfo.statusDetail === 'NOT_ACTIVE') {
         code = device.deviceInfo.statusDetail;
       }
       const createDeviceInfo: CreateDeviceDTO = {
-        deviceName: device.deviceInfo.nodeId,
         deviceID: device.deviceId,
         NBModuleNumber: device.deviceInfo.nodeId,
         status: DeviceStatus[code],

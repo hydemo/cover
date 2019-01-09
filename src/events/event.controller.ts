@@ -34,8 +34,11 @@ export class EventController {
   async receiveData(@Body() data: any) {
     if (data.notifyType === 'deviceInfoChanged') {
       await this.eventService.receiveDeviceInfoChange(data.deviceId, data.deviceInfo);
-    } else if (data.notifyType === 'deviceDataChanged')
+    } else if (data.notifyType === 'deviceDataChanged') {
       await this.eventService.receiveData(data.deviceId, data.service, data.service.eventTime);
+    } else if (data.notifyType === 'deviceAdded') {
+      await this.eventService.receiveAddDevice(data.deviceId, data.deviceInfo);
+    }
     return { statusCode: 200, msg: '数据接收成功' };
   }
 
