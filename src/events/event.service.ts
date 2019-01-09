@@ -366,24 +366,20 @@ export class EventService {
   }
 
   async getToken() {
-    const url = `https://180.101.147.89:8743/iocm/app/sec/v1.1.0/login`;
+    const url = `https://*****`;
     const result = await axios({
       method: 'post',
       url,
       httpsAgent: new https.Agent({
-        // host: 'https://180.101.147.89:8437',
-        // port: 8437,
         cert: fs.readFileSync('./client.crt'),
         key: fs.readFileSync('./client.key'),
         secureOptions: 3,
         rejectUnauthorized: false,
         keepAlive: true,
-        // secureProtocol: 
-        // agent: false,
       }),
       data: {
-        appId: 'GDHKNUr_4AXCUn_A7Vzo6W1NH7Qa',
-        secret: '6UwnH2syFzd_oHpwgdeCtHcWPSca',
+        appId: '******',
+        secret: '******',
       },
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',

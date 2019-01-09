@@ -71,7 +71,7 @@ export class DataService {
       .populate({ path: 'wellId', model: 'Well' })
       .populate({ path: 'deviceId', model: 'Device' })
       .exec();
-    const total = await this.audioFreModel.countDocuments();
+    const total = await this.audioFreModel.countDocuments(condition);
     return { list, total };
   }
   /**
@@ -96,7 +96,7 @@ export class DataService {
       .populate({ path: 'wellId', model: 'Well' })
       .populate({ path: 'deviceId', model: 'Device' })
       .exec();
-    const total = await this.batteryModel.countDocuments();
+    const total = await this.batteryModel.countDocuments(condition);
     return { list, total };
   }
   /**
@@ -119,7 +119,7 @@ export class DataService {
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .exec();
-    const total = await this.configReportModel.countDocuments();
+    const total = await this.configReportModel.countDocuments(condition);
     return { list, total };
   }
   /**
@@ -142,7 +142,7 @@ export class DataService {
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
       .exec();
-    const total = await this.deviceInfoModel.countDocuments();
+    const total = await this.deviceInfoModel.countDocuments(condition);
     return { list, total };
   }
   /**
@@ -167,7 +167,7 @@ export class DataService {
       .populate({ path: 'wellId', model: 'Well' })
       .populate({ path: 'deviceId', model: 'Device' })
       .exec();
-    const total = await this.wellCoverModel.countDocuments();
+    const total = await this.wellCoverModel.countDocuments(condition);
     return { list, total };
   }
   /**
@@ -178,7 +178,7 @@ export class DataService {
     const list = await this.batteryModel
       .find(condition)
       .exec();
-    const total = await this.batteryModel.countDocuments();
+    const total = await this.batteryModel.countDocuments(condition);
     return { list, total };
   }
 
@@ -190,7 +190,7 @@ export class DataService {
     const list = await this.wellCoverModel
       .find(condition)
       .exec();
-    const total = await this.wellCoverModel.countDocuments();
+    const total = await this.wellCoverModel.countDocuments(condition);
     return { list, total };
   }
 
@@ -202,7 +202,7 @@ export class DataService {
     const list = await this.audioFreModel
       .find(condition)
       .exec();
-    const total = await this.audioFreModel.countDocuments();
+    const total = await this.audioFreModel.countDocuments(condition);
     return { list, total };
   }
 }
