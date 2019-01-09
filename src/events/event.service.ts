@@ -314,7 +314,7 @@ export class EventService {
     const result = await this.axiosGet(token, url);
     const devices = result.data.devices;
     await Promise.all(devices.map(async device => {
-      if (device.deviceInfo.nodeId !== '869487030007651' || device.deviceInfo.nodeId !== '869487030006752') return;
+      if (device.deviceInfo.nodeId !== '869487030007651' && device.deviceInfo.nodeId !== '869487030006752') return;
       let code = device.deviceInfo.status;
       if (device.deviceInfo.statusDetail === 'NOT_ACTIVE') {
         code = device.deviceInfo.statusDetail;
