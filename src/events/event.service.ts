@@ -321,6 +321,7 @@ export class EventService {
       }
       const createDeviceInfo: CreateDeviceDTO = {
         deviceID: device.deviceId,
+        deviceName: device.deviceInfo.nodeId,
         NBModuleNumber: device.deviceInfo.nodeId,
         status: DeviceStatus[code],
       };
