@@ -45,6 +45,7 @@ export class EventService {
    */
   async receiveData(deviceID: string, event: any, eventTime: string) {
     const device: IDevice = await this.deviceService.findBydeviceID(deviceID);
+    if (!device) return;
     const well: IWell = await this.wellService.findByDeviceId(device._id);
     switch (event.serviceId) {
       case 'Battery':
