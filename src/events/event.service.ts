@@ -37,6 +37,7 @@ export class EventService {
 
   async receiveDeviceInfoChange(deviceID: string, event: any) {
     const device: IDevice = await this.deviceService.findBydeviceID(deviceID);
+    if (!device) return;
     await this.deviceService.updateById(device._id, { NBModuleNumber: event.nodeId });
   }
   /**
