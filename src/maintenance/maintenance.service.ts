@@ -27,6 +27,24 @@ export class MaintenanceService {
 
   // 查询全部数据
   async findAll(pagination: Pagination, userId: string): Promise<IList<IMaintenance>> {
+    const condition: any = {};
+    condition.principal = userId;
+    const list = await this.maintenanceModel
+      .find(condition)
+      .limit(pagination.limit)
+      .sort({ status: 1, occurTime: -1 })
+      .skip((pagination.offset - 1) * pagination.limit)
+      .populate({ path: 'wellId', model: 'Well' })
+      .populate({ path: 'deviceId', model: 'Device' })
+      .populate({ path: 'principal', model: 'User' })
+      .populate({ path: 'creatorId', model: 'User' })
+      .exec();
+    const total = await this.maintenanceModel.countDocuments(condition);
+    return { list, total };
+  }
+
+  // 查询全部数据
+  async findAllCms(pagination: Pagination): Promise<IList<IMaintenance>> {
     const search = [];
     const condition: any = {};
     if (pagination.search) {
@@ -60,25 +78,8 @@ export class MaintenanceService {
         condition.$or = search;
       }
     }
-    condition.principal = userId;
     const list = await this.maintenanceModel
       .find(condition)
-      .limit(pagination.limit)
-      .sort({ status: 1, occurTime: -1 })
-      .skip((pagination.offset - 1) * pagination.limit)
-      .populate({ path: 'wellId', model: 'Well' })
-      .populate({ path: 'deviceId', model: 'Device' })
-      .populate({ path: 'principal', model: 'User' })
-      .populate({ path: 'creatorId', model: 'User' })
-      .exec();
-    const total = await this.maintenanceModel.countDocuments(condition);
-    return { list, total };
-  }
-
-  // 查询全部数据
-  async findAllCms(pagination: Pagination): Promise<IList<IMaintenance>> {
-    const list = await this.maintenanceModel
-      .find()
       .limit(pagination.limit)
       .sort({ status: -1, creadedAt: -1 })
       .skip((pagination.offset - 1) * pagination.limit)
@@ -87,7 +88,7 @@ export class MaintenanceService {
       .populate({ path: 'principal', model: 'User' })
       .populate({ path: 'creatorId', model: 'User' })
       .exec();
-    const total = await this.maintenanceModel.countDocuments();
+    const total = await this.maintenanceModel.countDocuments(condition);
     return { list, total };
   }
 
