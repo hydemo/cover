@@ -29,6 +29,7 @@ export class MaintenanceService {
   async findAll(pagination: Pagination, userId: string): Promise<IList<IMaintenance>> {
     const condition: any = {};
     condition.principal = userId;
+    condition.status = { $ne: 3 };
     const list = await this.maintenanceModel
       .find(condition)
       .limit(pagination.limit)

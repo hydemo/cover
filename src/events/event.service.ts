@@ -307,7 +307,7 @@ export class EventService {
         'Authorization': `Bearer ${token}`,
         'app_key': 'GDHKNUr_4AXCUn_A7Vzo6W1NH7Qa',
       },
-    }).catch(e => console.log(e, 'rrr'));
+    });
   }
   async syncDevice(token): Promise<any> {
     const url = 'https://180.101.147.89:8743/iocm/app/dm/v1.4.0/devices?pageNo=0&pageSize=100';
@@ -384,8 +384,7 @@ export class EventService {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-    }).catch(e => console.log(e.request, 'e'));
-    console.log(result, 'result');
+    });
   }
 
 }
