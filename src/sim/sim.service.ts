@@ -6,7 +6,7 @@ import { Pagination } from '../common/dto/pagination.dto';
 import { IList } from '../common/interface/list.interface';
 import { ApiErrorCode } from '../common/enum/api-error-code.enum';
 import { ApiException } from '../common/expection/api.exception';
-import { DeviceService } from 'src/devices/device.service';
+import { DeviceService } from '../devices/device.service';
 
 @Injectable()
 export class SimService {

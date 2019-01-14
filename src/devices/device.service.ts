@@ -7,7 +7,7 @@ import { IList } from '../common/interface/list.interface';
 import { ApiErrorCode } from '../common/enum/api-error-code.enum';
 import { ApiException } from '../common/expection/api.exception';
 import { SimService } from '../sim/sim.service';
-import { WellService } from 'src/wells/well.service';
+import { WellService } from '../wells/well.service';
 
 @Injectable()
 export class DeviceService {

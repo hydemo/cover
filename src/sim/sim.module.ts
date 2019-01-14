@@ -5,7 +5,7 @@ import { SimService } from './sim.service';
 import { SimController } from './sim.controller';
 import { simsProviders } from './sim.providers';
 import { DatabaseModule } from '../database/database.module';
-import { DeviceModule } from 'src/devices/device.module';
+import { DeviceModule } from '../devices/device.module';
 
 @Module({
   providers: [SimService, ...simsProviders],

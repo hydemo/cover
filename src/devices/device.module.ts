@@ -6,7 +6,7 @@ import { DeviceController } from './device.controller';
 import { devicesProviders } from './device.providers';
 import { DatabaseModule } from '../database/database.module';
 import { SimModule } from '../sim/sim.module';
-import { WellModule } from 'src/wells/well.module';
+import { WellModule } from '../wells/well.module';
 
 @Module({
   providers: [DeviceService, ...devicesProviders],

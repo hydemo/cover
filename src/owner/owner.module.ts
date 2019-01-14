@@ -5,7 +5,7 @@ import { OwnerService } from './owner.service';
 import { OwnerController } from './owner.controller';
 import { ownersProviders } from './owner.providers';
 import { DatabaseModule } from '../database/database.module';
-import { WellModule } from 'src/wells/well.module';
+import { WellModule } from '../wells/well.module';
 
 @Module({
   providers: [OwnerService, ...ownersProviders],
