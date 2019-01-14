@@ -138,13 +138,14 @@ export class WellService {
     return await this.wellModel.findOne({ deviceId, isDelete: false }).exec();
   }
   async getCounts() {
+    const total = await this.wellModel.countDocuments();
     const open = await this.wellModel
       .countDocuments({ 'status.coverIsOpen': true, 'isDelete': false });
     const leak = await this.wellModel
       .countDocuments({ 'status.gasLeak': true, 'isDelete': false });
     const battery = await this.wellModel
       .count({ $where: 'this.status.batteryLevel <= this.batteryLimit', isDelete: false });
-    return { open, battery, leak };
+    return { open, battery, leak, normal: total - open - battery - leak };
   }
   // 根据id修改
   async updateById(_id: string, well: CreateWellDTO) {
