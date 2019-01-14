@@ -66,6 +66,7 @@ export class WellController {
     type: CreateWellDTO,
     isArray: true,
   })
+  @ApiBearerAuth()
   @ApiOperation({ title: '获取井盖打开列表', description: '获取井盖打开列表' })
   @Get('/open')
   @Roles('3')
@@ -82,8 +83,8 @@ export class WellController {
   @ApiOperation({ title: '获取异常列表', description: '获取异常列表' })
   @Get('/unnarmal')
   @Roles('3')
-  async wellListBattery() {
-    return await this.wellService.findBattery();
+  async wellListUnnarmal() {
+    return await this.wellService.findUnnormal();
   }
 
   @ApiOkResponse({
@@ -91,6 +92,7 @@ export class WellController {
     type: CreateWellDTO,
     isArray: true,
   })
+  @ApiBearerAuth()
   @ApiOperation({ title: '获取漏气列表', description: '获取漏气列表' })
   @Get('/leak')
   @Roles('3')
@@ -99,15 +101,16 @@ export class WellController {
   }
 
   @ApiOkResponse({
-    description: '漏气列表',
+    description: '电量不足列表',
     type: CreateWellDTO,
     isArray: true,
   })
-  @ApiOperation({ title: '获取漏气列表', description: '获取漏气列表' })
-  @Get('/leak')
+  @ApiBearerAuth()
+  @ApiOperation({ title: '获取电量不足列表', description: '获取电量不足列表' })
+  @Get('/battery')
   @Roles('3')
-  async wellListUnnormal() {
-    return await this.wellService.findUnnormal();
+  async wellListBattery() {
+    return await this.wellService.findBattery();
   }
 
   @Get('/:id')

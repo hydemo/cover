@@ -115,9 +115,9 @@ export class WellService {
       .find({
         isDelete: false,
         $or: [
-          { $where: 'this.status.batteryLevel <= this.batteryLimit' },
           { 'status.coverIsOpen': true },
           { 'status.gasLeak': true },
+          { $where: 'this.status.batteryLevel <= this.batteryLimit' },
         ],
       })
       .exec();
