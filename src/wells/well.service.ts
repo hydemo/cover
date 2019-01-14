@@ -138,7 +138,7 @@ export class WellService {
     return await this.wellModel.findOne({ deviceId, isDelete: false }).exec();
   }
   async getCounts() {
-    const total = await this.wellModel.countDocuments();
+    const total = await this.wellModel.countDocuments({ isDelete: false });
     const open = await this.wellModel
       .countDocuments({ 'status.coverIsOpen': true, 'isDelete': false });
     const leak = await this.wellModel
