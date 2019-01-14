@@ -33,4 +33,5 @@ export interface IDevice extends Document {
   readonly batteryLimit?: number;
   // 是否删除
   readonly isDelete?: boolean;
+  readonly isBind?: boolean;
 }

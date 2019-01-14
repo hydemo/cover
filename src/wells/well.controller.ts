@@ -9,6 +9,7 @@ import {
   ApiOkResponse,
   ApiForbiddenResponse,
   ApiCreatedResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { MongodIdPipe } from '../common/pipe/mongodId.pipe';
 import { CreateOwnerDTO } from '../owner/dto/creatOwner.dto';
@@ -73,12 +74,13 @@ export class WellController {
   }
 
   @ApiOkResponse({
-    description: '电量不足列表',
+    description: '异常列表',
     type: CreateWellDTO,
     isArray: true,
   })
-  @ApiOperation({ title: '获取电量不足列表', description: '获取电量不足列表' })
-  @Get('/battery')
+  @ApiBearerAuth()
+  @ApiOperation({ title: '获取异常列表', description: '获取异常列表' })
+  @Get('/unnarmal')
   @Roles('3')
   async wellListBattery() {
     return await this.wellService.findBattery();
@@ -94,6 +96,18 @@ export class WellController {
   @Roles('3')
   async wellListLeak() {
     return await this.wellService.findLeak();
+  }
+
+  @ApiOkResponse({
+    description: '漏气列表',
+    type: CreateWellDTO,
+    isArray: true,
+  })
+  @ApiOperation({ title: '获取漏气列表', description: '获取漏气列表' })
+  @Get('/leak')
+  @Roles('3')
+  async wellListUnnormal() {
+    return await this.wellService.findUnnormal();
   }
 
   @Get('/:id')
@@ -146,21 +160,34 @@ export class WellController {
     description: '绑定旧设备成功',
   })
   @ApiOperation({ title: '绑定旧设备', description: '绑定旧设备' })
-  async bindOldDevice(@Param('id', new MongodIdPipe()) _id: string, @Param('deviceId', new MongodIdPipe()) deviceId: string) {
+  async bindOldDevice(
+    @Param('id', new MongodIdPipe()) _id: string,
+    @Param('deviceId', new MongodIdPipe()) deviceId: string,
+  ) {
     this.wellService.bindOldDevice(_id, deviceId);
     return { statusCode: 200, msg: '绑定旧设备成功' };
   }
 
-  @Post('/:id/device')
+  @Put('/:id/unbindDevice')
   @Roles('1')
   @ApiOkResponse({
-    description: '绑定新设备成功',
+    description: '解绑设备成功',
   })
-  @ApiOperation({ title: '绑定新设备', description: '绑定新设备' })
-  async bindNewDevice(@Param('id', new MongodIdPipe()) _id: string, @Body() device: CreateDeviceDTO) {
-    await this.wellService.bindNewDevice(_id, device);
-    return { statusCode: 200, msg: '绑定新设备成功' };
+  @ApiOperation({ title: '解绑设备', description: '解绑设备' })
+  async unbindDevice(@Param('id', new MongodIdPipe()) _id: string) {
+    this.wellService.unbindDevice(_id);
+    return { statusCode: 200, msg: '解绑设备成功' };
   }
+  // @Post('/:id/device')
+  // @Roles('1')
+  // @ApiOkResponse({
+  //   description: '绑定新设备成功',
+  // })
+  // @ApiOperation({ title: '绑定新设备', description: '绑定新设备' })
+  // async bindNewDevice(@Param('id', new MongodIdPipe()) _id: string, @Body() device: CreateDeviceDTO) {
+  //   await this.wellService.bindNewDevice(_id, device);
+  //   return { statusCode: 200, msg: '绑定新设备成功' };
+  // }
 
   @Put('/:id/owner/:ownerId')
   @Roles('1')
@@ -173,17 +200,28 @@ export class WellController {
     return { statusCode: 200, msg: '绑定旧业主成功' };
   }
 
-  @Post('/:id/owner')
+  @Put('/:id/unbindOwner')
   @Roles('1')
   @ApiOkResponse({
-    description: '绑定新业主成功',
+    description: '解绑业主成功',
   })
-  @ApiOperation({ title: '绑定新业主', description: '绑定新业主' })
-  async bindNewOwner(@Param('id', new MongodIdPipe()) _id: string, @Body() owner: CreateOwnerDTO) {
-    await this.wellService.bindNewOwner(_id, owner);
-    return { statusCode: 200, msg: '绑定新业主成功' };
-
+  @ApiOperation({ title: '解绑业主成功', description: '解绑业主成功' })
+  async unbindOwner(@Param('id', new MongodIdPipe()) _id: string) {
+    await this.wellService.unbindOwner(_id);
+    return { statusCode: 200, msg: '解绑业主成功' };
   }
+
+  // @Post('/:id/owner')
+  // @Roles('1')
+  // @ApiOkResponse({
+  //   description: '绑定新业主成功',
+  // })
+  // @ApiOperation({ title: '绑定新业主', description: '绑定新业主' })
+  // async bindNewOwner(@Param('id', new MongodIdPipe()) _id: string, @Body() owner: CreateOwnerDTO) {
+  //   await this.wellService.bindNewOwner(_id, owner);
+  //   return { statusCode: 200, msg: '绑定新业主成功' };
+
+  // }
 
   @Put('/:id/defence')
   @Roles('1')

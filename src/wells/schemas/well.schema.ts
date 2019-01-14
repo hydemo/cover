@@ -29,6 +29,8 @@ export const WellSchema = new mongoose.Schema(
     status: StatusSchema,
     // 设备Id
     deviceId: ObjectId,
+    // 电量警告门限
+    batteryLimit: { type: Number, min: 0, max: 400 },
     // 布防/撤防
     isDefence: { type: Boolean, default: true },
     // 是否删除

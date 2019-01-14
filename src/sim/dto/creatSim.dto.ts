@@ -6,12 +6,12 @@ export class CreateSimDTO {
   @IsString()
   @Type(() => String)
   @ApiModelProperty({ description: '卡号' })
-  readonly cardNumber: string;
+  readonly cardNumber?: string;
 
   @IsString()
   @Type(() => String)
   @ApiModelProperty({ description: '运营商' })
-  readonly operator: string;
+  readonly operator?: string;
 
   @IsDate()
   @IsOptional()
@@ -43,4 +43,5 @@ export class CreateSimDTO {
   readonly status?: string;
 
   readonly isDelete?: boolean;
+  readonly isBind?: boolean = false;
 }

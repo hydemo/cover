@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { DeviceService } from './device.service';
@@ -6,6 +6,7 @@ import { DeviceController } from './device.controller';
 import { devicesProviders } from './device.providers';
 import { DatabaseModule } from '../database/database.module';
 import { SimModule } from '../sim/sim.module';
+import { WellModule } from 'src/wells/well.module';
 
 @Module({
   providers: [DeviceService, ...devicesProviders],
@@ -20,7 +21,8 @@ import { SimModule } from '../sim/sim.module';
       },
     }),
     DatabaseModule,
-    SimModule,
+    forwardRef(() => SimModule),
+    forwardRef(() => WellModule),
   ],
 })
 

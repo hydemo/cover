@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { WellService } from './well.service';
 import { WellController } from './well.controller';
 import { wellsProviders } from './well.providers';
@@ -21,8 +21,8 @@ import { PassportModule } from '@nestjs/passport';
       },
     }),
     DatabaseModule,
-    OwnerModule,
-    DeviceModule,
+    forwardRef(() => OwnerModule),
+    forwardRef(() => DeviceModule),
   ],
 })
 

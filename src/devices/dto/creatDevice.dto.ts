@@ -93,4 +93,5 @@ export class CreateDeviceDTO {
   readonly batteryLimit?: number;
 
   readonly isDelete?: boolean;
+  readonly isBind?: boolean = false;
 }

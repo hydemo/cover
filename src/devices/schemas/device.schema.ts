@@ -34,6 +34,8 @@ export const DeviceSchema = new mongoose.Schema(
     isDelete: { type: Boolean, default: false },
     // sim卡ID
     simId: mongoose.Schema.Types.ObjectId,
+    // 是否绑定
+    isBind: { type: Boolean, default: false },
   },
   { collection: 'Device', versionKey: false, timestamps: true },
 );

@@ -1,14 +1,10 @@
 import { Model } from 'mongoose';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { IWell } from './interfaces/well.interfaces';
 import { CreateWellDTO } from './dto/creatWell.dto';
 import { Pagination } from '../common/dto/pagination.dto';
 import { IList } from '../common/interface/list.interface';
 import { DeviceService } from '../devices/device.service';
-import { CreateDeviceDTO } from '../devices/dto/creatDevice.dto';
-import { CreateOwnerDTO } from '../owner/dto/creatOwner.dto';
-import { IDevice } from '../devices/interfaces/device.interfaces';
-import { IOwner } from '../owner/interfaces/owner.interfaces';
 import { OwnerService } from '../owner/owner.service';
 import { ApiErrorCode } from '../common/enum/api-error-code.enum';
 import { ApiException } from '../common/expection/api.exception';
@@ -18,8 +14,8 @@ export class WellService {
   // 注入的WellModelToken要与wells.providers.ts里面的key一致就可以
   constructor(
     @Inject('WellModelToken') private readonly wellModel: Model<IWell>,
-    private readonly deviceService: DeviceService,
-    private readonly ownerService: OwnerService,
+    @Inject(forwardRef(() => DeviceService)) private readonly deviceService: DeviceService,
+    @Inject(forwardRef(() => OwnerService)) private readonly ownerService: OwnerService,
   ) { }
 
   // 创建数据
@@ -39,6 +35,10 @@ export class WellService {
   async findByCondition(condition: any): Promise<IWell[]> {
     condition.isDelete = false;
     return await this.wellModel.find(condition);
+  }
+
+  async updateMany(condition: any, update: any): Promise<any> {
+    return await this.wellModel.updateMany(condition, update);
   }
 
   // 查询全部数据
@@ -106,9 +106,23 @@ export class WellService {
   // 获取电量不足列表
   async findBattery(): Promise<IWell[]> {
     return await this.wellModel
-      .find({ 'isDelete': false, 'status.batteryLevel': { $lt: 20 } })
+      .find({ $where: 'this.status.batteryLevel <= this.batteryLimit', isDelete: false })
       .exec();
   }
+
+  async findUnnormal(): Promise<IWell[]> {
+    return await this.wellModel
+      .find({
+        isDelete: false,
+        $or: [
+          { $where: 'this.status.batteryLevel <= this.batteryLimit' },
+          { 'status.coverIsOpen': true },
+          { 'status.gasLeak': true },
+        ],
+      })
+      .exec();
+  }
+
   // 获取漏气列表
   async findLeak(): Promise<IWell[]> {
     return await this.wellModel
@@ -129,7 +143,7 @@ export class WellService {
     const leak = await this.wellModel
       .countDocuments({ 'status.gasLeak': true, 'isDelete': false });
     const battery = await this.wellModel
-      .countDocuments({ 'status.batteryLevel': { $lt: 20 }, 'isDelete': false });
+      .count({ $where: 'this.status.batteryLevel <= this.batteryLimit', isDelete: false });
     return { open, battery, leak };
   }
   // 根据id修改
@@ -157,20 +171,34 @@ export class WellService {
   }
   // 绑定已有设备
   async bindOldDevice(_id: string, deviceId: string) {
-    return await this.wellModel.findByIdAndUpdate(_id, { deviceId });
+    const device = await this.deviceService.findById(deviceId);
+    const well = await this.wellModel.findById(_id);
+    await this.wellModel.findByIdAndUpdate(_id, { deviceId, batteryLimit: device.batteryLimit });
+    await this.deviceService.updateById(well.deviceId, { isBind: false });
+    return await this.deviceService.updateById(deviceId, { isBind: true });
   }
-  // 绑定新设备
-  async bindNewDevice(_id: string, device: CreateDeviceDTO) {
-    const creatDevice: IDevice = await this.deviceService.create(device);
-    return await this.wellModel.findByIdAndUpdate(_id, { deviceId: creatDevice._id });
-  }
+  // // 绑定新设备
+  // async bindNewDevice(_id: string, device: CreateDeviceDTO) {
+  //   const creatDevice: IDevice = await this.deviceService.create(device);
+  //   return await this.wellModel.findByIdAndUpdate(_id, { deviceId: creatDevice._id });
+  // }
   // 绑定旧井盖
   async bindOldOwner(_id: string, ownerId: string) {
     return await this.wellModel.findByIdAndUpdate(_id, { ownerId });
   }
   // 绑定新井盖
-  async bindNewOwner(_id: string, owner: CreateOwnerDTO) {
-    const creatOwner: IOwner = await this.ownerService.create(owner);
-    return await this.wellModel.findByIdAndUpdate(_id, { ownerId: creatOwner._id });
+  // async bindNewOwner(_id: string, owner: CreateOwnerDTO) {
+  //   const creatOwner: IOwner = await this.ownerService.create(owner);
+  //   return await this.wellModel.findByIdAndUpdate(_id, { ownerId: creatOwner._id });
+  // }
+
+  async unbindOwner(_id: string) {
+    return await this.wellModel.findByIdAndUpdate(_id, { $unset: { ownerId: '' } });
+  }
+
+  async unbindDevice(_id: string) {
+    const well = await this.wellModel.findById(_id);
+    await this.wellModel.findByIdAndUpdate(_id, { $unset: { deviceId: '', batteryLimit: '' } });
+    return await this.deviceService.updateById(well.deviceId, { isBind: false });
   }
 }

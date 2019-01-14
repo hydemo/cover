@@ -1,16 +1,20 @@
 import { Model } from 'mongoose';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { ISim } from './interfaces/sim.interfaces';
 import { CreateSimDTO } from './dto/creatSim.dto';
 import { Pagination } from '../common/dto/pagination.dto';
 import { IList } from '../common/interface/list.interface';
 import { ApiErrorCode } from '../common/enum/api-error-code.enum';
 import { ApiException } from '../common/expection/api.exception';
+import { DeviceService } from 'src/devices/device.service';
 
 @Injectable()
 export class SimService {
   // 注入的SimModelToken要与sims.providers.ts里面的key一致就可以
-  constructor(@Inject('SimModelToken') private readonly simModel: Model<ISim>) { }
+  constructor(
+    @Inject('SimModelToken') private readonly simModel: Model<ISim>,
+    @Inject(forwardRef(() => DeviceService)) private readonly deviceService: DeviceService,
+  ) { }
 
   // 创建数据
   async create(createSimDTO: CreateSimDTO): Promise<ISim> {
@@ -84,6 +88,7 @@ export class SimService {
   }
   // 根据id删除
   async deleteById(_id: string) {
+    await this.deviceService.updateMany({ simId: _id }, { $unset: { simId: '' } });
     return await this.simModel.findByIdAndUpdate(_id, { isDelete: true }).exec();
   }
 }

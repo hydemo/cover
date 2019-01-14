@@ -1,16 +1,20 @@
 import { Model } from 'mongoose';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { IOwner } from './interfaces/owner.interfaces';
 import { CreateOwnerDTO } from './dto/creatOwner.dto';
 import { Pagination } from '../common/dto/pagination.dto';
 import { IList } from '../common/interface/list.interface';
 import { ApiErrorCode } from '../common/enum/api-error-code.enum';
 import { ApiException } from '../common/expection/api.exception';
+import { WellService } from 'src/wells/well.service';
 
 @Injectable()
 export class OwnerService {
   // 注入的OwnerModelToken要与owners.providers.ts里面的key一致就可以
-  constructor(@Inject('OwnerModelToken') private readonly ownerModel: Model<IOwner>) { }
+  constructor(
+    @Inject('OwnerModelToken') private readonly ownerModel: Model<IOwner>,
+    @Inject(forwardRef(() => WellService)) private readonly wellService: WellService,
+  ) { }
 
   // 创建数据
   async create(createOwnerDTO: CreateOwnerDTO): Promise<IOwner> {
@@ -84,6 +88,7 @@ export class OwnerService {
   }
   // 根据id删除
   async deleteById(_id: string) {
+    await this.wellService.updateMany({ ownerId: _id }, { $unset: { ownerId: '' } });
     return await this.ownerModel.findByIdAndUpdate(_id, { isDelete: true }).exec();
   }
 }

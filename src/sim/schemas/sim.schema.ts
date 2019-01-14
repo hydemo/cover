@@ -16,6 +16,8 @@ export const SimSchema = new mongoose.Schema(
     tatalTariff: String,
     // 状态
     status: String,
+    // 是否绑定
+    isBind: { type: Boolean, default: false },
     // 是否删除
     isDelete: { type: Boolean, default: false },
   },

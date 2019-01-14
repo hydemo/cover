@@ -17,4 +17,5 @@ export interface ISim extends Document {
   readonly status?: string;
   // 是否删除
   readonly isDelete?: boolean;
+  readonly isBind?: boolean;
 }

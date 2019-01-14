@@ -171,7 +171,7 @@ export class EventService {
       .find(condition)
       .limit(pagination.limit)
       .skip((pagination.offset - 1) * pagination.limit)
-      .sort({ isHandle: 1, handleTime: -1 })
+      .sort({ isHandle: 1, createdAt: -1 })
       .populate({ path: 'wellId', model: 'Well' })
       .populate({ path: 'deviceId', model: 'Device' })
       .populate({ path: 'handler', model: 'User' })

@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { IDevice } from './interfaces/device.interfaces';
 import { CreateDeviceDTO } from './dto/creatDevice.dto';
 import { Pagination } from '../common/dto/pagination.dto';
@@ -7,13 +7,15 @@ import { IList } from '../common/interface/list.interface';
 import { ApiErrorCode } from '../common/enum/api-error-code.enum';
 import { ApiException } from '../common/expection/api.exception';
 import { SimService } from '../sim/sim.service';
+import { WellService } from 'src/wells/well.service';
 
 @Injectable()
 export class DeviceService {
   // 注入的DeviceModelToken要与devices.providers.ts里面的key一致就可以
   constructor(
     @Inject('DeviceModelToken') private readonly deviceModel: Model<IDevice>,
-    @Inject(SimService) private readonly simService: SimService,
+    @Inject(forwardRef(() => SimService)) private readonly simService: SimService,
+    @Inject(forwardRef(() => WellService)) private readonly wellService: WellService,
   ) { }
 
   // 创建数据
@@ -94,6 +96,9 @@ export class DeviceService {
     return await this.deviceModel.findById(_id).exec();
   }
 
+  async updateMany(condition: any, update: any): Promise<any> {
+    return await this.deviceModel.updateMany(condition, update);
+  }
   // 根据sn查询
   async findByDeviceSn(deviceSn: string): Promise<IDevice> {
     return await this.deviceModel.findOne({ deviceSn, isDelete: false }).exec();
@@ -111,11 +116,21 @@ export class DeviceService {
   }
   // 根据id删除
   async deleteById(_id: string) {
+    await this.wellService.updateMany({ deviceId: _id }, { $unset: { deviceId: '' } });
     return await this.deviceModel.findByIdAndUpdate(_id, { isDelete: true }).exec();
   }
 
   // 绑定旧sim卡
   async bindOldSim(_id: string, simId: string) {
-    return await this.deviceModel.findByIdAndUpdate(_id, { simId });
+    const device = await this.deviceModel.findById(_id);
+    await this.deviceModel.findByIdAndUpdate(_id, { simId });
+    await this.simService.updateById(device.simId, { isBind: false });
+    return await this.simService.updateById(simId, { isBind: true });
+  }
+
+  async unbindSim(_id: string) {
+    const device = await this.deviceModel.findById(_id);
+    await this.deviceModel.findByIdAndUpdate(_id, { $unset: { simId: '' } });
+    return await this.simService.updateById(device.simId, { isBind: false });
   }
 }
