@@ -40,6 +40,7 @@ export class EventService {
       const createDeviceInfo: CreateDeviceDTO = {
         deviceID,
         NBModuleNumber: event.nodeId,
+        deviceName: event.nodeId,
       };
       await this.deviceService.create(createDeviceInfo);
     } else {
@@ -52,6 +53,7 @@ export class EventService {
     const createDeviceInfo: CreateDeviceDTO = {
       deviceID,
       NBModuleNumber: deviceInfo.nodeId,
+      deviceName: deviceInfo.nodeId,
     };
     await this.deviceService.create(createDeviceInfo);
   }
