@@ -22,7 +22,6 @@ import { CreateMaintenanceDTO } from '../maintenance/dto/creatMaintenance.dto';
 import { DeviceService } from '../devices/device.service';
 import { IDevice } from '../devices/interfaces/device.interfaces';
 import { CreateDeviceDTO } from '../devices/dto/creatDevice.dto';
-import { DeviceStatus } from '../common/enum/device-status.enum';
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 @Injectable()
 export class EventService {
@@ -37,19 +36,22 @@ export class EventService {
 
   async receiveDeviceInfoChange(deviceID: string, event: any) {
     const device: IDevice = await this.deviceService.findBydeviceID(deviceID);
-    if (!device) return;
-    await this.deviceService.updateById(device._id, { NBModuleNumber: event.nodeId });
+    if (!device) {
+      const createDeviceInfo: CreateDeviceDTO = {
+        deviceID,
+        NBModuleNumber: event.nodeId,
+      };
+      await this.deviceService.create(createDeviceInfo);
+    } else {
+      await this.deviceService.updateById(device._id, { NBModuleNumber: event.nodeId });
+
+    }
   }
 
   async receiveAddDevice(deviceID: string, deviceInfo: any) {
-    let code = deviceInfo.status;
-    if (deviceInfo.statusDetail === 'NOT_ACTIVE') {
-      code = deviceInfo.statusDetail;
-    }
     const createDeviceInfo: CreateDeviceDTO = {
       deviceID,
       NBModuleNumber: deviceInfo.nodeId,
-      status: DeviceStatus[code],
     };
     await this.deviceService.create(createDeviceInfo);
   }
@@ -315,15 +317,11 @@ export class EventService {
     const devices = result.data.devices;
     await Promise.all(devices.map(async device => {
       if (device.deviceInfo.nodeId !== '869487030007651' && device.deviceInfo.nodeId !== '869487030006752') return;
-      let code = device.deviceInfo.status;
-      if (device.deviceInfo.statusDetail === 'NOT_ACTIVE') {
-        code = device.deviceInfo.statusDetail;
-      }
+
       const createDeviceInfo: CreateDeviceDTO = {
         deviceID: device.deviceId,
         deviceName: device.deviceInfo.nodeId,
         NBModuleNumber: device.deviceInfo.nodeId,
-        status: DeviceStatus[code],
       };
       const exist = await this.deviceService.findBydeviceID(device.deviceId);
       if (!exist) {
