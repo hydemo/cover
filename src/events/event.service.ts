@@ -43,10 +43,9 @@ export class EventService {
         deviceName: event.nodeId,
       };
       await this.deviceService.create(createDeviceInfo);
-    } else {
+    } else if (event.nodeId && device.NBModuleNumber !== event.nodeId) {
       await this.deviceService.updateById(device._id, { NBModuleNumber: event.nodeId });
-
-    }
+    } else { return; }
   }
 
   async receiveAddDevice(deviceID: string, deviceInfo: any) {
