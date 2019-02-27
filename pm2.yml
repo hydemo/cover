@@ -1,9 +1,12 @@
 - script: ./dist/main.js
   name: cover
   cwd: ./
+  watch_options: 
+    followSymlinks: false
   error_file: ./log/cover-error.log
   out_file: ./log/cover-out.log
   pid_file: ./log/cover-pid.log
+  log_date_format: YYYY-MM-DD HH:mm:ss
   env:
     NODE_ENV: production
   
